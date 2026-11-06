@@ -1,0 +1,26 @@
+name: feature-listener
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/features/FEAT-*.md"
+
+concurrency:
+  group: feature-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+jobs:
+  implement:
+    # Only a human's FEAT file. feature-factory.yml already runs the implementer after the PO bot,
+    # and this guard also stops a loop when the pipeline merges its own work.
+    if: ${{ !endsWith(github.actor, '[bot]') }}
+    uses: ./.github/workflows/implement.yml
+    secrets: inherit
