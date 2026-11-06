@@ -45,8 +45,18 @@ export default function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => setGame((g) => onKeyPress(g, e.key))
+    // Space is the pause key, so it must not also click a focused button.
+    const noClick = (e: KeyboardEvent) => {
+      if (e.key === ' ') e.preventDefault()
+    }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('keydown', noClick)
+    window.addEventListener('keyup', noClick)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('keydown', noClick)
+      window.removeEventListener('keyup', noClick)
+    }
   }, [])
 
   const cell = (x: number, y: number, color: string, id: string) => (
