@@ -47,7 +47,8 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
 ## Merge with squash only
 
 - Merge only when the user asks, or when you run as the feature pipeline (see below).
-- Wait until all checks pass: `gh pr checks <pr> --watch`. `main` refuses a merge before that.
+- Wait until the required checks pass: `gh pr checks <pr> --required --watch`.
+  `main` refuses a merge before that. Other checks, such as the Claude review, do not block it.
 - Use a squash merge. Use the PR title as the commit subject and no body:
   `gh pr merge <pr> --squash --delete-branch --subject "<PR title>" --body ""`
 - Do not use a merge commit or a rebase merge.
