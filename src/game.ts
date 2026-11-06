@@ -1,0 +1,70 @@
+export const SIZE = 15
+
+export type Dir = 'up' | 'down' | 'left' | 'right'
+export type Cell = { x: number; y: number }
+export type GameState = {
+  snake: Cell[] // head first
+  dir: Dir // direction of the last move
+  next: Dir // direction of the coming move
+  food: Cell
+  score: number
+  status: 'running' | 'over'
+}
+export type Rand = () => number
+
+const DELTA: Record<Dir, Cell> = {
+  up: { x: 0, y: -1 },
+  down: { x: 0, y: 1 },
+  left: { x: -1, y: 0 },
+  right: { x: 1, y: 0 },
+}
+const OPPOSITE: Record<Dir, Dir> = { up: 'down', down: 'up', left: 'right', right: 'left' }
+const KEYS: Record<string, Dir> = {
+  arrowup: 'up', w: 'up',
+  arrowdown: 'down', s: 'down',
+  arrowleft: 'left', a: 'left',
+  arrowright: 'right', d: 'right',
+}
+
+const same = (a: Cell, b: Cell) => a.x === b.x && a.y === b.y
+
+const outside = (c: Cell) => c.x < 0 || c.y < 0 || c.x >= SIZE || c.y >= SIZE
+
+export const keyToDir = (key: string): Dir | undefined => KEYS[key.toLowerCase()]
+
+export function placeFood(snake: Cell[], rand: Rand): Cell {
+  const free: Cell[] = []
+  for (let y = 0; y < SIZE; y++) {
+    for (let x = 0; x < SIZE; x++) {
+      if (!snake.some((c) => same(c, { x, y }))) free.push({ x, y })
+    }
+  }
+  return free[Math.floor(rand() * free.length)]
+}
+
+export function newGame(rand: Rand): GameState {
+  const mid = Math.floor(SIZE / 2)
+  const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
+  return { snake, dir: 'right', next: 'right', food: placeFood(snake, rand), score: 0, status: 'running' }
+}
+
+export function turn(state: GameState, dir: Dir): GameState {
+  return dir === OPPOSITE[state.dir] ? state : { ...state, next: dir }
+}
+
+export function step(state: GameState, rand: Rand): GameState {
+  if (state.status === 'over') return state
+  const d = DELTA[state.next]
+  const head = { x: state.snake[0].x + d.x, y: state.snake[0].y + d.y }
+  const eats = same(head, state.food)
+  const body = eats ? state.snake : state.snake.slice(0, -1)
+  if (outside(head) || body.some((c) => same(c, head))) return { ...state, dir: state.next, status: 'over' }
+  const snake = [head, ...body]
+  return {
+    ...state,
+    snake,
+    dir: state.next,
+    food: eats ? placeFood(snake, rand) : state.food,
+    score: state.score + (eats ? 1 : 0),
+  }
+}
