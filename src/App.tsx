@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react'
-import { SIZE, keyToDir, newGame, step, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, step, togglePause, turn } from './game.ts'
 
 const TICK_MS = 200
 const CELL_PX = 24
 
+function onKeyPress(g: GameState, key: string): GameState {
+  const dir = keyToDir(key)
+  if (dir) return turn(g, dir)
+  if (key === ' ' || key.toLowerCase() === 'p') return togglePause(g)
+  if (key === 'Enter' && g.status === 'over') return newGame(Math.random)
+  return g
+}
+
 export default function App() {
   const [game, setGame] = useState(() => newGame(Math.random))
   const over = game.status === 'over'
+  const paused = game.status === 'paused'
 
   useEffect(() => {
     const id = setInterval(() => setGame((g) => step(g, Math.random)), TICK_MS)
@@ -14,11 +23,7 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const dir = keyToDir(e.key)
-      if (dir) setGame((g) => turn(g, dir))
-      else if (e.key === 'Enter') setGame((g) => (g.status === 'over' ? newGame(Math.random) : g))
-    }
+    const onKey = (e: KeyboardEvent) => setGame((g) => onKeyPress(g, e.key))
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
@@ -36,6 +41,10 @@ export default function App() {
     <main>
       <h1>Snake</h1>
       <p>Score: {game.score}</p>
+      {!over && (
+        <button onClick={() => setGame(togglePause)}>{paused ? 'Resume' : 'Pause'}</button>
+      )}
+      {paused && <p role="status">Paused</p>}
       <div style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222' }}>
         {game.snake.map((c, i) =>
           i === 0 ? cell(c.x, c.y, '#4c4', 'head') : cell(c.x, c.y, '#2a2', 'snake'),
