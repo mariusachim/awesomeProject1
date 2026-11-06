@@ -4,7 +4,7 @@ name: design-review
 on:
   schedule:
     # Odd hours UTC, one hour after each feature-factory run.
-    - cron: "0 1-23/2 * * *"
+    - cron: "15 1-23/2 * * *"
   workflow_dispatch:
 
 concurrency:

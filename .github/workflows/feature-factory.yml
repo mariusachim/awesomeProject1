@@ -2,8 +2,8 @@ name: feature-factory
 
 on:
   schedule:
-    # Even hours UTC. design-review runs at the odd hours.
-    - cron: "0 */2 * * *"
+    # Minute 15 of the even hours UTC: GitHub delays or drops runs at minute 0. design-review runs at the odd hours.
+    - cron: "15 */2 * * *"
   workflow_dispatch:
 
 concurrency:
