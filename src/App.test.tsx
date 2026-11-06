@@ -263,6 +263,67 @@ test('a lower score does not change the high score', () => {
   expect(localStorage.getItem('snake.highScore')).toBe('5')
 })
 
+// Speed: after eatFood the head sits at 0,0 and the score is 1.
+const advance = (ms: number) => act(() => vi.advanceTimersByTime(ms))
+
+test('after eating the snake moves every 190 ms', () => {
+  // given
+  localStorage.clear()
+  render(<App />)
+  eatFood()
+  fireEvent.keyDown(window, { key: 'ArrowDown' })
+
+  // when
+  advance(189)
+
+  // then
+  expect(head()).toBe('0,0')
+
+  // when
+  advance(1)
+
+  // then
+  expect(head()).toBe('0,1')
+})
+
+test('pausing and resuming keeps the speed of the score', () => {
+  // given
+  localStorage.clear()
+  render(<App />)
+  eatFood()
+  fireEvent.keyDown(window, { key: 'ArrowDown' })
+  fireEvent.keyDown(window, { key: 'p' })
+  advance(1000)
+
+  // when
+  fireEvent.keyDown(window, { key: 'p' })
+  advance(190)
+
+  // then
+  expect(head()).toBe('0,1')
+})
+
+test('a restart after eating goes back to 200 ms', () => {
+  // given
+  localStorage.clear()
+  render(<App />)
+  eatFood()
+  gameOver()
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // when
+  advance(199)
+
+  // then
+  expect(head()).toBe('7,7')
+
+  // when
+  advance(1)
+
+  // then
+  expect(head()).toBe('8,7')
+})
+
 test('a bad stored high score shows 0', () => {
   // given
   localStorage.setItem('snake.highScore', '-4')

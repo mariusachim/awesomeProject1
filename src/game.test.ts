@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, keyToDir, newGame, placeFood, step, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, placeFood, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -217,4 +217,14 @@ test('turn is ignored while paused', () => {
 
   // when / then
   expect(turn(paused, 'up')).toBe(paused)
+})
+
+test('tickMs starts at 200 ms and drops 10 ms per point', () => {
+  // when / then
+  expect([0, 1, 5].map(tickMs)).toEqual([200, 190, 150])
+})
+
+test('tickMs never falls below 80 ms', () => {
+  // when / then
+  expect([12, 13, 100].map(tickMs)).toEqual([80, 80, 80])
 })
