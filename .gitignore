@@ -1,3 +1,6 @@
 .idea/
 .metrics/
 target/
+node_modules/
+dist/
+coverage/
