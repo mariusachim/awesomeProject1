@@ -30,6 +30,8 @@ const same = (a: Cell, b: Cell) => a.x === b.x && a.y === b.y
 
 const outside = (c: Cell) => c.x < 0 || c.y < 0 || c.x >= SIZE || c.y >= SIZE
 
+export const tickMs = (score: number) => Math.max(80, 200 - 10 * score)
+
 export const keyToDir = (key: string): Dir | undefined => KEYS[key.toLowerCase()]
 
 export function placeFood(snake: Cell[], rand: Rand): Cell {
