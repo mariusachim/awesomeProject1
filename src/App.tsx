@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { loadHighScore, saveHighScore } from './highScore.ts'
+import { loadMuted, play, saveMuted } from './sound.ts'
 import { type GameState, SIZE, keyToDir, newGame, step, tickMs, togglePause, turn } from './game.ts'
 
 const CELL_PX = 24
@@ -15,6 +16,7 @@ function onKeyPress(g: GameState, key: string): GameState {
 export default function App() {
   const [game, setGame] = useState(() => newGame(Math.random))
   const [best, setBest] = useState(loadHighScore)
+  const [muted, setMuted] = useState(loadMuted)
   const highScore = Math.max(best, game.score)
   const over = game.status === 'over'
   const paused = game.status === 'paused'
@@ -25,6 +27,17 @@ export default function App() {
   }, [game.score])
 
   if (highScore > best) setBest(highScore)
+
+  const prev = useRef({ score: game.score, over })
+  useEffect(() => {
+    const was = prev.current
+    prev.current = { score: game.score, over }
+    if (muted) return
+    if (over && !was.over) play('over')
+    else if (game.score > was.score) play('eat')
+  }, [game.score, over, muted])
+
+  useEffect(() => saveMuted(muted), [muted])
 
   useEffect(() => {
     if (best > 0) saveHighScore(best)
@@ -54,6 +67,7 @@ export default function App() {
         {!over && (
           <button onClick={() => setGame(togglePause)}>{paused ? 'Resume' : 'Pause'}</button>
         )}
+        <button onClick={() => setMuted((m) => !m)}>{muted ? 'Unmute' : 'Mute'}</button>
       </div>
       <div style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222' }}>
         {game.snake.map((c, i) =>
