@@ -51,23 +51,27 @@ export default function App() {
       <h1>Snake</h1>
       <p>Score: {game.score}</p>
       <p>High score: {highScore}</p>
-      {!over && (
-        <button onClick={() => setGame(togglePause)}>{paused ? 'Resume' : 'Pause'}</button>
-      )}
-      {paused && <p role="status">Paused</p>}
+      <div className="controls">
+        {!over && (
+          <button onClick={() => setGame(togglePause)}>{paused ? 'Resume' : 'Pause'}</button>
+        )}
+      </div>
       <div style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222' }}>
         {game.snake.map((c, i) =>
           i === 0 ? cell(c.x, c.y, '#4c4', 'head') : cell(c.x, c.y, '#2a2', 'snake'),
         )}
         {cell(game.food.x, game.food.y, '#e44', 'food')}
       </div>
-      {over && (
-        <div role="alert">
-          <p>Game over</p>
-          <p>Final score: {game.score}</p>
-          <button onClick={() => setGame(newGame(Math.random))}>Restart</button>
-        </div>
-      )}
+      <div className="messages">
+        {paused && <p role="status">Paused</p>}
+        {over && (
+          <div role="alert">
+            <p>Game over</p>
+            <p>Final score: {game.score}</p>
+            <button onClick={() => setGame(newGame(Math.random))}>Restart</button>
+          </div>
+        )}
+      </div>
     </main>
   )
 }
