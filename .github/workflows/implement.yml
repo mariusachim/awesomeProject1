@@ -1,0 +1,41 @@
+name: implement
+
+# Reusable: feature-factory.yml and feature-listener.yml call it.
+# No concurrency group here: the callers hold "feature-pipeline", and the same group here would deadlock.
+on:
+  workflow_call:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+jobs:
+  implement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci
+      - uses: astral-sh/setup-uv@v10
+      - name: Install crapper, dryer and mutator (pinned)
+        run: |
+          crapper="git+https://github.com/unclebob/crapper@6fd92c4c9bcc56efb64a2f8743d5a2993bcfd42d"
+          uv tool install "$crapper"
+          uv tool install "git+https://github.com/unclebob/dryer@66ff6d21a42c04afcad89c78a80066176d1294b0"
+          uv tool install "git+https://github.com/unclebob/mutator@a5a0cb803b66e0cdb8bf471b3b08af701d424a41" --with "$crapper"
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: /implement-feature
+          claude_args: >-
+            --max-turns 200
+            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git *),Bash(gh *),Bash(npm *),Bash(npx *),Bash(crapper *),Bash(dryer *),Bash(mutator *)"

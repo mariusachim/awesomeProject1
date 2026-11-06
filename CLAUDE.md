@@ -67,7 +67,8 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
 - Every day at 06:00 UTC, `.github/workflows/feature-factory.yml` runs the product owner
   (`/propose-feature`) and then the implementer (`/implement-feature`).
 - `.github/workflows/feature-listener.yml` runs the implementer when a human adds a FEAT file
-  to `main`.
+  to `main`. A human who writes a FEAT file first opens its issue, as the product owner does:
+  the label `feature` and the title `FEAT-NNN: <title>`.
 - Each FEAT file has one issue with the label `feature`. The issue state is the feature state.
 - Work in progress is one feature. The product owner proposes nothing while a `feature` issue
   is open.
