@@ -64,4 +64,4 @@ jobs:
           # modelUsage has one key per model of the run, subagents included.
           models=$(jq -r '[.[] | select(.type == "result")][-1].modelUsage // {} | keys | join(", ")' "$RESULT")
           # shortcut: the subscription line assumes claude_code_oauth_token above; change it if the job moves to an API key.
-          gh issue comment "$ISSUE" --body "$(printf 'Token cost of the implementer run: $%.2f\nModel: %s\nPaid by the Claude subscription: the cost is the tokens at API list prices, not a bill.' "$cost" "${models:-unknown}")"
+          gh issue comment "$ISSUE" --body "$(printf 'Paid by the Claude subscription.\nToken cost equivalent of the implementer run: $%.2f\nModel: %s' "$cost" "${models:-unknown}")"
