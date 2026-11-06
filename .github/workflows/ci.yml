@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # The packages the game may use. Only a human edits this list: the agents may not change workflow files.
+      ALLOWED_PACKAGES: >-
+        react react-dom
+        @types/node @types/react @types/react-dom @vitejs/plugin-react oxlint typescript vite
+        vitest @vitest/coverage-v8 jsdom @testing-library/react @testing-library/dom
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+      - name: Check the dependency allowlist
+        run: |
+          node -e '
+            const pkg = require("./package.json");
+            const allowed = new Set(process.env.ALLOWED_PACKAGES.split(/\s+/).filter(Boolean));
+            const extra = Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }).filter((name) => !allowed.has(name));
+            if (extra.length) {
+              console.error("Not on the allowlist in .github/workflows/ci.yml: " + extra.join(", "));
+              process.exit(1);
+            }
+          '
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Check that the build blocks network access
+        run: grep -q "connect-src 'none'" dist/index.html
