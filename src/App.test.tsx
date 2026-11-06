@@ -105,6 +105,90 @@ test('Enter restarts a finished game', () => {
   expect(head()).toBe('7,7')
 })
 
+test.each([' ', 'p'])('key "%s" pauses and resumes the game', (key) => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.keyDown(window, { key })
+  tick(3)
+
+  // then
+  expect(screen.getByText('Paused')).toBeTruthy()
+  expect(head()).toBe('7,7')
+
+  // when
+  fireEvent.keyDown(window, { key })
+  tick()
+
+  // then
+  expect(screen.queryByText('Paused')).toBeNull()
+  expect(head()).toBe('8,7')
+})
+
+test('the Pause button pauses and the Resume button resumes', () => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.click(screen.getByRole('button', { name: 'Pause' }))
+  tick(2)
+
+  // then
+  expect(screen.getByText('Paused')).toBeTruthy()
+  expect(head()).toBe('7,7')
+
+  // when
+  fireEvent.click(screen.getByRole('button', { name: 'Resume' }))
+  tick()
+
+  // then
+  expect(screen.queryByRole('button', { name: 'Resume' })).toBeNull()
+  expect(head()).toBe('8,7')
+})
+
+test('a turn key while paused does not turn the snake', () => {
+  // given
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'p' })
+
+  // when
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+  fireEvent.keyDown(window, { key: 'p' })
+  tick()
+
+  // then
+  expect(head()).toBe('8,7')
+})
+
+test('Space and P do nothing after game over', () => {
+  // given
+  render(<App />)
+  tick(10)
+
+  // when
+  fireEvent.keyDown(window, { key: ' ' })
+  fireEvent.keyDown(window, { key: 'p' })
+
+  // then
+  expect(screen.queryByText('Paused')).toBeNull()
+  expect(screen.getByText('Game over')).toBeTruthy()
+})
+
+test('a new game after pausing and game over is running', () => {
+  // given
+  render(<App />)
+  tick(10)
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // when
+  tick()
+
+  // then
+  expect(screen.queryByText('Paused')).toBeNull()
+  expect(head()).toBe('8,7')
+})
+
 test('Enter does nothing while the game runs', () => {
   // given
   render(<App />)
