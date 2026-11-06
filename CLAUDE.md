@@ -70,6 +70,9 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
 - `.github/workflows/feature-listener.yml` runs the implementer when a human adds a FEAT file
   to `main`. A human who writes a FEAT file first opens its issue, as the product owner does:
   the label `feature` and the title `FEAT-NNN: <title>`.
+- Every day at 10:00 UTC, `.github/workflows/design-review.yml` runs the designer
+  (`/review-design`). It plays the live game and files UI/UX bugs as issues with the label
+  `ux-bug`. The pipeline does not fix them: a human triages them.
 - Each FEAT file has one issue with the label `feature`. The issue state is the feature state.
 - Work in progress is one feature. The product owner proposes nothing while a `feature` issue
   is open.

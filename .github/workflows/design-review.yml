@@ -1,0 +1,37 @@
+name: design-review
+
+# The designer agent plays the live game on GitHub Pages and files UI/UX bugs as issues.
+on:
+  schedule:
+    # After the feature pipeline (06:00 UTC) and its Pages deploy.
+    - cron: "0 10 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: design-review
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+  id-token: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - name: Create the ux-bug label
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh label create ux-bug --color d93f0b --description "UI/UX bug found by the designer agent" --force
+      # Playwright MCP drives the Google Chrome that ubuntu-latest has. The pin is a release at least two weeks old.
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: /review-design
+          claude_args: >-
+            --max-turns 100
+            --mcp-config '{"mcpServers":{"playwright":{"command":"npx","args":["-y","@playwright/mcp@0.0.83","--headless","--isolated"]}}}'
+            --allowedTools "Read,Glob,Grep,Bash(gh issue list *),Bash(gh issue view *),Bash(gh issue create *),mcp__playwright"
