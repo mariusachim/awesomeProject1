@@ -1,9 +1,16 @@
 name: implement
 
-# Reusable: feature-factory.yml and feature-listener.yml call it.
+# Reusable: feature-factory.yml, feature-listener.yml and design-review.yml call it.
 # No concurrency group here: the callers hold "feature-pipeline", and the same group here would deadlock.
 on:
   workflow_call:
+    inputs:
+      skill:
+        type: string
+        default: /implement-feature
+      label:
+        type: string
+        default: feature
 
 permissions:
   contents: write
@@ -33,20 +40,23 @@ jobs:
           uv tool install "$crapper"
           uv tool install "git+https://github.com/unclebob/dryer@66ff6d21a42c04afcad89c78a80066176d1294b0"
           uv tool install "git+https://github.com/unclebob/mutator@a5a0cb803b66e0cdb8bf471b3b08af701d424a41" --with "$crapper"
-      # Same pick as step 1 of the implement-feature skill: the oldest open feature issue without needs-human.
-      - name: Find the feature issue
+      # Same pick as step 1 of the skill: the oldest open issue with the label and without needs-human.
+      - name: Find the issue
         id: issue
         env:
           GH_TOKEN: ${{ github.token }}
+          LABEL: ${{ inputs.label }}
         run: |
-          n=$(gh issue list --label feature --state open --json number,labels \
+          n=$(gh issue list --label "$LABEL" --state open --json number,labels \
             --jq '[.[] | select(all(.labels[]; .name != "needs-human"))] | min_by(.number) | .number // empty')
           echo "number=$n" >> "$GITHUB_OUTPUT"
+      # With no issue to work on, skip the Claude run: it costs tokens and does nothing.
       - uses: anthropics/claude-code-action@v1
         id: claude
+        if: ${{ steps.issue.outputs.number != '' }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          prompt: /implement-feature
+          prompt: ${{ inputs.skill }}
           claude_args: >-
             --max-turns 200
             --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git *),Bash(gh *),Bash(npm *),Bash(npx *),Bash(crapper *),Bash(dryer *),Bash(mutator *)"

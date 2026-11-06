@@ -71,8 +71,10 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
   to `main`. A human who writes a FEAT file first opens its issue, as the product owner does:
   the label `feature` and the title `FEAT-NNN: <title>`.
 - Every day at 10:00 UTC, `.github/workflows/design-review.yml` runs the designer
-  (`/review-design`). It plays the live game and files UI/UX bugs as issues with the label
-  `ux-bug`. The pipeline does not fix them: a human triages them.
+  (`/review-design`) and then the fixer (`/fix-ux-bug`). The designer plays the live game and
+  files the most severe UI/UX bug as an issue with the label `ux-bug`. The fixer fixes the oldest
+  open `ux-bug` issue, merges the fix and closes the issue, or closes it as not planned.
+- Work in progress is one `ux-bug` issue. The designer files nothing while one is open.
 - Each FEAT file has one issue with the label `feature`. The issue state is the feature state.
 - Work in progress is one feature. The product owner proposes nothing while a `feature` issue
   is open.
