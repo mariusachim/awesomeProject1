@@ -175,6 +175,32 @@ test('Space and P do nothing after game over', () => {
   expect(screen.getByText('Game over')).toBeTruthy()
 })
 
+// A browser clicks a focused button on Space keyup, unless keydown or keyup was cancelled.
+function pressSpaceOn(el: HTMLElement) {
+  const down = fireEvent.keyDown(el, { key: ' ' })
+  const up = fireEvent.keyUp(el, { key: ' ' })
+  if (down && up) fireEvent.click(el)
+}
+
+test('Space on a focused Pause or Resume button toggles the pause once', () => {
+  // given
+  render(<App />)
+
+  // when
+  pressSpaceOn(screen.getByRole('button', { name: 'Pause' }))
+
+  // then
+  expect(screen.getByText('Paused')).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Resume' })).toBeTruthy()
+
+  // when
+  pressSpaceOn(screen.getByRole('button', { name: 'Resume' }))
+
+  // then
+  expect(screen.queryByText('Paused')).toBeNull()
+  expect(screen.getByRole('button', { name: 'Pause' })).toBeTruthy()
+})
+
 test('a new game after pausing and game over is running', () => {
   // given
   render(<App />)
