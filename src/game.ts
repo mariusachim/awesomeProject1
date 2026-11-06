@@ -8,7 +8,7 @@ export type GameState = {
   next: Dir // direction of the coming move
   food: Cell
   score: number
-  status: 'running' | 'over'
+  status: 'running' | 'paused' | 'over'
 }
 export type Rand = () => number
 
@@ -49,11 +49,16 @@ export function newGame(rand: Rand): GameState {
 }
 
 export function turn(state: GameState, dir: Dir): GameState {
-  return dir === OPPOSITE[state.dir] ? state : { ...state, next: dir }
+  return state.status !== 'running' || dir === OPPOSITE[state.dir] ? state : { ...state, next: dir }
+}
+
+export function togglePause(state: GameState): GameState {
+  if (state.status === 'over') return state
+  return { ...state, status: state.status === 'running' ? 'paused' : 'running' }
 }
 
 export function step(state: GameState, rand: Rand): GameState {
-  if (state.status === 'over') return state
+  if (state.status !== 'running') return state
   const d = DELTA[state.next]
   const head = { x: state.snake[0].x + d.x, y: state.snake[0].y + d.y }
   const eats = same(head, state.food)

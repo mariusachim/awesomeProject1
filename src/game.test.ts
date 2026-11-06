@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, keyToDir, newGame, placeFood, step, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, placeFood, step, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -180,4 +180,41 @@ test.each([
 ] as const)('key %s maps to %s', (key, dir) => {
   // when / then
   expect(keyToDir(key)).toBe(dir)
+})
+
+test('togglePause pauses a running game and resumes a paused one', () => {
+  // given
+  const running = state({})
+
+  // when
+  const paused = togglePause(running)
+  const resumed = togglePause(paused)
+
+  // then
+  expect(paused.status).toBe('paused')
+  expect(resumed).toEqual(running)
+})
+
+test('togglePause does nothing when the game is over', () => {
+  // given
+  const over = state({ status: 'over' })
+
+  // when / then
+  expect(togglePause(over)).toBe(over)
+})
+
+test('step leaves a paused game unchanged', () => {
+  // given
+  const paused = state({ status: 'paused' })
+
+  // when / then
+  expect(step(paused, () => 0)).toBe(paused)
+})
+
+test('turn is ignored while paused', () => {
+  // given
+  const paused = state({ status: 'paused' })
+
+  // when / then
+  expect(turn(paused, 'up')).toBe(paused)
 })
