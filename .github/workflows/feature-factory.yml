@@ -1,9 +1,7 @@
 name: feature-factory
 
 on:
-  schedule:
-    # Minute 15 of the even hours UTC: GitHub delays or drops runs at minute 0. design-review runs at the odd hours.
-    - cron: "15 */2 * * *"
+  # A Claude routine dispatches this workflow at HH:15 of the even hours UTC. See CLAUDE.md.
   workflow_dispatch:
 
 concurrency:
