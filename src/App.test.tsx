@@ -200,3 +200,76 @@ test('Enter does nothing while the game runs', () => {
   // then
   expect(head()).toBe('8,7')
 })
+
+// High score: with Math.random = 0 the food sits at 0,0; the snake starts at 7,7 heading right.
+const eatFood = () => {
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+  tick(7)
+  fireEvent.keyDown(window, { key: 'ArrowLeft' })
+  tick(7)
+}
+const gameOver = () => tick(30)
+
+test('shows a high score of 0 on the first visit', () => {
+  // given
+  localStorage.clear()
+
+  // when
+  render(<App />)
+
+  // then
+  expect(screen.getByText('High score: 0')).toBeTruthy()
+})
+
+test('the high score follows the score at once and survives a restart and a reload', () => {
+  // given
+  localStorage.clear()
+  const first = render(<App />)
+
+  // when
+  eatFood()
+
+  // then
+  expect(screen.getByText('Score: 1')).toBeTruthy()
+  expect(screen.getByText('High score: 1')).toBeTruthy()
+
+  // when
+  gameOver()
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // then
+  expect(screen.getByText('Score: 0')).toBeTruthy()
+  expect(screen.getByText('High score: 1')).toBeTruthy()
+
+  // when
+  first.unmount()
+  render(<App />)
+
+  // then
+  expect(screen.getByText('High score: 1')).toBeTruthy()
+})
+
+test('a lower score does not change the high score', () => {
+  // given
+  localStorage.setItem('snake.highScore', '5')
+  render(<App />)
+
+  // when
+  eatFood()
+  gameOver()
+
+  // then
+  expect(screen.getByText('High score: 5')).toBeTruthy()
+  expect(localStorage.getItem('snake.highScore')).toBe('5')
+})
+
+test('a bad stored high score shows 0', () => {
+  // given
+  localStorage.setItem('snake.highScore', '-4')
+
+  // when
+  render(<App />)
+
+  // then
+  expect(screen.getByText('High score: 0')).toBeTruthy()
+})

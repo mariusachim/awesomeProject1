@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { loadHighScore, saveHighScore } from './highScore.ts'
 import { type GameState, SIZE, keyToDir, newGame, step, togglePause, turn } from './game.ts'
 
 const TICK_MS = 200
@@ -14,6 +15,8 @@ function onKeyPress(g: GameState, key: string): GameState {
 
 export default function App() {
   const [game, setGame] = useState(() => newGame(Math.random))
+  const [best, setBest] = useState(loadHighScore)
+  const highScore = Math.max(best, game.score)
   const over = game.status === 'over'
   const paused = game.status === 'paused'
 
@@ -21,6 +24,12 @@ export default function App() {
     const id = setInterval(() => setGame((g) => step(g, Math.random)), TICK_MS)
     return () => clearInterval(id)
   }, [])
+
+  if (highScore > best) setBest(highScore)
+
+  useEffect(() => {
+    if (best > 0) saveHighScore(best)
+  }, [best])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => setGame((g) => onKeyPress(g, e.key))
@@ -41,6 +50,7 @@ export default function App() {
     <main>
       <h1>Snake</h1>
       <p>Score: {game.score}</p>
+      <p>High score: {highScore}</p>
       {!over && (
         <button onClick={() => setGame(togglePause)}>{paused ? 'Resume' : 'Pause'}</button>
       )}
