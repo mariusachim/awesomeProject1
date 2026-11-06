@@ -1,8 +1,16 @@
 import { useEffect, useState } from 'react'
-import { SIZE, keyToDir, newGame, step, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, step, togglePause, turn } from './game.ts'
 
 const TICK_MS = 200
 const CELL_PX = 24
+
+function onKeyPress(g: GameState, key: string): GameState {
+  const dir = keyToDir(key)
+  if (dir) return turn(g, dir)
+  if (key === ' ' || key.toLowerCase() === 'p') return togglePause(g)
+  if (key === 'Enter' && g.status === 'over') return newGame(Math.random)
+  return g
+}
 
 export default function App() {
   const [game, setGame] = useState(() => newGame(Math.random))
@@ -15,12 +23,7 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const dir = keyToDir(e.key)
-      if (dir) setGame((g) => turn(g, dir))
-      else if (e.key === ' ' || e.key.toLowerCase() === 'p') setGame(togglePause)
-      else if (e.key === 'Enter') setGame((g) => (g.status === 'over' ? newGame(Math.random) : g))
-    }
+    const onKey = (e: KeyboardEvent) => setGame((g) => onKeyPress(g, e.key))
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
