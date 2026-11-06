@@ -1,6 +1,6 @@
 # Snake factory
 
-A browser snake game in React and TypeScript. Claude agents build it one feature a day:
+A browser snake game in React and TypeScript. Claude agents build it one feature at a time:
 a product-owner agent writes `docs/features/FEAT-NNN.md`, and an implementer agent builds it.
 The game is live at https://mariusachim.github.io/awesomeProject1/.
 
@@ -65,15 +65,16 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
 
 # Feature pipeline
 
-- Every day at 06:00 UTC, `.github/workflows/feature-factory.yml` runs the product owner
-  (`/propose-feature`) and then the implementer (`/implement-feature`).
+- Every 2 hours at the even hours UTC (00:00, 02:00, ...), `.github/workflows/feature-factory.yml`
+  runs the product owner (`/propose-feature`) and then the implementer (`/implement-feature`).
 - `.github/workflows/feature-listener.yml` runs the implementer when a human adds a FEAT file
   to `main`. A human who writes a FEAT file first opens its issue, as the product owner does:
   the label `feature` and the title `FEAT-NNN: <title>`.
-- Every day at 10:00 UTC, `.github/workflows/design-review.yml` runs the designer
-  (`/review-design`) and then the fixer (`/fix-ux-bug`). The designer plays the live game and
-  files the most severe UI/UX bug as an issue with the label `ux-bug`. The fixer fixes the oldest
-  open `ux-bug` issue, merges the fix and closes the issue, or closes it as not planned.
+- Every 2 hours at the odd hours UTC (01:00, 03:00, ...), `.github/workflows/design-review.yml`
+  runs the designer (`/review-design`) and then the fixer (`/fix-ux-bug`). The designer plays
+  the live game and files the most severe UI/UX bug as an issue with the label `ux-bug`. The fixer
+  fixes the oldest open `ux-bug` issue, merges the fix and closes the issue, or closes it as
+  not planned.
 - Work in progress is one `ux-bug` issue. The designer files nothing while one is open.
 - Each FEAT file has one issue with the label `feature`. The issue state is the feature state.
 - Work in progress is one feature. The product owner proposes nothing while a `feature` issue

@@ -3,8 +3,8 @@ name: design-review
 # The designer agent plays the live game on GitHub Pages and files UI/UX bugs as issues.
 on:
   schedule:
-    # After the feature pipeline (06:00 UTC) and its Pages deploy.
-    - cron: "0 10 * * *"
+    # Odd hours UTC, one hour after each feature-factory run.
+    - cron: "0 1-23/2 * * *"
   workflow_dispatch:
 
 concurrency:
