@@ -2,9 +2,7 @@ name: design-review
 
 # The designer agent plays the live game on GitHub Pages and files UI/UX bugs as issues.
 on:
-  schedule:
-    # Odd hours UTC, one hour after each feature-factory run.
-    - cron: "15 1-23/2 * * *"
+  # A Claude routine dispatches this workflow at HH:15 of the odd hours UTC. See CLAUDE.md.
   workflow_dispatch:
 
 concurrency:

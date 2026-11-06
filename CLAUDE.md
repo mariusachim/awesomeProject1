@@ -65,13 +65,21 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
 
 # Feature pipeline
 
-- Every 2 hours at the even hours UTC (00:15, 02:15, ...), `.github/workflows/feature-factory.yml`
-  runs the product owner (`/propose-feature`) and then the implementer (`/implement-feature`).
+- The GitHub scheduler does not start runs in this repo. Two Claude cloud routines start the
+  pipelines with `gh workflow run`. Manage them at https://claude.ai/code/routines.
+  - `Trigger feature-factory (snake factory)` (`trig_01Xbwcht7KFZKmwuWWCf9HrP`): `15 */2 * * *`.
+  - `Trigger design-review (snake factory)` (`trig_01GnYp3KWb5Vjg1RMk7aNN7L`): `15 1-23/2 * * *`.
+- Do not add a `schedule` trigger to these workflows. The routines already start them, and a
+  second trigger starts each run twice.
+- Every 2 hours at the even hours UTC (00:15, 02:15, ...), a routine starts
+  `.github/workflows/feature-factory.yml`. It runs the product owner (`/propose-feature`) and
+  then the implementer (`/implement-feature`).
 - `.github/workflows/feature-listener.yml` runs the implementer when a human adds a FEAT file
   to `main`. A human who writes a FEAT file first opens its issue, as the product owner does:
   the label `feature` and the title `FEAT-NNN: <title>`.
-- Every 2 hours at the odd hours UTC (01:15, 03:15, ...), `.github/workflows/design-review.yml`
-  runs the designer (`/review-design`) and then the fixer (`/fix-ux-bug`). The designer plays
+- Every 2 hours at the odd hours UTC (01:15, 03:15, ...), a routine starts
+  `.github/workflows/design-review.yml`. It runs the designer (`/review-design`) and then the
+  fixer (`/fix-ux-bug`). The designer plays
   the live game and files the most severe UI/UX bug as an issue with the label `ux-bug`. The fixer
   fixes the oldest open `ux-bug` issue, merges the fix and closes the issue, or closes it as
   not planned.
