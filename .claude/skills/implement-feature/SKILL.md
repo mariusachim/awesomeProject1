@@ -42,7 +42,7 @@ It posts the WBS as a comment on the issue.
 
 ## 5. Merge
 
-- Run `gh pr checks <pr> --watch`.
+- Run `gh pr checks <pr> --required --watch`.
 - If a check fails, read its log with `gh run view <run> --log-failed`, fix the cause, push,
   and watch again. After 3 failed rounds, stop: comment on the issue with the reason, add the
   label `needs-human`, and do not merge.
