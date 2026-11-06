@@ -33,10 +33,35 @@ jobs:
           uv tool install "$crapper"
           uv tool install "git+https://github.com/unclebob/dryer@66ff6d21a42c04afcad89c78a80066176d1294b0"
           uv tool install "git+https://github.com/unclebob/mutator@a5a0cb803b66e0cdb8bf471b3b08af701d424a41" --with "$crapper"
+      # Same pick as step 1 of the implement-feature skill: the oldest open feature issue without needs-human.
+      - name: Find the feature issue
+        id: issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(gh issue list --label feature --state open --json number,labels \
+            --jq '[.[] | select(all(.labels[]; .name != "needs-human"))] | min_by(.number) | .number // empty')
+          echo "number=$n" >> "$GITHUB_OUTPUT"
       - uses: anthropics/claude-code-action@v1
+        id: claude
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: /implement-feature
           claude_args: >-
             --max-turns 200
             --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git *),Bash(gh *),Bash(npm *),Bash(npx *),Bash(crapper *),Bash(dryer *),Bash(mutator *)"
+      # total_cost_usd is the number that /cost shows: tokens at API list prices, subagents included.
+      # It runs also when the implementer fails, because that run costs money too.
+      - name: Post the token cost on the issue
+        if: ${{ !cancelled() && steps.issue.outputs.number != '' && steps.claude.outputs.execution_file != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ steps.issue.outputs.number }}
+          RESULT: ${{ steps.claude.outputs.execution_file }}
+        run: |
+          cost=$(jq '[.[] | select(.type == "result")][-1].total_cost_usd // empty' "$RESULT")
+          [ -n "$cost" ] || exit 0
+          # modelUsage has one key per model of the run, subagents included.
+          models=$(jq -r '[.[] | select(.type == "result")][-1].modelUsage // {} | keys | join(", ")' "$RESULT")
+          # shortcut: the subscription line assumes claude_code_oauth_token above; change it if the job moves to an API key.
+          gh issue comment "$ISSUE" --body "$(printf 'Paid by the Claude subscription.\nToken cost equivalent of the implementer run: $%.2f\nModel: %s' "$cost" "${models:-unknown}")"
