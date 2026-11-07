@@ -166,7 +166,7 @@ export default function App() {
         )}
         {cell(game.food.x, game.food.y, 'food', FOOD_LOOK, 'pulse')}
         {(paused || over) && (
-          // The label is drawn by CSS from data-label, so the text below the board is the only spoken copy.
+          // The label is drawn by CSS from data-label, so the sr-only status below the board is the only spoken copy.
           <div data-testid="board-overlay" className="board-overlay" data-label={over ? 'Game over' : 'Paused'} aria-hidden="true" />
         )}
       </div>
@@ -177,7 +177,11 @@ export default function App() {
             <span className="hint-touch">Swipe on the board to start</span>
           </p>
         )}
-        {paused && <p role="status">Paused</p>}
+        {paused && (
+          <p role="status" className="sr-only">
+            Paused
+          </p>
+        )}
         {over && (
           <div role="alert">
             <p>Game over</p>

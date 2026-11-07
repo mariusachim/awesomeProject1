@@ -1,4 +1,16 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+main {
+  width: fit-content;
+  margin: 0 auto;
+  padding: 16px 8px;
+}
+
 button {
+  font-family: inherit;
   min-width: 44px;
   min-height: 44px;
   padding: 10px 20px;

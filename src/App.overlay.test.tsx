@@ -64,3 +64,17 @@ test('the overlay is hidden from screen readers and does not repeat the text', (
   expect(overlay()?.getAttribute('aria-hidden')).toBe('true')
   expect(screen.getAllByText('Paused')).toHaveLength(1)
 })
+
+test('while paused the status text is only spoken, so Paused is visible once, on the board', () => {
+  // given
+  render(<App />)
+  key('ArrowRight')
+
+  // when
+  key('p')
+
+  // then
+  const status = screen.getByRole('status')
+  expect(status.textContent).toBe('Paused')
+  expect(status.className).toContain('sr-only')
+})
