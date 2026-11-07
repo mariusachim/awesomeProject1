@@ -6,6 +6,10 @@ button {
   cursor: pointer;
 }
 
+.pause {
+  min-width: 7rem;
+}
+
 .controls {
   display: flex;
   gap: 12px;
