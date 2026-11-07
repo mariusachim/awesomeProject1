@@ -4,7 +4,7 @@ import { type GameState, SIZE, keyToDir, newGame, placeFood, step, tickMs, toggl
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
   dir: 'right',
-  next: 'right',
+  queue: [],
   food: { x: 10, y: 10 },
   score: 0,
   status: 'running',
@@ -79,25 +79,75 @@ test.each([
   ['down', 'up'],
 ] as const)('moving %s ignores a turn to %s', (dir, back) => {
   // given
-  const game = state({ dir, next: dir })
+  const game = state({ dir })
 
   // when
   const next = turn(game, back)
 
   // then
-  expect(next.next).toBe(dir)
+  expect(next.queue).toEqual([])
 })
 
-test('two quick turns cannot reverse the snake', () => {
+test('two quick turns both happen, one per move', () => {
   // given
   const game = state({})
 
   // when
-  const next = turn(turn(game, 'up'), 'left')
+  const first = step(turn(turn(game, 'up'), 'left'), () => 0)
+  const second = step(first, () => 0)
 
   // then
-  expect(next.next).toBe('up')
-  expect(step(next, () => 0).snake[0]).toEqual({ x: 5, y: 4 })
+  expect(first.snake[0]).toEqual({ x: 5, y: 4 })
+  expect(second.snake[0]).toEqual({ x: 4, y: 4 })
+})
+
+test('a turn back into the buffered turn is ignored', () => {
+  // given
+  const game = state({})
+
+  // when
+  const next = turn(turn(game, 'up'), 'down')
+
+  // then
+  expect(next.queue).toEqual(['up'])
+})
+
+test('a third quick turn is dropped', () => {
+  // given
+  const game = state({})
+
+  // when
+  const next = turn(turn(turn(game, 'up'), 'left'), 'down')
+
+  // then
+  expect(next.queue).toEqual(['up', 'left'])
+})
+
+test('repeating the buffered direction does not fill the buffer', () => {
+  // given
+  const game = state({})
+
+  // when
+  const next = turn(turn(game, 'up'), 'up')
+
+  // then
+  expect(next.queue).toEqual(['up'])
+})
+
+test('turns while paused are not buffered', () => {
+  // given
+  const game = state({ status: 'paused' })
+
+  // when
+  const next = turn(game, 'up')
+
+  // then
+  expect(next.queue).toEqual([])
+})
+
+test('a new game starts with an empty buffer', () => {
+  // when / then
+  expect(newGame(() => 0).queue).toEqual([])
 })
 
 test('eating grows the snake, adds 1 point and moves the food', () => {
@@ -121,7 +171,7 @@ test.each([
   ['down', { x: 5, y: SIZE - 1 }],
 ] as const)('hitting the wall moving %s ends the game', (dir, head) => {
   // given
-  const game = state({ snake: [head, { x: 8, y: 8 }], dir, next: dir })
+  const game = state({ snake: [head, { x: 8, y: 8 }], dir })
 
   // when
   const next = step(game, () => 0)
@@ -135,7 +185,7 @@ test('hitting the own body ends the game', () => {
   const game = state({
     snake: [{ x: 5, y: 5 }, { x: 5, y: 6 }, { x: 4, y: 6 }, { x: 4, y: 5 }, { x: 4, y: 4 }],
     dir: 'up',
-    next: 'left',
+    queue: ['left'],
   })
 
   // when
@@ -150,7 +200,7 @@ test('the tail cell is free for the head in the same move', () => {
   const game = state({
     snake: [{ x: 5, y: 5 }, { x: 5, y: 6 }, { x: 4, y: 6 }, { x: 4, y: 5 }],
     dir: 'up',
-    next: 'left',
+    queue: ['left'],
   })
 
   // when
