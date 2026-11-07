@@ -79,11 +79,12 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
   run builds it.
 - Every 2 hours at the odd hours UTC (01:15, 03:15, ...), a routine starts
   `.github/workflows/design-review.yml`. It runs the designer (`/review-design`) and then the
-  fixer (`/fix-ux-bug`). The designer plays
-  the live game and files the most severe UI/UX bug as an issue with the label `ux-bug`. The fixer
-  fixes the oldest open `ux-bug` issue, merges the fix and closes the issue, or closes it as
-  not planned.
-- Work in progress is one `ux-bug` issue. The designer files nothing while one is open.
+  UX developer (`/improve-ux`). The designer plays the live game, looks for what makes it more
+  pleasant for the player, and files one UI/UX improvement as an issue with the label
+  `ux-improvement`. A broken behaviour comes first. The UX developer builds the oldest open
+  `ux-improvement` issue, merges it and closes the issue, or closes it as not planned.
+- Work in progress is one `ux-improvement` issue. The designer files nothing while one is open.
+- The label `ux-bug` is the old label of the design review. Its issues are history.
 - Each FEAT file has one issue with the label `feature`. The issue state is the feature state.
 - Work in progress is one feature. The product owner proposes nothing while a `feature` issue
   is open.
