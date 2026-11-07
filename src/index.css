@@ -26,7 +26,35 @@ button {
   border-radius: 4px;
 }
 
+/* Dim layer over the cells; #fff on rgba(0,0,0,0.7) over #222 is well above 4.5:1. */
+.board-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+
+.board-overlay::after {
+  content: attr(data-label);
+  color: #fff;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  .board-overlay {
+    animation: fade-in 150ms ease-out;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
   .pulse {
     animation: pulse 150ms ease-out;
   }

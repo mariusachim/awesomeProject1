@@ -156,6 +156,7 @@ export default function App() {
       </div>
       <div
         className="board"
+        data-testid="board"
         style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222', touchAction: 'none' }}
         onTouchStart={onSwipeStart}
         onTouchEnd={onSwipeEnd}
@@ -164,6 +165,10 @@ export default function App() {
           i === 0 ? cell(c.x, c.y, 'head', HEAD_LOOK) : cell(c.x, c.y, 'snake', BODY_LOOK),
         )}
         {cell(game.food.x, game.food.y, 'food', FOOD_LOOK, 'pulse')}
+        {(paused || over) && (
+          // The label is drawn by CSS from data-label, so the text below the board is the only spoken copy.
+          <div data-testid="board-overlay" className="board-overlay" data-label={over ? 'Game over' : 'Paused'} aria-hidden="true" />
+        )}
       </div>
       <div className="messages">
         {ready && (
