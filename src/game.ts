@@ -37,6 +37,15 @@ export const tickMs = (score: number) => Math.max(80, 200 - 10 * score)
 
 export const keyToDir = (key: string): Dir | undefined => KEYS[key.toLowerCase()]
 
+export const SWIPE_MIN_PX = 30
+
+// A finger move is a swipe when it is long enough; the longer axis gives the direction.
+export function swipeDir(dx: number, dy: number): Dir | undefined {
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_MIN_PX) return undefined
+  if (Math.abs(dx) >= Math.abs(dy)) return dx > 0 ? 'right' : 'left'
+  return dy > 0 ? 'down' : 'up'
+}
+
 export function placeFood(snake: Cell[], rand: Rand): Cell {
   const free: Cell[] = []
   for (let y = 0; y < SIZE; y++) {
