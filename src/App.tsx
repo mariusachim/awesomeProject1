@@ -1,7 +1,7 @@
 import { type CSSProperties, type KeyboardEvent as ReactKeyEvent, type TouchEvent, useEffect, useRef, useState } from 'react'
 import { isNewHighScore, loadHighScore, saveHighScore } from './highScore.ts'
 import { loadMuted, play, saveMuted } from './sound.ts'
-import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, step, swipeDir, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, speedLevel, step, swipeDir, tickMs, togglePause, turn } from './game.ts'
 
 const CELL_PX = 24
 // Shape and outline tell the cells apart without colour: round food, outlined head, inset body.
@@ -121,6 +121,7 @@ export default function App() {
     <main>
       <h1>Snake</h1>
       <p>Score: {game.score}</p>
+      <p>Speed {speedLevel(game.score)}</p>
       <p>High score: {highScore}</p>
       <div className="controls">
         <button className="pause" disabled={over || ready} onClick={() => setGame(togglePause)}>

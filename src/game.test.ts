@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, placeFood, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -330,6 +330,16 @@ test('tickMs starts at 200 ms and drops 10 ms per point', () => {
 test('tickMs never falls below 80 ms', () => {
   // when / then
   expect([12, 13, 100].map(tickMs)).toEqual([80, 80, 80])
+})
+
+test('speedLevel counts one per point, starting at 1', () => {
+  // when / then
+  expect([0, 1, 3, 11].map(speedLevel)).toEqual([1, 2, 4, 12])
+})
+
+test('speedLevel is MAX once the move interval is at its shortest', () => {
+  // when / then
+  expect([12, 13, 100].map(speedLevel)).toEqual(['MAX', 'MAX', 'MAX'])
 })
 
 test('new game is solid by default and keeps the wrap mode it is given', () => {
