@@ -1,7 +1,7 @@
-import { type CSSProperties, type KeyboardEvent as ReactKeyEvent, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, type KeyboardEvent as ReactKeyEvent, type TouchEvent, useEffect, useRef, useState } from 'react'
 import { isNewHighScore, loadHighScore, saveHighScore } from './highScore.ts'
 import { loadMuted, play, saveMuted } from './sound.ts'
-import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, step, swipeDir, tickMs, togglePause, turn } from './game.ts'
 
 const CELL_PX = 24
 // Shape and outline tell the cells apart without colour: round food, outlined head, inset body.
@@ -93,6 +93,20 @@ export default function App() {
   }
   const toggleMute = () => setMuted((m) => !m)
 
+  const swipeFrom = useRef<{ x: number; y: number } | null>(null)
+  const onSwipeStart = (e: TouchEvent<HTMLDivElement>) => {
+    const t = e.changedTouches[0]
+    swipeFrom.current = { x: t.clientX, y: t.clientY }
+  }
+  const onSwipeEnd = (e: TouchEvent<HTMLDivElement>) => {
+    const from = swipeFrom.current
+    swipeFrom.current = null
+    if (!from) return
+    const t = e.changedTouches[0]
+    const dir = swipeDir(t.clientX - from.x, t.clientY - from.y)
+    if (dir) setGame((g) => turn(g, dir))
+  }
+
   const cell = (x: number, y: number, id: string, look: CSSProperties, className?: string) => (
     <div
       key={`${id}${x},${y}`}
@@ -119,7 +133,12 @@ export default function App() {
           {muted ? 'Unmute' : 'Mute'}
         </button>
       </div>
-      <div className="board" style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222' }}>
+      <div
+        className="board"
+        style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222', touchAction: 'none' }}
+        onTouchStart={onSwipeStart}
+        onTouchEnd={onSwipeEnd}
+      >
         {game.snake.map((c, i) =>
           i === 0 ? cell(c.x, c.y, 'head', HEAD_LOOK) : cell(c.x, c.y, 'snake', BODY_LOOK),
         )}
