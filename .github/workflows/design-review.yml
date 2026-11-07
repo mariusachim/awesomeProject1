@@ -1,6 +1,7 @@
 name: design-review
 
-# The designer agent plays the live game on GitHub Pages and files UI/UX bugs as issues.
+# The designer agent plays the live game on GitHub Pages and files one UI/UX improvement as an issue.
+# Then the UX developer agent builds it.
 on:
   # A Claude routine dispatches this workflow at HH:15 of the odd hours UTC. See CLAUDE.md.
   workflow_dispatch:
@@ -20,10 +21,10 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
-      - name: Create the ux-bug label
+      - name: Create the ux-improvement label
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh label create ux-bug --color d93f0b --description "UI/UX bug found by the designer agent" --force
+        run: gh label create ux-improvement --color 0e8a16 --description "UI/UX improvement proposed by the designer agent" --force
       # Playwright MCP drives the Google Chrome that ubuntu-latest has. The pin is a release at least two weeks old.
       - uses: anthropics/claude-code-action@v1
         with:
@@ -34,9 +35,9 @@ jobs:
             --mcp-config '{"mcpServers":{"playwright":{"command":"npx","args":["-y","@playwright/mcp@0.0.83","--headless","--isolated"]}}}'
             --allowedTools "Read,Glob,Grep,Bash(gh issue list *),Bash(gh issue view *),Bash(gh issue create *),mcp__playwright"
 
-  fix:
+  improve:
     needs: review
-    # The fixer changes code and merges to main, so it waits for the feature pipeline.
+    # The UX developer changes code and merges to main, so it waits for the feature pipeline.
     concurrency:
       group: feature-pipeline
       cancel-in-progress: false
@@ -48,6 +49,6 @@ jobs:
       actions: read
     uses: ./.github/workflows/implement.yml
     with:
-      skill: /fix-ux-bug
-      label: ux-bug
+      skill: /improve-ux
+      label: ux-improvement
     secrets: inherit
