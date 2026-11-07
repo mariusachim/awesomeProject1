@@ -809,3 +809,23 @@ test('a second game that only ties the new record shows no message', () => {
   // then
   expect(screen.queryByText(NEW_BEST)).toBeNull()
 })
+
+test('the 5th food brings a bonus food with a screen reader label, a diamond shape and a gold colour', () => {
+  // given: each food sits right in front of the snake, on row 7, and the bonus food falls on 0,0
+  const rand = vi.spyOn(Math, 'random')
+  rand.mockReturnValueOnce(111.5 / 222)
+  for (const free of [221, 220, 219, 218, 217]) rand.mockReturnValueOnce(111.5 / free)
+  renderReady(<App />)
+  startKey()
+  expect(screen.queryByTestId('bonus')).toBeNull()
+
+  // when
+  for (let i = 0; i < 12 && !screen.queryByTestId('bonus'); i++) tick()
+
+  // then
+  expect(screen.getByText('Score: 5')).toBeTruthy()
+  const bonus = screen.getByRole('img', { name: 'Bonus food' })
+  expect(bonus).toBe(screen.getByTestId('bonus'))
+  expect(bonus.style.clipPath).toContain('polygon')
+  expect(bonus.style.background).not.toBe(screen.getByTestId('food').style.background)
+})

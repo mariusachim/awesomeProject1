@@ -9,6 +9,8 @@ const CELL_PX = 24
 const HEAD_LOOK: CSSProperties = { background: '#7e7', outline: '2px solid #efe', outlineOffset: -2, boxSizing: 'border-box' }
 const BODY_LOOK: CSSProperties = { background: '#2a2', boxSizing: 'border-box', border: '2px solid #222' }
 const FOOD_LOOK: CSSProperties = { background: '#e44', borderRadius: '50%' }
+// The bonus food is a gold diamond, so it differs from the round red food by shape and colour.
+const BONUS_LOOK: CSSProperties = { background: '#fc3', clipPath: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)' }
 
 function onKeyPress(g: GameState, key: string): GameState {
   const dir = keyToDir(key)
@@ -125,10 +127,12 @@ export default function App() {
     if (dir) setGame((g) => turn(g, dir))
   }
 
-  const cell = (x: number, y: number, id: string, look: CSSProperties, className?: string) => (
+  const cell = (x: number, y: number, id: string, look: CSSProperties, className?: string, label?: string) => (
     <div
       key={`${id}${x},${y}`}
       data-testid={id}
+      role={label ? 'img' : undefined}
+      aria-label={label}
       data-pos={`${x},${y}`}
       className={className}
       style={{ position: 'absolute', left: x * CELL_PX, top: y * CELL_PX, width: CELL_PX, height: CELL_PX, ...look }}
@@ -165,6 +169,7 @@ export default function App() {
           i === 0 ? cell(c.x, c.y, 'head', HEAD_LOOK) : cell(c.x, c.y, 'snake', BODY_LOOK),
         )}
         {cell(game.food.x, game.food.y, 'food', FOOD_LOOK, 'pulse')}
+        {game.bonus && cell(game.bonus.cell.x, game.bonus.cell.y, 'bonus', BONUS_LOOK, 'pulse', 'Bonus food')}
         {(paused || over) && (
           // The label is drawn by CSS from data-label, so the sr-only status below the board is the only spoken copy.
           <div data-testid="board-overlay" className="board-overlay" data-label={over ? 'Game over' : 'Paused'} aria-hidden="true" />
