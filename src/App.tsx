@@ -64,15 +64,17 @@ export default function App() {
   }, [])
 
   const toggleWalls = () => setGame(newGame(Math.random, !game.wrap, 'ready'))
-  // Space and Enter belong to this button: keep the window handler from pausing or restarting.
-  const onModeKey = (e: ReactKeyEvent<HTMLButtonElement>) => {
+  // Space and Enter belong to a focused button: keep the window handler from pausing or restarting.
+  // Enter clicks the button itself; Space is cancelled by the window handler, so run the action here.
+  const ownKeys = (action: () => void) => (e: ReactKeyEvent<HTMLButtonElement>) => {
     if (e.key !== ' ' && e.key !== 'Enter') return
     e.stopPropagation()
     if (e.key === ' ') {
       e.preventDefault()
-      toggleWalls()
+      action()
     }
   }
+  const toggleMute = () => setMuted((m) => !m)
 
   const cell = (x: number, y: number, color: string, id: string) => (
     <div
@@ -92,10 +94,12 @@ export default function App() {
         <button className="pause" disabled={over || ready} onClick={() => setGame(togglePause)}>
           {paused ? 'Resume' : 'Pause'}
         </button>
-        <button onClick={toggleWalls} onKeyDown={onModeKey}>
+        <button onClick={toggleWalls} onKeyDown={ownKeys(toggleWalls)}>
           Walls: {game.wrap ? 'wrap' : 'solid'}
         </button>
-        <button onClick={() => setMuted((m) => !m)}>{muted ? 'Unmute' : 'Mute'}</button>
+        <button onClick={toggleMute} onKeyDown={ownKeys(toggleMute)}>
+          {muted ? 'Unmute' : 'Mute'}
+        </button>
       </div>
       <div style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222' }}>
         {game.snake.map((c, i) =>
