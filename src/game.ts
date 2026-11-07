@@ -33,7 +33,17 @@ const same = (a: Cell, b: Cell) => a.x === b.x && a.y === b.y
 
 const outside = (c: Cell) => c.x < 0 || c.y < 0 || c.x >= SIZE || c.y >= SIZE
 
-export const tickMs = (score: number) => Math.max(80, 200 - 10 * score)
+const MIN_TICK_MS = 80
+const TICK_START_MS = 200
+const TICK_STEP_MS = 10
+
+export const tickMs = (score: number) => Math.max(MIN_TICK_MS, TICK_START_MS - TICK_STEP_MS * score)
+
+// The level rises with each shorter interval, and reads MAX at the shortest one.
+export const speedLevel = (score: number): number | 'MAX' => {
+  const ms = tickMs(score)
+  return ms === MIN_TICK_MS ? 'MAX' : (TICK_START_MS - ms) / TICK_STEP_MS + 1
+}
 
 export const keyToDir = (key: string): Dir | undefined => KEYS[key.toLowerCase()]
 

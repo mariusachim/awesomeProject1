@@ -749,6 +749,36 @@ test('Space on the focused Mute button does not pause a running game', () => {
   expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
 })
 
+test('the speed level shows before the first key and follows the score', () => {
+  // given
+  localStorage.clear()
+  renderReady(<App />)
+
+  // then
+  expect(screen.getByText('Speed 1')).toBeTruthy()
+
+  // when
+  startKey()
+  eatFood()
+
+  // then
+  expect(screen.getByText('Speed 2')).toBeTruthy()
+})
+
+test('the speed level goes back to 1 on restart', () => {
+  // given
+  localStorage.clear()
+  render(<App />)
+  eatFood()
+  gameOver()
+
+  // when
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // then
+  expect(screen.getByText('Speed 1')).toBeTruthy()
+})
+
 test('a second game that only ties the new record shows no message', () => {
   // given
   localStorage.clear()
