@@ -1,4 +1,4 @@
-import { act, fireEvent, render as renderReady, screen } from '@testing-library/react'
+import { act, fireEvent, render as renderReady, screen, within } from '@testing-library/react'
 import type { ReactElement } from 'react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import App from './App.tsx'
@@ -763,6 +763,20 @@ test('the speed level shows before the first key and follows the score', () => {
 
   // then
   expect(screen.getByText('Speed 2')).toBeTruthy()
+})
+
+test('the score, the speed and the high score sit in one labelled stats group', () => {
+  // given
+  localStorage.clear()
+
+  // when
+  renderReady(<App />)
+
+  // then
+  const stats = within(screen.getByRole('group', { name: 'Game stats' }))
+  expect(stats.getByText('Score: 0')).toBeTruthy()
+  expect(stats.getByText('Speed 1')).toBeTruthy()
+  expect(stats.getByText('High score: 0')).toBeTruthy()
 })
 
 test('the speed level goes back to 1 on restart', () => {
