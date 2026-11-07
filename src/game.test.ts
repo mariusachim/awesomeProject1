@@ -8,6 +8,7 @@ const state = (over: Partial<GameState>): GameState => ({
   food: { x: 10, y: 10 },
   score: 0,
   status: 'running',
+  wrap: false,
   ...over,
 })
 
@@ -277,4 +278,50 @@ test('tickMs starts at 200 ms and drops 10 ms per point', () => {
 test('tickMs never falls below 80 ms', () => {
   // when / then
   expect([12, 13, 100].map(tickMs)).toEqual([80, 80, 80])
+})
+
+test('new game is solid by default and keeps the wrap mode it is given', () => {
+  // when / then
+  expect(newGame(() => 0).wrap).toBe(false)
+  expect(newGame(() => 0, true).wrap).toBe(true)
+})
+
+test('solid walls end the game', () => {
+  // given
+  const game = state({ snake: [{ x: SIZE - 1, y: 5 }, { x: SIZE - 2, y: 5 }], dir: 'right' })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.status).toBe('over')
+})
+
+test.each([
+  ['right', { x: SIZE - 1, y: 4 }, { x: 0, y: 4 }],
+  ['left', { x: 0, y: 4 }, { x: SIZE - 1, y: 4 }],
+  ['up', { x: 4, y: 0 }, { x: 4, y: SIZE - 1 }],
+  ['down', { x: 4, y: SIZE - 1 }, { x: 4, y: 0 }],
+] as const)('wrap mode: moving %s across the edge comes out on the other side', (dir, from, to) => {
+  // given
+  const game = state({ wrap: true, dir, snake: [from], food: { x: 9, y: 9 } })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.status).toBe('running')
+  expect(next.snake[0]).toEqual(to)
+})
+
+test('wrap mode: moving into the own body ends the game', () => {
+  // given
+  const snake = [{ x: 5, y: 5 }, { x: 5, y: 6 }, { x: 6, y: 6 }, { x: 6, y: 5 }, { x: 6, y: 4 }]
+  const game = state({ wrap: true, snake, dir: 'up', queue: ['right'] })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.status).toBe('over')
 })

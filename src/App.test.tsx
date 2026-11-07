@@ -360,3 +360,91 @@ test('a bad stored high score shows 0', () => {
   // then
   expect(screen.getByText('High score: 0')).toBeTruthy()
 })
+
+const modeButton = (label: string) => screen.getByRole('button', { name: `Walls: ${label}` })
+
+test('the default mode is solid and a wall ends the game', () => {
+  // given
+  render(<App />)
+
+  // when
+  tick(8)
+
+  // then
+  expect(modeButton('solid')).toBeTruthy()
+  expect(screen.getByText('Game over')).toBeTruthy()
+})
+
+test('the mode button switches to wrap, starts a new game and wraps at the wall', () => {
+  // given
+  render(<App />)
+  tick(3)
+
+  // when
+  fireEvent.click(modeButton('solid'))
+
+  // then
+  expect(modeButton('wrap')).toBeTruthy()
+  expect(screen.getByText('Score: 0')).toBeTruthy()
+  expect(head()).toBe('7,7')
+
+  // when
+  tick(8)
+
+  // then
+  expect(head()).toBe('0,7')
+  expect(screen.queryByText('Game over')).toBeNull()
+})
+
+test('the mode button switches back to solid', () => {
+  // given
+  render(<App />)
+  fireEvent.click(modeButton('solid'))
+
+  // when
+  fireEvent.click(modeButton('wrap'))
+
+  // then
+  expect(modeButton('solid')).toBeTruthy()
+})
+
+test('Space and Enter on the focused mode button toggle the mode once without pausing', () => {
+  // given
+  render(<App />)
+
+  // when
+  pressSpaceOn(modeButton('solid'))
+
+  // then
+  expect(modeButton('wrap')).toBeTruthy()
+  expect(screen.queryByText('Paused')).toBeNull()
+
+  // when
+  fireEvent.keyDown(modeButton('wrap'), { key: 'Enter' })
+  fireEvent.click(modeButton('wrap'))
+
+  // then
+  expect(modeButton('solid')).toBeTruthy()
+})
+
+test('restart keeps the chosen mode', () => {
+  // given: in wrap mode the snake eats two foods in a row, then bites itself
+  const rand = vi.spyOn(Math, 'random')
+  render(<App />)
+  rand.mockReturnValueOnce(110.5 / 222)
+  fireEvent.click(modeButton('solid'))
+  rand.mockReturnValueOnce(110.5 / 221)
+  tick(2)
+  expect(screen.getByText('Score: 2')).toBeTruthy()
+  for (const key of ['ArrowUp', 'ArrowLeft', 'ArrowDown']) {
+    fireEvent.keyDown(window, { key })
+    tick()
+  }
+  expect(screen.getByText('Game over')).toBeTruthy()
+
+  // when
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // then
+  expect(modeButton('wrap')).toBeTruthy()
+})
