@@ -74,9 +74,9 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
 - Every 2 hours at the even hours UTC (00:15, 02:15, ...), a routine starts
   `.github/workflows/feature-factory.yml`. It runs the product owner (`/propose-feature`) and
   then the implementer (`/implement-feature`).
-- `.github/workflows/feature-listener.yml` runs the implementer when a human adds a FEAT file
-  to `main`. A human who writes a FEAT file first opens its issue, as the product owner does:
-  the label `feature` and the title `FEAT-NNN: <title>`.
+- A human can also add a FEAT file to `main`. The human first opens its issue, as the product
+  owner does: the label `feature` and the title `FEAT-NNN: <title>`. The next feature-factory
+  run builds it.
 - Every 2 hours at the odd hours UTC (01:15, 03:15, ...), a routine starts
   `.github/workflows/design-review.yml`. It runs the designer (`/review-design`) and then the
   fixer (`/fix-ux-bug`). The designer plays

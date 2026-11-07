@@ -1,6 +1,6 @@
 name: implement
 
-# Reusable: feature-factory.yml, feature-listener.yml and design-review.yml call it.
+# Reusable: feature-factory.yml and design-review.yml call it.
 # No concurrency group here: the callers hold "feature-pipeline", and the same group here would deadlock.
 on:
   workflow_call:
