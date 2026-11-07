@@ -1,6 +1,16 @@
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render as renderReady, screen } from '@testing-library/react'
+import type { ReactElement } from 'react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import App from './App.tsx'
+
+// A new page waits for the first key. `render` presses a key that keeps the heading, so the
+// game runs; `renderReady` shows the page as the player first sees it.
+const startKey = () => fireEvent.keyDown(window, { key: 'ArrowRight' })
+const render = (ui: ReactElement) => {
+  const view = renderReady(ui)
+  startKey()
+  return view
+}
 
 beforeEach(() => {
   vi.useFakeTimers()
@@ -401,6 +411,7 @@ test('the mode button switches to wrap, starts a new game and wraps at the wall'
   expect(head()).toBe('7,7')
 
   // when
+  startKey()
   tick(8)
 
   // then
@@ -445,6 +456,7 @@ test('restart keeps the chosen mode', () => {
   render(<App />)
   rand.mockReturnValueOnce(110.5 / 222)
   fireEvent.click(modeButton('solid'))
+  startKey()
   rand.mockReturnValueOnce(110.5 / 221)
   tick(2)
   expect(screen.getByText('Score: 2')).toBeTruthy()
@@ -459,4 +471,76 @@ test('restart keeps the chosen mode', () => {
 
   // then
   expect(modeButton('wrap')).toBeTruthy()
+})
+
+test('a new page shows the board and a start message, and the snake waits', () => {
+  // given
+  renderReady(<App />)
+
+  // when
+  tick(5)
+
+  // then
+  expect(screen.getByText('Press an arrow key or WASD to start')).toBeTruthy()
+  expect(screen.getAllByTestId('head').length + screen.getAllByTestId('snake').length).toBe(3)
+  expect(screen.getAllByTestId('food').length).toBe(1)
+  expect(head()).toBe('7,7')
+  expect(screen.getByText('Score: 0')).toBeTruthy()
+})
+
+test.each([
+  ['ArrowUp', '7,6'],
+  ['d', '8,7'],
+  ['ArrowLeft', '8,7'],
+])('key %s starts a ready game, hides the message and moves on the next tick', (key, pos) => {
+  // given
+  renderReady(<App />)
+
+  // when
+  fireEvent.keyDown(window, { key })
+
+  // then
+  expect(screen.queryByText('Press an arrow key or WASD to start')).toBeNull()
+  expect(head()).toBe('7,7')
+
+  // when
+  tick()
+
+  // then
+  expect(head()).toBe(pos)
+})
+
+test.each([' ', 'p'])('key "%s" leaves a ready game ready', (key) => {
+  // given
+  renderReady(<App />)
+
+  // when
+  fireEvent.keyDown(window, { key })
+  tick()
+
+  // then
+  expect(screen.getByText('Press an arrow key or WASD to start')).toBeTruthy()
+  expect(head()).toBe('7,7')
+})
+
+test('the Pause button is disabled while the game is ready', () => {
+  // when
+  renderReady(<App />)
+
+  // then
+  expect((screen.getByRole('button', { name: 'Pause' }) as HTMLButtonElement).disabled).toBe(true)
+})
+
+test('changing the walls mode puts the new game in the ready state', () => {
+  // given
+  render(<App />)
+  tick()
+
+  // when
+  fireEvent.click(modeButton('solid'))
+  tick(3)
+
+  // then
+  expect(screen.getByText('Press an arrow key or WASD to start')).toBeTruthy()
+  expect(head()).toBe('7,7')
 })

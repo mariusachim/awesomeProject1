@@ -62,6 +62,7 @@ test('eating plays one high beep', () => {
 test('game over plays one low tone', () => {
   // given
   render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
 
   // when
   tick(30)
