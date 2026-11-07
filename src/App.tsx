@@ -1,5 +1,5 @@
 import { type KeyboardEvent as ReactKeyEvent, useEffect, useRef, useState } from 'react'
-import { loadHighScore, saveHighScore } from './highScore.ts'
+import { isNewHighScore, loadHighScore, saveHighScore } from './highScore.ts'
 import { loadMuted, play, saveMuted } from './sound.ts'
 import { type GameState, SIZE, keyToDir, newGame, step, tickMs, togglePause, turn } from './game.ts'
 
@@ -28,6 +28,9 @@ export default function App() {
   }, [game.score])
 
   if (highScore > best) setBest(highScore)
+  // The record before this run: it is refreshed while the score is 0, and frozen once the run scores.
+  const [record, setRecord] = useState(best)
+  if (game.score === 0 && record !== highScore) setRecord(highScore)
 
   const prev = useRef({ score: game.score, over })
   useEffect(() => {
@@ -107,6 +110,7 @@ export default function App() {
           <div role="alert">
             <p>Game over</p>
             <p>Final score: {game.score}</p>
+            {isNewHighScore(record, game.score) && <p>New high score!</p>}
             <button onClick={() => setGame(newGame(Math.random, game.wrap))}>Restart</button>
           </div>
         )}

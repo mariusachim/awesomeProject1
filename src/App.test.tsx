@@ -544,3 +544,75 @@ test('changing the walls mode puts the new game in the ready state', () => {
   expect(screen.getByText('Press an arrow key or WASD to start')).toBeTruthy()
   expect(head()).toBe('7,7')
 })
+
+const NEW_BEST = 'New high score!'
+
+test('a final score above the stored high score shows the new high score message', () => {
+  // given
+  localStorage.setItem('snake.highScore', '0')
+  render(<App />)
+
+  // when
+  eatFood()
+  gameOver()
+
+  // then
+  expect(screen.getByText(NEW_BEST)).toBeTruthy()
+})
+
+test.each(['5', '1'])('a final score of 1 against a stored %s shows no message', (stored) => {
+  // given
+  localStorage.setItem('snake.highScore', stored)
+  render(<App />)
+
+  // when
+  eatFood()
+  gameOver()
+
+  // then
+  expect(screen.queryByText(NEW_BEST)).toBeNull()
+})
+
+test('a final score of 0 with no stored high score shows no message', () => {
+  // given
+  localStorage.clear()
+  render(<App />)
+
+  // when
+  gameOver()
+
+  // then
+  expect(screen.getByText('Final score: 0')).toBeTruthy()
+  expect(screen.queryByText(NEW_BEST)).toBeNull()
+})
+
+test('the new high score message is gone after a restart', () => {
+  // given
+  localStorage.clear()
+  render(<App />)
+  eatFood()
+  gameOver()
+  expect(screen.getByText(NEW_BEST)).toBeTruthy()
+
+  // when
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // then
+  expect(screen.queryByText(NEW_BEST)).toBeNull()
+})
+
+test('a second game that only ties the new record shows no message', () => {
+  // given
+  localStorage.clear()
+  render(<App />)
+  eatFood()
+  gameOver()
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // when
+  eatFood()
+  gameOver()
+
+  // then
+  expect(screen.queryByText(NEW_BEST)).toBeNull()
+})
