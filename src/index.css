@@ -70,6 +70,19 @@ button {
   .pulse {
     animation: pulse 150ms ease-out;
   }
+
+  /* Transform does not change the layout, so the stats row and the board stay still. */
+  .bump {
+    display: inline-block;
+    animation: bump 200ms ease-out;
+  }
+
+  @keyframes bump {
+    50% {
+      transform: scale(1.25);
+      color: #ffd54f;
+    }
+  }
 }
 
 @keyframes pulse {

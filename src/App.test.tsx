@@ -829,3 +829,29 @@ test('the 5th food brings a bonus food with a screen reader label, a diamond sha
   expect(bonus.style.clipPath).toContain('polygon')
   expect(bonus.style.background).not.toBe(screen.getByTestId('food').style.background)
 })
+
+// Score bump: the big score value carries the class "bump" for the CSS animation after a gain.
+const scoreValue = () => document.querySelector('.stat-big .stat-value') as HTMLElement
+
+test('the score bumps when the snake eats, not at 0 or after a restart', () => {
+  // given
+  render(<App />)
+
+  // then
+  expect(scoreValue().classList.contains('bump')).toBe(false)
+
+  // when
+  eatFood()
+
+  // then
+  expect(scoreValue().textContent).toBe('1')
+  expect(scoreValue().classList.contains('bump')).toBe(true)
+
+  // when
+  gameOver()
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // then
+  expect(scoreValue().textContent).toBe('0')
+  expect(scoreValue().classList.contains('bump')).toBe(false)
+})

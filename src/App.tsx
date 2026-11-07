@@ -27,7 +27,7 @@ function Stat({ label, value, spoken, big }: { label: string; value: number | st
       <span aria-hidden="true" className="stat-label">
         {label}
       </span>
-      <span aria-hidden="true" className="stat-value">
+      <span aria-hidden="true" className={big && value !== 0 ? 'stat-value bump' : 'stat-value'} key={value}>
         {value}
       </span>
       <span className="sr-only">{spoken}</span>
