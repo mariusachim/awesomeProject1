@@ -14,12 +14,13 @@ function onKeyPress(g: GameState, key: string): GameState {
 }
 
 export default function App() {
-  const [game, setGame] = useState(() => newGame(Math.random))
+  const [game, setGame] = useState(() => newGame(Math.random, false, 'ready'))
   const [best, setBest] = useState(loadHighScore)
   const [muted, setMuted] = useState(loadMuted)
   const highScore = Math.max(best, game.score)
   const over = game.status === 'over'
   const paused = game.status === 'paused'
+  const ready = game.status === 'ready'
 
   useEffect(() => {
     const id = setInterval(() => setGame((g) => step(g, Math.random)), tickMs(game.score))
@@ -59,7 +60,7 @@ export default function App() {
     }
   }, [])
 
-  const toggleWalls = () => setGame(newGame(Math.random, !game.wrap))
+  const toggleWalls = () => setGame(newGame(Math.random, !game.wrap, 'ready'))
   // Space and Enter belong to this button: keep the window handler from pausing or restarting.
   const onModeKey = (e: ReactKeyEvent<HTMLButtonElement>) => {
     if (e.key !== ' ' && e.key !== 'Enter') return
@@ -85,7 +86,7 @@ export default function App() {
       <p>Score: {game.score}</p>
       <p>High score: {highScore}</p>
       <div className="controls">
-        <button disabled={over} onClick={() => setGame(togglePause)}>
+        <button disabled={over || ready} onClick={() => setGame(togglePause)}>
           {paused ? 'Resume' : 'Pause'}
         </button>
         <button onClick={toggleWalls} onKeyDown={onModeKey}>
@@ -100,6 +101,7 @@ export default function App() {
         {cell(game.food.x, game.food.y, '#e44', 'food')}
       </div>
       <div className="messages">
+        {ready && <p role="status">Press an arrow key or WASD to start</p>}
         {paused && <p role="status">Paused</p>}
         {over && (
           <div role="alert">

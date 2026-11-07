@@ -270,6 +270,45 @@ test('turn is ignored while paused', () => {
   expect(turn(paused, 'up')).toBe(paused)
 })
 
+test('newGame can start in the ready state', () => {
+  // when / then
+  expect(newGame(() => 0, false, 'ready').status).toBe('ready')
+  expect(newGame(() => 0).status).toBe('running')
+})
+
+test('a ready game does not move, pause or score', () => {
+  // given
+  const ready = state({ status: 'ready' })
+
+  // when / then
+  expect(step(ready, () => 0)).toBe(ready)
+  expect(togglePause(ready)).toBe(ready)
+})
+
+test('a turn starts a ready game and queues the new direction', () => {
+  // given
+  const ready = state({ status: 'ready' })
+
+  // when
+  const next = step(turn(ready, 'up'), () => 0)
+
+  // then
+  expect(next.status).toBe('running')
+  expect(next.snake[0]).toEqual({ x: 5, y: 4 })
+})
+
+test.each(['left', 'right'] as const)('key %s starts a ready game and keeps the heading', (dir) => {
+  // given
+  const ready = state({ status: 'ready' })
+
+  // when
+  const next = step(turn(ready, dir), () => 0)
+
+  // then
+  expect(next.status).toBe('running')
+  expect(next.snake[0]).toEqual({ x: 6, y: 5 })
+})
+
 test('tickMs starts at 200 ms and drops 10 ms per point', () => {
   // when / then
   expect([0, 1, 5].map(tickMs)).toEqual([200, 190, 150])

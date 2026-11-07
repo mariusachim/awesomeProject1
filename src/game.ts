@@ -8,7 +8,7 @@ export type GameState = {
   queue: Dir[] // waiting turns, at most 2, oldest first
   food: Cell
   score: number
-  status: 'running' | 'paused' | 'over'
+  status: 'ready' | 'running' | 'paused' | 'over'
   wrap: boolean // true: walls lead to the opposite side
 }
 export type Rand = () => number
@@ -49,13 +49,18 @@ export function placeFood(snake: Cell[], rand: Rand): Cell {
 
 const wrapCell = (c: Cell): Cell => ({ x: (c.x + SIZE) % SIZE, y: (c.y + SIZE) % SIZE })
 
-export function newGame(rand: Rand, wrap = false): GameState {
+export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 'running'): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status: 'running', wrap }
+  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap }
 }
 
 export function turn(state: GameState, dir: Dir): GameState {
+  if (state.status === 'ready') {
+    // The first key starts the game; a key against the heading only starts it.
+    const queue = dir === state.dir || dir === OPPOSITE[state.dir] ? [] : [dir]
+    return { ...state, queue, status: 'running' }
+  }
   const last = state.queue[state.queue.length - 1] ?? state.dir
   if (state.status !== 'running' || state.queue.length >= MAX_QUEUE) return state
   if (dir === last || dir === OPPOSITE[last]) return state
@@ -63,7 +68,7 @@ export function turn(state: GameState, dir: Dir): GameState {
 }
 
 export function togglePause(state: GameState): GameState {
-  if (state.status === 'over') return state
+  if (state.status === 'over' || state.status === 'ready') return state
   return { ...state, status: state.status === 'running' ? 'paused' : 'running' }
 }
 
