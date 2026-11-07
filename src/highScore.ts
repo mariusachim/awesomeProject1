@@ -4,6 +4,10 @@ export function parseHighScore(raw: string | null): number {
   return raw !== null && /^\d+$/.test(raw) ? Number(raw) : 0
 }
 
+export function isNewHighScore(previous: number, score: number): boolean {
+  return score > previous
+}
+
 export function loadHighScore(): number {
   try {
     return parseHighScore(localStorage.getItem(KEY))

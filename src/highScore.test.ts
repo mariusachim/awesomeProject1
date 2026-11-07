@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest'
-import { KEY, loadHighScore, parseHighScore, saveHighScore } from './highScore.ts'
+import { KEY, isNewHighScore, loadHighScore, parseHighScore, saveHighScore } from './highScore.ts'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -40,4 +40,15 @@ test('loads 0 and does not throw when the storage is unavailable', () => {
   // when / then
   expect(loadHighScore()).toBe(0)
   expect(() => saveHighScore(3)).not.toThrow()
+})
+
+test.each([
+  [3, 5, true],
+  [5, 5, false],
+  [5, 2, false],
+  [0, 0, false],
+  [0, 1, true],
+])('with a record of %i, a score of %i is a new high score: %s', (previous, score, expected) => {
+  // when / then
+  expect(isNewHighScore(previous, score)).toBe(expected)
 })
