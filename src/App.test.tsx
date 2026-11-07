@@ -601,6 +601,38 @@ test('the new high score message is gone after a restart', () => {
   expect(screen.queryByText(NEW_BEST)).toBeNull()
 })
 
+test('Space and Enter on the focused Mute button toggle the sound once after game over', () => {
+  // given
+  render(<App />)
+  tick(10)
+
+  // when
+  pressSpaceOn(screen.getByRole('button', { name: 'Mute' }))
+
+  // then
+  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
+
+  // when
+  const enter = fireEvent.keyDown(screen.getByRole('button', { name: 'Unmute' }), { key: 'Enter' })
+  if (enter) fireEvent.click(screen.getByRole('button', { name: 'Unmute' }))
+
+  // then
+  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
+  expect(screen.getByText('Game over')).toBeTruthy()
+})
+
+test('Space on the focused Mute button does not pause a running game', () => {
+  // given
+  render(<App />)
+
+  // when
+  pressSpaceOn(screen.getByRole('button', { name: 'Mute' }))
+
+  // then
+  expect(screen.queryByText('Paused')).toBeNull()
+  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
+})
+
 test('a second game that only ties the new record shows no message', () => {
   // given
   localStorage.clear()
