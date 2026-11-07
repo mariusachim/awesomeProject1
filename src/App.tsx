@@ -1,5 +1,6 @@
 import { type CSSProperties, type KeyboardEvent as ReactKeyEvent, type TouchEvent, useEffect, useRef, useState } from 'react'
 import { isNewHighScore, loadHighScore, saveHighScore } from './highScore.ts'
+import { loadWrap, saveWrap } from './wallsMode.ts'
 import { loadMuted, play, saveMuted } from './sound.ts'
 import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, speedLevel, step, swipeDir, tickMs, togglePause, turn } from './game.ts'
 
@@ -33,7 +34,7 @@ function Stat({ label, value, spoken, big }: { label: string; value: number | st
 }
 
 export default function App() {
-  const [game, setGame] = useState(() => newGame(Math.random, false, 'ready'))
+  const [game, setGame] = useState(() => newGame(Math.random, loadWrap(), 'ready'))
   const [best, setBest] = useState(loadHighScore)
   const [muted, setMuted] = useState(loadMuted)
   const highScore = Math.max(best, game.score)
@@ -61,6 +62,8 @@ export default function App() {
   }, [game.score, over, muted])
 
   useEffect(() => saveMuted(muted), [muted])
+
+  useEffect(() => saveWrap(game.wrap), [game.wrap])
 
   useEffect(() => {
     if (best > 0) saveHighScore(best)

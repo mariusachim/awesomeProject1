@@ -17,6 +17,7 @@ beforeEach(() => {
   vi.spyOn(Math, 'random').mockReturnValue(0)
 })
 afterEach(() => {
+  localStorage.clear()
   vi.useRealTimers()
   vi.restoreAllMocks()
 })
