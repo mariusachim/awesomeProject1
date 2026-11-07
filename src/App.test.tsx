@@ -79,6 +79,18 @@ test('hitting the wall shows Game over with the score', () => {
   expect(screen.getByText('Final score: 0')).toBeTruthy()
 })
 
+test('the Pause button stays in the control row, disabled, after game over', () => {
+  // given
+  render(<App />)
+
+  // when
+  tick(10)
+
+  // then
+  const pause = screen.getByRole('button', { name: 'Pause' }) as HTMLButtonElement
+  expect(pause.disabled).toBe(true)
+})
+
 test('the Restart button starts a new game', () => {
   // given
   render(<App />)
