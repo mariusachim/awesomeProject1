@@ -24,6 +24,89 @@ afterEach(() => {
 const head = () => screen.getByTestId('head').getAttribute('data-pos')
 const tick = (n = 1) => act(() => vi.advanceTimersByTime(200 * n))
 
+const hidePage = () => {
+  vi.spyOn(document, 'hidden', 'get').mockReturnValue(true)
+  fireEvent(document, new Event('visibilitychange'))
+}
+
+test('hiding the page pauses a running game and offers Resume', () => {
+  // given
+  render(<App />)
+
+  // when
+  hidePage()
+
+  // then
+  expect(screen.getByText('Paused')).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Resume' })).toBeTruthy()
+})
+
+test('losing window focus pauses a running game', () => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.blur(window)
+
+  // then
+  expect(screen.getByText('Paused')).toBeTruthy()
+})
+
+test('a game paused by a hidden page stays paused until Resume', () => {
+  // given
+  render(<App />)
+  hidePage()
+  vi.spyOn(document, 'hidden', 'get').mockReturnValue(false)
+
+  // when
+  fireEvent.focus(window)
+  fireEvent(document, new Event('visibilitychange'))
+  tick(3)
+
+  // then
+  expect(screen.getByText('Paused')).toBeTruthy()
+  fireEvent.click(screen.getByRole('button', { name: 'Resume' }))
+  expect(screen.queryByText('Paused')).toBeNull()
+})
+
+test('hiding the page keeps a game that waits for the first key in ready', () => {
+  // given
+  renderReady(<App />)
+
+  // when
+  hidePage()
+
+  // then
+  expect(screen.getByText('Press an arrow key or WASD to start')).toBeTruthy()
+  expect(screen.queryByText('Paused')).toBeNull()
+})
+
+test('hiding the page keeps a paused game paused with Resume shown', () => {
+  // given
+  render(<App />)
+  fireEvent.click(screen.getByRole('button', { name: 'Pause' }))
+
+  // when
+  hidePage()
+
+  // then
+  expect(screen.getByRole('button', { name: 'Resume' })).toBeTruthy()
+})
+
+test('hiding the page does not change the game over message', () => {
+  // given
+  render(<App />)
+  tick(10)
+  expect(screen.getByText('Game over')).toBeTruthy()
+
+  // when
+  hidePage()
+
+  // then
+  expect(screen.getByText('Game over')).toBeTruthy()
+  expect(screen.queryByText('Paused')).toBeNull()
+})
+
 test('shows the title, the board, a snake, one food and a score of 0', () => {
   // when
   render(<App />)

@@ -1,7 +1,7 @@
 import { type KeyboardEvent as ReactKeyEvent, useEffect, useRef, useState } from 'react'
 import { isNewHighScore, loadHighScore, saveHighScore } from './highScore.ts'
 import { loadMuted, play, saveMuted } from './sound.ts'
-import { type GameState, SIZE, keyToDir, newGame, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, step, tickMs, togglePause, turn } from './game.ts'
 
 const CELL_PX = 24
 
@@ -60,6 +60,19 @@ export default function App() {
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('keydown', noClick)
       window.removeEventListener('keyup', noClick)
+    }
+  }, [])
+
+  useEffect(() => {
+    const onHide = () => setGame(pauseIfRunning)
+    const onVisibility = () => {
+      if (document.hidden) onHide()
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('blur', onHide)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('blur', onHide)
     }
   }, [])
 

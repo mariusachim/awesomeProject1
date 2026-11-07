@@ -72,6 +72,10 @@ export function togglePause(state: GameState): GameState {
   return { ...state, status: state.status === 'running' ? 'paused' : 'running' }
 }
 
+export function pauseIfRunning(state: GameState): GameState {
+  return state.status === 'running' ? { ...state, status: 'paused' } : state
+}
+
 export function step(state: GameState, rand: Rand): GameState {
   if (state.status !== 'running') return state
   const [first, ...queue] = state.queue

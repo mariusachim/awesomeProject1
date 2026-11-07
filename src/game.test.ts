@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, keyToDir, newGame, placeFood, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, placeFood, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -252,6 +252,19 @@ test('togglePause does nothing when the game is over', () => {
 
   // when / then
   expect(togglePause(over)).toBe(over)
+})
+
+test('pauseIfRunning pauses a running game', () => {
+  // when / then
+  expect(pauseIfRunning(state({})).status).toBe('paused')
+})
+
+test.each(['ready', 'paused', 'over'] as const)('pauseIfRunning leaves a %s game unchanged', (status) => {
+  // given
+  const g = state({ status })
+
+  // when / then
+  expect(pauseIfRunning(g)).toBe(g)
 })
 
 test('step leaves a paused game unchanged', () => {
