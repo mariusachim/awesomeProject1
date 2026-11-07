@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { type KeyboardEvent as ReactKeyEvent, useEffect, useRef, useState } from 'react'
 import { loadHighScore, saveHighScore } from './highScore.ts'
 import { loadMuted, play, saveMuted } from './sound.ts'
 import { type GameState, SIZE, keyToDir, newGame, step, tickMs, togglePause, turn } from './game.ts'
@@ -9,7 +9,7 @@ function onKeyPress(g: GameState, key: string): GameState {
   const dir = keyToDir(key)
   if (dir) return turn(g, dir)
   if (key === ' ' || key.toLowerCase() === 'p') return togglePause(g)
-  if (key === 'Enter' && g.status === 'over') return newGame(Math.random)
+  if (key === 'Enter' && g.status === 'over') return newGame(Math.random, g.wrap)
   return g
 }
 
@@ -59,6 +59,17 @@ export default function App() {
     }
   }, [])
 
+  const toggleWalls = () => setGame(newGame(Math.random, !game.wrap))
+  // Space and Enter belong to this button: keep the window handler from pausing or restarting.
+  const onModeKey = (e: ReactKeyEvent<HTMLButtonElement>) => {
+    if (e.key !== ' ' && e.key !== 'Enter') return
+    e.stopPropagation()
+    if (e.key === ' ') {
+      e.preventDefault()
+      toggleWalls()
+    }
+  }
+
   const cell = (x: number, y: number, color: string, id: string) => (
     <div
       key={`${id}${x},${y}`}
@@ -77,6 +88,9 @@ export default function App() {
         {!over && (
           <button onClick={() => setGame(togglePause)}>{paused ? 'Resume' : 'Pause'}</button>
         )}
+        <button onClick={toggleWalls} onKeyDown={onModeKey}>
+          Walls: {game.wrap ? 'wrap' : 'solid'}
+        </button>
         <button onClick={() => setMuted((m) => !m)}>{muted ? 'Unmute' : 'Mute'}</button>
       </div>
       <div style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222' }}>
@@ -91,7 +105,7 @@ export default function App() {
           <div role="alert">
             <p>Game over</p>
             <p>Final score: {game.score}</p>
-            <button onClick={() => setGame(newGame(Math.random))}>Restart</button>
+            <button onClick={() => setGame(newGame(Math.random, game.wrap))}>Restart</button>
           </div>
         )}
       </div>
