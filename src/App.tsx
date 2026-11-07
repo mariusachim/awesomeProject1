@@ -1,9 +1,13 @@
-import { type KeyboardEvent as ReactKeyEvent, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, type KeyboardEvent as ReactKeyEvent, useEffect, useRef, useState } from 'react'
 import { isNewHighScore, loadHighScore, saveHighScore } from './highScore.ts'
 import { loadMuted, play, saveMuted } from './sound.ts'
 import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, step, tickMs, togglePause, turn } from './game.ts'
 
 const CELL_PX = 24
+// Shape and outline tell the cells apart without colour: round food, outlined head, inset body.
+const HEAD_LOOK: CSSProperties = { background: '#7e7', outline: '2px solid #efe', outlineOffset: -2, boxSizing: 'border-box' }
+const BODY_LOOK: CSSProperties = { background: '#2a2', boxSizing: 'border-box', border: '2px solid #222' }
+const FOOD_LOOK: CSSProperties = { background: '#e44', borderRadius: '50%' }
 
 function onKeyPress(g: GameState, key: string): GameState {
   const dir = keyToDir(key)
@@ -89,12 +93,13 @@ export default function App() {
   }
   const toggleMute = () => setMuted((m) => !m)
 
-  const cell = (x: number, y: number, color: string, id: string) => (
+  const cell = (x: number, y: number, id: string, look: CSSProperties, className?: string) => (
     <div
       key={`${id}${x},${y}`}
       data-testid={id}
       data-pos={`${x},${y}`}
-      style={{ position: 'absolute', left: x * CELL_PX, top: y * CELL_PX, width: CELL_PX, height: CELL_PX, background: color }}
+      className={className}
+      style={{ position: 'absolute', left: x * CELL_PX, top: y * CELL_PX, width: CELL_PX, height: CELL_PX, ...look }}
     />
   )
 
@@ -114,11 +119,11 @@ export default function App() {
           {muted ? 'Unmute' : 'Mute'}
         </button>
       </div>
-      <div style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222' }}>
+      <div className="board" style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222' }}>
         {game.snake.map((c, i) =>
-          i === 0 ? cell(c.x, c.y, '#4c4', 'head') : cell(c.x, c.y, '#2a2', 'snake'),
+          i === 0 ? cell(c.x, c.y, 'head', HEAD_LOOK) : cell(c.x, c.y, 'snake', BODY_LOOK),
         )}
-        {cell(game.food.x, game.food.y, '#e44', 'food')}
+        {cell(game.food.x, game.food.y, 'food', FOOD_LOOK, 'pulse')}
       </div>
       <div className="messages">
         {ready && <p role="status">Press an arrow key or WASD to start</p>}

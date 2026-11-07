@@ -118,6 +118,39 @@ test('shows the title, the board, a snake, one food and a score of 0', () => {
   expect(screen.getAllByTestId('food').length).toBe(1)
 })
 
+test('the food is a circle and the snake cells are squares', () => {
+  // given
+  renderReady(<App />)
+
+  // when
+  const food = screen.getByTestId('food')
+
+  // then
+  expect(food.style.borderRadius).toBe('50%')
+  expect(screen.getByTestId('head').style.borderRadius).not.toBe('50%')
+  screen.getAllByTestId('snake').forEach((c) => expect(c.style.borderRadius).not.toBe('50%'))
+})
+
+test('the head has an outline that the body cells do not have', () => {
+  // given
+  renderReady(<App />)
+
+  // when
+  const headOutline = screen.getByTestId('head').style.outline
+
+  // then
+  expect(headOutline).not.toBe('')
+  screen.getAllByTestId('snake').forEach((c) => expect(c.style.outline).toBe(''))
+})
+
+test('the food carries the pulse class so it can animate when it appears', () => {
+  // when
+  renderReady(<App />)
+
+  // then
+  expect(screen.getByTestId('food').classList.contains('pulse')).toBe(true)
+})
+
 test('the snake moves right on a timer without input', () => {
   // given
   render(<App />)
