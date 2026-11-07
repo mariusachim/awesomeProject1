@@ -5,7 +5,7 @@ export type Cell = { x: number; y: number }
 export type GameState = {
   snake: Cell[] // head first
   dir: Dir // direction of the last move
-  next: Dir // direction of the coming move
+  queue: Dir[] // waiting turns, at most 2, oldest first
   food: Cell
   score: number
   status: 'running' | 'paused' | 'over'
@@ -25,6 +25,8 @@ const KEYS: Record<string, Dir> = {
   arrowleft: 'left', a: 'left',
   arrowright: 'right', d: 'right',
 }
+
+const MAX_QUEUE = 2
 
 const same = (a: Cell, b: Cell) => a.x === b.x && a.y === b.y
 
@@ -47,11 +49,14 @@ export function placeFood(snake: Cell[], rand: Rand): Cell {
 export function newGame(rand: Rand): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', next: 'right', food: placeFood(snake, rand), score: 0, status: 'running' }
+  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status: 'running' }
 }
 
 export function turn(state: GameState, dir: Dir): GameState {
-  return state.status !== 'running' || dir === OPPOSITE[state.dir] ? state : { ...state, next: dir }
+  const last = state.queue[state.queue.length - 1] ?? state.dir
+  if (state.status !== 'running' || state.queue.length >= MAX_QUEUE) return state
+  if (dir === last || dir === OPPOSITE[last]) return state
+  return { ...state, queue: [...state.queue, dir] }
 }
 
 export function togglePause(state: GameState): GameState {
@@ -61,16 +66,19 @@ export function togglePause(state: GameState): GameState {
 
 export function step(state: GameState, rand: Rand): GameState {
   if (state.status !== 'running') return state
-  const d = DELTA[state.next]
+  const [first, ...queue] = state.queue
+  const dir = first ?? state.dir
+  const d = DELTA[dir]
   const head = { x: state.snake[0].x + d.x, y: state.snake[0].y + d.y }
   const eats = same(head, state.food)
   const body = eats ? state.snake : state.snake.slice(0, -1)
-  if (outside(head) || body.some((c) => same(c, head))) return { ...state, dir: state.next, status: 'over' }
+  if (outside(head) || body.some((c) => same(c, head))) return { ...state, dir, queue, status: 'over' }
   const snake = [head, ...body]
   return {
     ...state,
     snake,
-    dir: state.next,
+    dir,
+    queue,
     food: eats ? placeFood(snake, rand) : state.food,
     score: state.score + (eats ? 1 : 0),
   }
