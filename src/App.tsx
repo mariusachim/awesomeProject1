@@ -145,7 +145,12 @@ export default function App() {
         {cell(game.food.x, game.food.y, 'food', FOOD_LOOK, 'pulse')}
       </div>
       <div className="messages">
-        {ready && <p role="status">Press an arrow key or WASD to start</p>}
+        {ready && (
+          <p role="status">
+            <span className="hint-keys">Press an arrow key or WASD to start</span>
+            <span className="hint-touch">Swipe on the board to start</span>
+          </p>
+        )}
         {paused && <p role="status">Paused</p>}
         {over && (
           <div role="alert">

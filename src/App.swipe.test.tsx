@@ -99,3 +99,15 @@ test('a swipe on a finished game changes nothing', () => {
   expect(screen.getByText('Game over')).toBeTruthy()
   expect(document.body.innerHTML).toBe(before)
 })
+
+test('the ready hint offers a swipe text for touch screens, inside the one status line', () => {
+  // given
+  render(<App />)
+
+  // when
+  const status = screen.getByRole('status')
+
+  // then
+  expect(status.textContent).toContain('Swipe on the board to start')
+  expect(screen.getAllByRole('status')).toHaveLength(1)
+})
