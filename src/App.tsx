@@ -17,6 +17,21 @@ function onKeyPress(g: GameState, key: string): GameState {
   return g
 }
 
+// A small label over a value for the eye; the full phrase for a screen reader.
+function Stat({ label, value, spoken, big }: { label: string; value: number | string; spoken: string; big?: boolean }) {
+  return (
+    <p className={big ? 'stat stat-big' : 'stat'}>
+      <span aria-hidden="true" className="stat-label">
+        {label}
+      </span>
+      <span aria-hidden="true" className="stat-value">
+        {value}
+      </span>
+      <span className="sr-only">{spoken}</span>
+    </p>
+  )
+}
+
 export default function App() {
   const [game, setGame] = useState(() => newGame(Math.random, false, 'ready'))
   const [best, setBest] = useState(loadHighScore)
@@ -120,9 +135,11 @@ export default function App() {
   return (
     <main>
       <h1>Snake</h1>
-      <p>Score: {game.score}</p>
-      <p>Speed {speedLevel(game.score)}</p>
-      <p>High score: {highScore}</p>
+      <div className="stats" role="group" aria-label="Game stats">
+        <Stat label="Score" value={game.score} spoken={`Score: ${game.score}`} big />
+        <Stat label="Speed" value={speedLevel(game.score)} spoken={`Speed ${speedLevel(game.score)}`} />
+        <Stat label="High score" value={highScore} spoken={`High score: ${highScore}`} />
+      </div>
       <div className="controls">
         <button className="pause" disabled={over || ready} onClick={() => setGame(togglePause)}>
           {paused ? 'Resume' : 'Pause'}
