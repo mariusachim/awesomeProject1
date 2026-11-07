@@ -9,6 +9,7 @@ export type GameState = {
   food: Cell
   score: number
   status: 'running' | 'paused' | 'over'
+  wrap: boolean // true: walls lead to the opposite side
 }
 export type Rand = () => number
 
@@ -46,10 +47,12 @@ export function placeFood(snake: Cell[], rand: Rand): Cell {
   return free[Math.floor(rand() * free.length)]
 }
 
-export function newGame(rand: Rand): GameState {
+const wrapCell = (c: Cell): Cell => ({ x: (c.x + SIZE) % SIZE, y: (c.y + SIZE) % SIZE })
+
+export function newGame(rand: Rand, wrap = false): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status: 'running' }
+  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status: 'running', wrap }
 }
 
 export function turn(state: GameState, dir: Dir): GameState {
@@ -69,7 +72,8 @@ export function step(state: GameState, rand: Rand): GameState {
   const [first, ...queue] = state.queue
   const dir = first ?? state.dir
   const d = DELTA[dir]
-  const head = { x: state.snake[0].x + d.x, y: state.snake[0].y + d.y }
+  const moved = { x: state.snake[0].x + d.x, y: state.snake[0].y + d.y }
+  const head = state.wrap ? wrapCell(moved) : moved
   const eats = same(head, state.food)
   const body = eats ? state.snake : state.snake.slice(0, -1)
   if (outside(head) || body.some((c) => same(c, head))) return { ...state, dir, queue, status: 'over' }
