@@ -7,7 +7,10 @@ button {
 }
 
 .controls {
+  display: flex;
+  gap: 12px;
   height: 44px;
+  margin-bottom: 12px;
 }
 
 .messages {
