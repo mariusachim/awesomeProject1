@@ -85,9 +85,9 @@ export default function App() {
       <p>Score: {game.score}</p>
       <p>High score: {highScore}</p>
       <div className="controls">
-        {!over && (
-          <button onClick={() => setGame(togglePause)}>{paused ? 'Resume' : 'Pause'}</button>
-        )}
+        <button disabled={over} onClick={() => setGame(togglePause)}>
+          {paused ? 'Resume' : 'Pause'}
+        </button>
         <button onClick={toggleWalls} onKeyDown={onModeKey}>
           Walls: {game.wrap ? 'wrap' : 'solid'}
         </button>
