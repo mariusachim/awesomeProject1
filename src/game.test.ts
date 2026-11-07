@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -9,6 +9,8 @@ const state = (over: Partial<GameState>): GameState => ({
   score: 0,
   status: 'running',
   wrap: false,
+  bonus: null,
+  eaten: 0,
   ...over,
 })
 
@@ -386,4 +388,129 @@ test('wrap mode: moving into the own body ends the game', () => {
 
   // then
   expect(next.status).toBe('over')
+})
+
+// Bonus food. The snake heads right from 5,5; the food at 6,5 sits right in front of it.
+const BONUS_FAR = { x: 12, y: 12 }
+
+test('a new game has no bonus food and a count of 0', () => {
+  // when
+  const game = newGame(() => 0)
+
+  // then
+  expect(game.bonus).toBeNull()
+  expect(game.eaten).toBe(0)
+})
+
+test('the 5th normal food places a bonus food on a free cell and resets the count', () => {
+  // given
+  const game = state({ food: { x: 6, y: 5 }, eaten: 4 })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.eaten).toBe(0)
+  expect(next.bonus).not.toBeNull()
+  expect(next.bonus?.movesLeft).toBe(15)
+  expect(next.snake).not.toContainEqual(next.bonus?.cell)
+  expect(next.food).not.toEqual(next.bonus?.cell)
+})
+
+test('a normal food before the 5th only counts', () => {
+  // given
+  const game = state({ food: { x: 6, y: 5 }, eaten: 3 })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.eaten).toBe(4)
+  expect(next.bonus).toBeNull()
+})
+
+test('the bonus food never sits on the snake or on the normal food', () => {
+  // given
+  const snake = [{ x: 0, y: 0 }, { x: 1, y: 0 }]
+  const food = { x: 2, y: 0 }
+
+  // when
+  const cell = placeBonus(snake, food, () => 0)
+
+  // then
+  expect(cell).toEqual({ x: 3, y: 0 })
+})
+
+test('no bonus food is placed when the board has no free cell', () => {
+  // given
+  const snake = Array.from({ length: SIZE * SIZE - 1 }, (_, i) => ({ x: i % SIZE, y: Math.floor(i / SIZE) }))
+  const food = { x: SIZE - 1, y: SIZE - 1 }
+
+  // when / then
+  expect(placeBonus(snake, food, () => 0)).toBeNull()
+})
+
+test('eating the bonus food adds 3 points, grows the snake by one and removes it', () => {
+  // given
+  const game = state({ bonus: { cell: { x: 6, y: 5 }, movesLeft: 9 } })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.score).toBe(3)
+  expect(next.snake.length).toBe(4)
+  expect(next.bonus).toBeNull()
+  expect(next.eaten).toBe(0)
+})
+
+test('eating the normal food keeps the bonus food and counts it down', () => {
+  // given
+  const game = state({ food: { x: 6, y: 5 }, bonus: { cell: BONUS_FAR, movesLeft: 9 } })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.score).toBe(1)
+  expect(next.bonus).toEqual({ cell: BONUS_FAR, movesLeft: 8 })
+  expect(next.eaten).toBe(1)
+})
+
+test('the bonus food disappears after 15 moves and the score stays', () => {
+  // given
+  let game = state({ wrap: true, snake: [{ x: 0, y: 5 }, { x: 0, y: 6 }], dir: 'up', bonus: { cell: BONUS_FAR, movesLeft: 15 } })
+
+  // when
+  for (let i = 0; i < 14; i++) game = step(game, () => 0)
+  const before = game.bonus
+  game = step(game, () => 0)
+
+  // then
+  expect(before?.movesLeft).toBe(1)
+  expect(game.bonus).toBeNull()
+  expect(game.score).toBe(0)
+})
+
+test('a paused game does not count the bonus food down', () => {
+  // given
+  const game = state({ status: 'paused', bonus: { cell: BONUS_FAR, movesLeft: 9 } })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.bonus?.movesLeft).toBe(9)
+})
+
+test('the 5th normal food keeps a bonus food that is still on the board', () => {
+  // given
+  const game = state({ food: { x: 6, y: 5 }, eaten: 4, bonus: { cell: BONUS_FAR, movesLeft: 9 } })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.bonus).toEqual({ cell: BONUS_FAR, movesLeft: 8 })
+  expect(next.eaten).toBe(0)
 })
