@@ -39,6 +39,11 @@ button {
   border-radius: 4px;
 }
 
+/* Colour is the steady state, so it holds with reduced motion too. */
+.board-over {
+  border-color: #e44;
+}
+
 /* Dim layer over the cells; #fff on rgba(0,0,0,0.7) over #222 is well above 4.5:1. */
 .board-overlay {
   position: absolute;
@@ -77,6 +82,27 @@ button {
   @keyframes fade-in {
     from {
       opacity: 0;
+    }
+  }
+
+  .board-over {
+    animation: crash 300ms ease-out;
+  }
+
+  /* Transform does not change the layout, so nothing else on the page moves. */
+  @keyframes crash {
+    from {
+      border-color: #fff;
+    }
+
+    20%,
+    60% {
+      transform: translateX(-4px);
+    }
+
+    40%,
+    80% {
+      transform: translateX(4px);
     }
   }
 

@@ -52,6 +52,23 @@ test('game over dims the board with a Game over label and Restart still works', 
   expect(overlay()).toBeNull()
 })
 
+test('the board border turns red on game over, not when paused, and resets on restart', () => {
+  // given
+  render(<App />)
+  const board = screen.getByTestId('board')
+  key('ArrowRight')
+  key('p')
+
+  // when / then
+  expect(board.classList.contains('board-over')).toBe(false)
+  key('p')
+  key('ArrowUp')
+  act(() => vi.advanceTimersByTime(200 * 30))
+  expect(board.classList.contains('board-over')).toBe(true)
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+  expect(board.classList.contains('board-over')).toBe(false)
+})
+
 test('the overlay is hidden from screen readers and does not repeat the text', () => {
   // given
   render(<App />)

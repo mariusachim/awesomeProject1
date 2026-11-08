@@ -162,7 +162,7 @@ export default function App() {
         </button>
       </div>
       <div
-        className="board"
+        className={over ? 'board board-over' : 'board'}
         data-testid="board"
         style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#1c1c1c', touchAction: 'none' }}
         onTouchStart={onSwipeStart}
