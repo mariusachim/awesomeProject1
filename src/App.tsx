@@ -192,6 +192,12 @@ export default function App() {
                 <span className="overlay-line overlay-hint hint-touch" data-text="Tap Restart" />
               </>
             )}
+            {paused && (
+              <>
+                <span className="overlay-line overlay-hint hint-keys" data-text="Press Space or P to resume" />
+                <span className="overlay-line overlay-hint hint-touch" data-text="Tap Resume" />
+              </>
+            )}
           </div>
         )}
       </div>
