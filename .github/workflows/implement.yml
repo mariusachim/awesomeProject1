@@ -57,6 +57,9 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: ${{ inputs.skill }}
+          # The issue-closeout hook prices the session with the ponytail plugin.
+          plugin_marketplaces: https://github.com/DietrichGebert/ponytail.git
+          plugins: ponytail@ponytail
           claude_args: >-
             --max-turns 200
             --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git *),Bash(gh *),Bash(npm *),Bash(npx *),Bash(crapper *),Bash(dryer *),Bash(mutator *)"
