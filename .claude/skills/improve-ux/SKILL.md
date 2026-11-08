@@ -1,6 +1,6 @@
 ---
 name: improve-ux
-description: Build the oldest open ux-improvement issue of the snake game. Check it, build it with ub-mode, open a PR, merge it when CI passes, and close the issue. Use when the design-review workflow runs /improve-ux.
+description: Build the oldest open ux-improvement issue of the snake game. Check it, build it with ub-mode, open a PR, and merge it when CI passes. Use when the design-review workflow runs /improve-ux.
 ---
 
 # Improve the UI/UX
@@ -41,7 +41,8 @@ proposed, from the analysis to the merge, without a human.
 - Open the PR with the title `<type>(#<issue>): <the improvement in lower case>`.
 - Start the body with `Refs #<issue>`. Then add the ub-mode log: each action and its reason,
   and the proof (test results, CRAP scores, mutation score).
-- Merge as step 5 of `.claude/skills/implement-feature/SKILL.md` says. It also closes the issue.
+- Merge as step 5 of `.claude/skills/implement-feature/SKILL.md` says.
+  The `issue-closeout` workflow closes the issue.
 
 ## 4. Report
 
