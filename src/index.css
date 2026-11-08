@@ -62,6 +62,12 @@ button {
   background: rgba(0, 0, 0, 0.3);
 }
 
+/* Ready: the snake starts in the centre row, so the panel sits at the bottom. */
+.board-overlay-ready {
+  justify-content: flex-end;
+  padding-bottom: 1rem;
+}
+
 .overlay-panel {
   display: flex;
   align-items: center;

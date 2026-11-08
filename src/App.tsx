@@ -298,7 +298,11 @@ export default function App() {
           <div
             data-testid="board-overlay"
             className={
-              over ? "board-overlay" : "board-overlay board-overlay-light"
+              over
+                ? "board-overlay"
+                : ready
+                  ? "board-overlay board-overlay-light board-overlay-ready"
+                  : "board-overlay board-overlay-light"
             }
             aria-hidden="true"
           >
