@@ -47,6 +47,11 @@ const BONUS_LOOK: CSSProperties = {
   clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
 };
 
+const wallsHint = (wrap: boolean) =>
+  wrap
+    ? "Walls off: the snake passes through the edge"
+    : "Walls: the edge ends the run";
+
 const TILES = Array.from({ length: SIZE * SIZE }, (_, i) => ({
   x: i % SIZE,
   y: Math.floor(i / SIZE),
@@ -320,6 +325,10 @@ export default function App() {
                     className="overlay-line overlay-hint hint-touch"
                     data-text="Swipe on the board to start"
                   />
+                  <span
+                    className="overlay-line overlay-hint"
+                    data-text={wallsHint(game.wrap)}
+                  />
                 </>
               )}
               {over && (
@@ -367,6 +376,7 @@ export default function App() {
               Press an arrow key or WASD to start
             </span>
             <span className="hint-touch">Swipe on the board to start</span>
+            <span>{wallsHint(game.wrap)}</span>
           </p>
         )}
         {paused && (
