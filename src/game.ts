@@ -1,5 +1,8 @@
 export const SIZE = 15
 
+// Two dark shades; the shade of a cell depends only on the parity of x + y.
+export const cellShade = (x: number, y: number): string => ((x + y) % 2 === 0 ? '#1c1c1c' : '#2c2c2c')
+
 export type Dir = 'up' | 'down' | 'left' | 'right'
 export type Cell = { x: number; y: number }
 export type GameState = {

@@ -855,3 +855,20 @@ test('the score bumps when the snake eats, not at 0 or after a restart', () => {
   expect(scoreValue().textContent).toBe('0')
   expect(scoreValue().classList.contains('bump')).toBe(false)
 })
+
+test('the board shows 225 silent checkerboard tiles of two shades', () => {
+  // given
+  render(<App />)
+
+  // when
+  const tiles = screen.getAllByTestId('tile')
+
+  // then
+  expect(tiles.length).toBe(225)
+  expect(new Set(tiles.map((t) => t.style.background)).size).toBe(2)
+  tiles.forEach((t) => {
+    expect(t.textContent).toBe('')
+    expect(t.getAttribute('role')).toBeNull()
+    expect(t.getAttribute('aria-hidden')).toBe('true')
+  })
+})
