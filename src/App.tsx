@@ -2,7 +2,7 @@ import { type CSSProperties, type KeyboardEvent as ReactKeyEvent, type TouchEven
 import { isNewHighScore, loadHighScore, saveHighScore } from './highScore.ts'
 import { loadWrap, saveWrap } from './wallsMode.ts'
 import { loadMuted, play, saveMuted } from './sound.ts'
-import { type GameState, SIZE, cellShade, keyToDir, newGame, pauseIfRunning, speedLevel, step, swipeDir, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, cellShade, keyToDir, newGame, pauseIfRunning, restart, speedLevel, step, swipeDir, tickMs, togglePause, turn } from './game.ts'
 
 const CELL_PX = 24
 // Shape and outline tell the cells apart without colour: round food, outlined head, inset body.
@@ -18,6 +18,7 @@ function onKeyPress(g: GameState, key: string): GameState {
   const dir = keyToDir(key)
   if (dir) return turn(g, dir)
   if (key === ' ' || key.toLowerCase() === 'p') return togglePause(g)
+  if (key.toLowerCase() === 'r') return restart(g, Math.random)
   if (key === 'Enter' && g.status === 'over') return newGame(Math.random, g.wrap)
   return g
 }
