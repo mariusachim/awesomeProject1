@@ -62,10 +62,15 @@ button {
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* Ready: the snake starts in the centre row, so the panel sits at the bottom. */
-.board-overlay-ready {
+/* Ready and paused: the panel sits at the edge away from the snake head, so the snake stays uncovered. */
+.board-overlay-bottom {
   justify-content: flex-end;
   padding-bottom: 1rem;
+}
+
+.board-overlay-top {
+  justify-content: flex-start;
+  padding-top: 1rem;
 }
 
 .overlay-panel {

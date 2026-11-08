@@ -300,9 +300,11 @@ export default function App() {
             className={
               over
                 ? "board-overlay"
-                : ready
-                  ? "board-overlay board-overlay-light board-overlay-ready"
-                  : "board-overlay board-overlay-light"
+                : `board-overlay board-overlay-light ${
+                    ready || game.snake[0].y < SIZE / 2
+                      ? "board-overlay-bottom"
+                      : "board-overlay-top"
+                  }`
             }
             aria-hidden="true"
           >
