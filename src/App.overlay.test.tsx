@@ -15,9 +15,32 @@ afterEach(() => {
 const key = (k: string) => fireEvent.keyDown(window, { key: k })
 const overlay = () => screen.queryByTestId('board-overlay')
 
-test('a new game in the ready state shows no overlay', () => {
+test('a new game in the ready state shows the start hint on the dimmed board, hidden from screen readers', () => {
   // given / when
   render(<App />)
+
+  // then
+  expect(overlay()?.getAttribute('data-label')).toBe('Snake')
+  expect(overlay()?.getAttribute('aria-hidden')).toBe('true')
+  expect(screen.getByTestId('board').contains(overlay())).toBe(true)
+  expect(lines()).toEqual(['Press an arrow key or WASD to start', 'Swipe on the board to start'])
+})
+
+test('the start hint is spoken once, by the sr-only status below the board', () => {
+  // given / when
+  render(<App />)
+
+  // then
+  expect(screen.getAllByText('Press an arrow key or WASD to start')).toHaveLength(1)
+  expect(screen.getByRole('status').className).toContain('sr-only')
+})
+
+test('the start overlay goes away on the first key', () => {
+  // given
+  render(<App />)
+
+  // when
+  key('ArrowRight')
 
   // then
   expect(overlay()).toBeNull()

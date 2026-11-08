@@ -182,9 +182,15 @@ export default function App() {
         )}
         {cell(game.food.x, game.food.y, 'food', FOOD_LOOK, 'pulse')}
         {game.bonus && cell(game.bonus.cell.x, game.bonus.cell.y, 'bonus', BONUS_LOOK, 'pulse', 'Bonus food')}
-        {(paused || over) && (
+        {(ready || paused || over) && (
           // The label is drawn by CSS from data-label, so the sr-only status below the board is the only spoken copy.
-          <div data-testid="board-overlay" className="board-overlay" data-label={over ? 'Game over' : 'Paused'} aria-hidden="true">
+          <div data-testid="board-overlay" className="board-overlay" data-label={over ? 'Game over' : paused ? 'Paused' : 'Snake'} aria-hidden="true">
+            {ready && (
+              <>
+                <span className="overlay-line overlay-hint hint-keys" data-text="Press an arrow key or WASD to start" />
+                <span className="overlay-line overlay-hint hint-touch" data-text="Swipe on the board to start" />
+              </>
+            )}
             {over && (
               <>
                 <span className="overlay-line" data-text={`Final score: ${game.score}`} />
@@ -204,7 +210,7 @@ export default function App() {
       </div>
       <div className="messages">
         {ready && (
-          <p role="status">
+          <p role="status" className="sr-only">
             <span className="hint-keys">Press an arrow key or WASD to start</span>
             <span className="hint-touch">Swipe on the board to start</span>
           </p>
