@@ -197,15 +197,21 @@ test('the start and paused overlays use a light dim so the snake and food stay v
   expect(overlay()?.getAttribute('class')).toBe('board-overlay')
 })
 
-test('the start panel sits low so the snake stays uncovered, paused keeps it centred', () => {
+test('the start panel sits low, and the paused panel sits away from the snake head', () => {
   // given
   render(<App />)
 
   // when / then
-  expect(overlay()?.classList.contains('board-overlay-ready')).toBe(true)
+  expect(overlay()?.classList.contains('board-overlay-bottom')).toBe(true)
   key('ArrowRight')
   key('p')
-  expect(overlay()?.classList.contains('board-overlay-ready')).toBe(false)
+  expect(overlay()?.classList.contains('board-overlay-bottom')).toBe(true)
+  key('p')
+  key('ArrowDown')
+  act(() => vi.advanceTimersByTime(200 * 3))
+  key('p')
+  expect(overlay()?.classList.contains('board-overlay-top')).toBe(true)
+  expect(overlay()?.classList.contains('board-overlay-bottom')).toBe(false)
 })
 
 test('Enter restarts after game over', () => {
