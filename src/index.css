@@ -30,6 +30,7 @@ button {
 }
 
 .messages {
+  margin-top: 12px;
   min-height: 170px;
 }
 
