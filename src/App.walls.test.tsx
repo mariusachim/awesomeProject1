@@ -73,3 +73,42 @@ test('blocked storage does not stop the switch', () => {
   // then
   expect(walls('wrap')).toBeTruthy()
 })
+
+const SOLID = 'Walls: the edge ends the run'
+const WRAP = 'Walls off: the snake passes through the edge'
+const overlayTexts = () =>
+  Array.from(screen.getByTestId('board-overlay').querySelectorAll('[data-text]')).map((e) => e.getAttribute('data-text'))
+
+test('the start screen says what solid walls do, on the board and for screen readers', () => {
+  // when
+  render(<App />)
+
+  // then
+  expect(overlayTexts()).toContain(SOLID)
+  expect(screen.getByRole('status').textContent).toContain(SOLID)
+})
+
+test('toggling the walls changes the line on the start screen', () => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.click(walls('solid'))
+
+  // then
+  expect(overlayTexts()).toContain(WRAP)
+  expect(screen.getByRole('status').textContent).toContain(WRAP)
+  expect(overlayTexts()).not.toContain(SOLID)
+})
+
+test('the walls line is gone once the game runs', () => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+
+  // then
+  expect(screen.queryByTestId('board-overlay')).toBeNull()
+  expect(screen.queryByText(SOLID)).toBeNull()
+})
