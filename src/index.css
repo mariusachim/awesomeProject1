@@ -57,7 +57,25 @@ button {
   pointer-events: none;
 }
 
-.board-overlay::before {
+/* Ready and paused: light dim keeps the snake and food visible; the panel keeps the text above 4.5:1 (#fff on 0.8 black). */
+.board-overlay-light {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.overlay-panel {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.board-overlay-light .overlay-panel {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.overlay-panel::before {
   content: attr(data-label);
   color: #fff;
   font-size: 2rem;
