@@ -85,6 +85,20 @@ const crash = () => {
 }
 const lines = () => Array.from(screen.getByTestId('board-overlay').querySelectorAll('[data-text]')).map((e) => e.getAttribute('data-text'))
 
+test('pausing shows the resume hint for keyboard and touch on the board', () => {
+  // given
+  render(<App />)
+  key('ArrowRight')
+
+  // when
+  key('p')
+
+  // then
+  expect(lines()).toEqual(['Press Space or P to resume', 'Tap Resume'])
+  key('p')
+  expect(overlay()).toBeNull()
+})
+
 test('game over shows the final score and a restart hint on the board', () => {
   // given
   render(<App />)
