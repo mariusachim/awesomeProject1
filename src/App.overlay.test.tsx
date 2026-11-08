@@ -78,3 +78,64 @@ test('while paused the status text is only spoken, so Paused is visible once, on
   expect(status.textContent).toBe('Paused')
   expect(status.className).toContain('sr-only')
 })
+
+const crash = () => {
+  key('ArrowUp')
+  act(() => vi.advanceTimersByTime(200 * 30))
+}
+const lines = () => Array.from(screen.getByTestId('board-overlay').querySelectorAll('[data-text]')).map((e) => e.getAttribute('data-text'))
+
+test('game over shows the final score and a restart hint on the board', () => {
+  // given
+  render(<App />)
+
+  // when
+  crash()
+
+  // then
+  expect(lines()).toEqual(['Final score: 0', 'Press Enter to restart', 'Tap Restart'])
+})
+
+test('game over speaks the result once and shows only the Restart button below the board', () => {
+  // given
+  render(<App />)
+
+  // when
+  crash()
+
+  // then
+  const alert = screen.getByRole('alert')
+  expect(screen.getAllByText('Game over')).toHaveLength(1)
+  expect(screen.getAllByText('Final score: 0')).toHaveLength(1)
+  const visible = Array.from(alert.children).filter((e) => !e.classList.contains('sr-only'))
+  expect(visible.map((e) => e.tagName)).toEqual(['BUTTON'])
+})
+
+test('a new high score shows on the board too', () => {
+  // given
+  render(<App />)
+  // the food sits at 0,0 and the snake starts at 7,7 heading right
+  key('ArrowUp')
+  act(() => vi.advanceTimersByTime(200 * 7))
+  key('ArrowLeft')
+  act(() => vi.advanceTimersByTime(200 * 7))
+  act(() => vi.advanceTimersByTime(200 * 30))
+
+  // when
+  const text = lines()
+
+  // then
+  expect(text).toContain('New high score!')
+})
+
+test('Enter restarts after game over', () => {
+  // given
+  render(<App />)
+  crash()
+
+  // when
+  key('Enter')
+
+  // then
+  expect(overlay()).toBeNull()
+})

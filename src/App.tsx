@@ -53,6 +53,7 @@ export default function App() {
   // The record before this run: it is refreshed while the score is 0, and frozen once the run scores.
   const [record, setRecord] = useState(best)
   if (game.score === 0 && record !== highScore) setRecord(highScore)
+  const newBest = over && isNewHighScore(record, game.score)
 
   const prev = useRef({ score: game.score, over })
   useEffect(() => {
@@ -172,7 +173,16 @@ export default function App() {
         {game.bonus && cell(game.bonus.cell.x, game.bonus.cell.y, 'bonus', BONUS_LOOK, 'pulse', 'Bonus food')}
         {(paused || over) && (
           // The label is drawn by CSS from data-label, so the sr-only status below the board is the only spoken copy.
-          <div data-testid="board-overlay" className="board-overlay" data-label={over ? 'Game over' : 'Paused'} aria-hidden="true" />
+          <div data-testid="board-overlay" className="board-overlay" data-label={over ? 'Game over' : 'Paused'} aria-hidden="true">
+            {over && (
+              <>
+                <span className="overlay-line" data-text={`Final score: ${game.score}`} />
+                {newBest && <span className="overlay-line" data-text="New high score!" />}
+                <span className="overlay-line overlay-hint hint-keys" data-text="Press Enter to restart" />
+                <span className="overlay-line overlay-hint hint-touch" data-text="Tap Restart" />
+              </>
+            )}
+          </div>
         )}
       </div>
       <div className="messages">
@@ -189,9 +199,9 @@ export default function App() {
         )}
         {over && (
           <div role="alert">
-            <p>Game over</p>
-            <p>Final score: {game.score}</p>
-            {isNewHighScore(record, game.score) && <p>New high score!</p>}
+            <p className="sr-only">Game over</p>
+            <p className="sr-only">Final score: {game.score}</p>
+            {newBest && <p className="sr-only">New high score!</p>}
             <button onClick={() => setGame(newGame(Math.random, game.wrap))}>Restart</button>
           </div>
         )}
