@@ -42,7 +42,7 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
 - Open the pull request with `gh pr create`.
 - Write the PR title in the commit format: `<type>(#<issue>): <description>`.
 - Put `Refs #<issue>` in the PR body. Do not write `Closes`, `Fixes` or `Resolves`:
-  Claude closes the issue, not GitHub.
+  the `issue-closeout` workflow closes the issue, not GitHub.
 
 ## Merge with squash only
 
@@ -54,14 +54,13 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
 - Do not use a merge commit or a rebase merge.
 - After the merge, update the local `main`: `git switch main && git pull`.
 
-## Close the issue after the merge
+## The workflow closes the issue
 
-- Confirm that the merge is done: `gh pr view <pr> --json state` must show `MERGED`.
-- Close the issue that the PR refers to, with a comment that names the PR:
-  `gh issue close <issue> --comment "Done in #<pr>."`
-- If the merge fails, do not close the issue.
-- If you find a merged PR whose issue is still open (for example, the user merged it
-  on GitHub), close the issue in the same way.
+- Do not close the issue after the merge. The `issue-closeout` workflow does it: it posts the
+  Effort and System Changes section of the PR on the issue and closes the issue.
+- If you find a merged PR whose issue is still open, the closeout run failed. Find the run with
+  `gh run list --workflow issue-closeout.yml` and run it again with `gh run rerun <run> --failed`.
+  If there is no run, tell the user.
 
 # Feature pipeline
 
@@ -82,7 +81,7 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
   UX developer (`/improve-ux`). The designer plays the live game, looks for what makes it more
   pleasant for the player, and files one UI/UX improvement as an issue with the label
   `ux-improvement`. A broken behaviour comes first. The UX developer builds the oldest open
-  `ux-improvement` issue, merges it and closes the issue, or closes it as not planned.
+  `ux-improvement` issue and merges the PR, or closes the issue as not planned.
 - Work in progress is one `ux-improvement` issue. The designer files nothing while one is open.
 - The label `ux-bug` is the old label of the design review. Its issues are history.
 - Each FEAT file has one issue with the label `feature`. The issue state is the feature state.

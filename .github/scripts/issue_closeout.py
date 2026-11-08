@@ -30,26 +30,10 @@ FIELDS = [
 ]
 LABELS = [f[0] for f in FIELDS]
 
-# USD per million tokens at API list prices: input, 5-minute cache write, 1-hour cache write, cache read, output.
-# Copied from the ponytail band (hooks/ponytail-band-import.js), which checked them on 2026-10-17 against
-# https://platform.claude.com/docs/en/about-claude/pricing. Add a model here when the hook says it has no price.
-OPUS = (5, 6.25, 10, 0.5, 25)
-PRICES = {
-    "claude-fable-5-1": (10, 12.5, 20, 0.25, 50),
-    "claude-fable-5": (10, 12.5, 20, 1, 50),
-    "claude-opus-5-5": (4, 5, 8, 0.2, 20),
-    "claude-opus-5": OPUS,
-    "claude-opus-4-8": OPUS,
-    "claude-opus-4-7": OPUS,
-    "claude-opus-4-6": OPUS,
-    "claude-opus-4-5": OPUS,
-    "claude-sonnet-5-5": (2, 2.5, 4, 0.1, 10),
-    "claude-sonnet-5": (2, 2.5, 4, 0.2, 10),
-    "claude-sonnet-4-6": (3, 3.75, 6, 0.3, 15),
-    "claude-sonnet-4-5": (3, 3.75, 6, 0.3, 15),
-    "claude-haiku-5-5": (0.1, 0.125, 0.2, 0.01, 0.5),
-    "claude-haiku-4-5": (1, 1.25, 2, 0.1, 5),
-}
+# The list prices live in the ponytail plugin: its replyCost prices one reply from the reply's model and usage.
+PRICE_JS = ("const { replyCost } = require(process.argv[1]);"
+            "const replies = JSON.parse(require('fs').readFileSync(0, 'utf8'));"
+            "process.stdout.write(JSON.stringify(replies.map(([model, usage]) => replyCost(model, usage))));")
 
 HOW_TO_FILL = """Put this section at the end of the PR body with `gh pr edit {number} --body-file -` and a quoted heredoc.
 Keep the Effort lines as they are: they are the cost of this Claude session so far, at API list prices.
@@ -90,21 +74,20 @@ def check(pr):
     return issue, problems + parse(pr["body"])[1]
 
 
-def reply_cost(model, usage):
-    price = PRICES.get(re.sub(r"\[.*\]$|-\d{8}$", "", model))
-    if price is None:
-        raise ValueError(f"No list price for {model}. Add it to PRICES in .github/scripts/issue_closeout.py.")
-    split = usage.get("cache_creation") or {}
-    w1 = split.get("ephemeral_1h_input_tokens", 0)
-    w5 = split.get("ephemeral_5m_input_tokens", usage.get("cache_creation_input_tokens", 0) - w1)
-    tokens = (usage.get("input_tokens", 0), w5, w1, usage.get("cache_read_input_tokens", 0), usage.get("output_tokens", 0))
-    return sum(t * p for t, p in zip(tokens, price)) / 1e6
+def ponytail_band():
+    """Return the ponytail hook file that exports replyCost, from the plugin that Claude Code installed."""
+    config = Path(os.environ.get("CLAUDE_CONFIG_DIR") or Path.home() / ".claude")
+    plugins = json.loads((config / "plugins" / "installed_plugins.json").read_text())["plugins"]
+    for name, installs in plugins.items():
+        if name.startswith("ponytail@") and installs:
+            return Path(installs[0]["installPath"]) / "hooks" / "ponytail-band-import.js"
+    raise ValueError(f"The ponytail plugin is not installed in {config}.")
 
 
 def session_cost(transcript):
     """Return the list-price cost in USD of a Claude Code session, its subagents included, and its main model."""
-    # shortcut: tokens only, at standard speed; side calls that the transcript does not log (titles, compaction),
-    # web searches, fast mode and long-context prices are left out, so it runs 5-15% under Claude Code's own total.
+    # shortcut: side calls that the transcript does not log (titles, compaction) are left out,
+    # so it runs a little under Claude Code's own total.
     main = Path(transcript)
     replies, model = {}, None
     for path in [main, *sorted(main.with_suffix("").glob("subagents/*.jsonl"))]:
@@ -122,7 +105,13 @@ def session_cost(transcript):
                 # Claude Code writes one record per content block, each with the usage of the whole reply.
                 replies[m["id"]] = (m["model"], m.get("usage") or {})
                 model = m["model"] if path == main else model
-    return sum(reply_cost(*reply) for reply in replies.values()), model
+    replies = list(replies.values())
+    costs = json.loads(subprocess.run(["node", "-e", PRICE_JS, str(ponytail_band())], input=json.dumps(replies),
+                                      check=True, stdout=subprocess.PIPE, text=True).stdout)
+    unpriced = sorted({name for (name, _), cost in zip(replies, costs) if cost is None})
+    if unpriced:
+        raise ValueError(f"The ponytail plugin has no list price for {', '.join(unpriced)}, or a reply used fast mode.")
+    return sum(costs), model
 
 
 def gh(*args):
@@ -145,7 +134,7 @@ def hook(event):
     try:
         cost, model = session_cost(event["transcript_path"])
         values[LABELS[0]], values["Model"] = f"${cost:.2f}", model or "MISSING"
-    except (KeyError, OSError, ValueError) as e:
+    except (KeyError, OSError, ValueError, subprocess.CalledProcessError) as e:
         problems.append(f"The hook cannot count the cost: {e!r}. Do not write the cost or the model yourself; tell the user.")
     lines = "\n".join(f"- {p}" for p in problems)
     return 2, (f"issue-closeout: PR #{pr['number']} cannot merge yet.\n{lines}\n\n"

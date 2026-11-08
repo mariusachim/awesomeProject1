@@ -1,6 +1,6 @@
 ---
 name: implement-feature
-description: Build the open FEAT feature of the snake game. Plan it with a WBS, implement it with ub-mode, open a PR, merge it when CI passes, and close the issue. Use when the feature pipeline runs /implement-feature.
+description: Build the open FEAT feature of the snake game. Plan it with a WBS, implement it with ub-mode, open a PR, and merge it when CI passes. Use when the feature pipeline runs /implement-feature.
 ---
 
 # Implement a feature
@@ -46,7 +46,7 @@ It posts the WBS as a comment on the issue.
 - If a check fails, read its log with `gh run view <run> --log-failed`, fix the cause, push,
   and watch again. After 3 failed rounds, stop: comment on the issue with the reason, add the
   label `needs-human`, and do not merge.
-- When all checks pass, merge and close the issue as `CLAUDE.md` says.
+- When all checks pass, merge as `CLAUDE.md` says. The `issue-closeout` workflow closes the issue.
 
 ## 6. Report
 
