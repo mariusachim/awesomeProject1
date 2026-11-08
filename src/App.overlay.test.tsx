@@ -14,13 +14,14 @@ afterEach(() => {
 
 const key = (k: string) => fireEvent.keyDown(window, { key: k })
 const overlay = () => screen.queryByTestId('board-overlay')
+const label = () => overlay()?.querySelector('.overlay-panel')?.getAttribute('data-label')
 
 test('a new game in the ready state shows the start hint on the dimmed board, hidden from screen readers', () => {
   // given / when
   render(<App />)
 
   // then
-  expect(overlay()?.getAttribute('data-label')).toBe('Snake')
+  expect(label()).toBe('Snake')
   expect(overlay()?.getAttribute('aria-hidden')).toBe('true')
   expect(screen.getByTestId('board').contains(overlay())).toBe(true)
   expect(lines()).toEqual(['Press an arrow key or WASD to start', 'Swipe on the board to start'])
@@ -55,7 +56,7 @@ test('pausing dims the board with a Paused label, and resuming removes it', () =
   key('p')
 
   // then
-  expect(overlay()?.getAttribute('data-label')).toBe('Paused')
+  expect(label()).toBe('Paused')
   expect(screen.getByTestId('board').contains(overlay())).toBe(true)
   key('p')
   expect(overlay()).toBeNull()
@@ -70,7 +71,7 @@ test('game over dims the board with a Game over label and Restart still works', 
   act(() => vi.advanceTimersByTime(200 * 30))
 
   // then
-  expect(overlay()?.getAttribute('data-label')).toBe('Game over')
+  expect(label()).toBe('Game over')
   fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
   expect(overlay()).toBeNull()
 })
@@ -180,6 +181,20 @@ test('a new high score shows on the board too', () => {
 
   // then
   expect(text).toContain('New high score!')
+})
+
+test('the start and paused overlays use a light dim so the snake and food stay visible, game over keeps the strong dim', () => {
+  // given
+  render(<App />)
+
+  // when / then
+  expect(overlay()?.classList.contains('board-overlay-light')).toBe(true)
+  key('ArrowRight')
+  key('p')
+  expect(overlay()?.classList.contains('board-overlay-light')).toBe(true)
+  key('p')
+  act(() => vi.advanceTimersByTime(200 * 30))
+  expect(overlay()?.getAttribute('class')).toBe('board-overlay')
 })
 
 test('Enter restarts after game over', () => {
