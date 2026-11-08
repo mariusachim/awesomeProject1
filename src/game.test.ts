@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, cellShade, keyToDir, newGame, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -513,4 +513,39 @@ test('the 5th normal food keeps a bonus food that is still on the board', () => 
   // then
   expect(next.bonus).toEqual({ cell: BONUS_FAR, movesLeft: 8 })
   expect(next.eaten).toBe(0)
+})
+
+const lum = (hex: string) => {
+  const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+}
+const contrast = (a: string, b: string) => {
+  const [hi, lo] = [lum(a), lum(b)].sort((p, q) => q - p)
+  return (hi + 0.05) / (lo + 0.05)
+}
+
+test('cell shades alternate between neighbours and depend only on x + y parity', () => {
+  // given
+  const cells = Array.from({ length: SIZE * SIZE }, (_, i) => ({ x: i % SIZE, y: Math.floor(i / SIZE) }))
+
+  // when / then
+  for (const { x, y } of cells) {
+    expect(cellShade(x, y)).not.toBe(cellShade(x + 1, y))
+    expect(cellShade(x, y)).not.toBe(cellShade(x, y + 1))
+    expect(cellShade(x, y)).toBe(cellShade(x + 1, y + 1))
+  }
+})
+
+test('both shades are dark and keep 3:1 contrast against the game pieces', () => {
+  // given
+  const pieces = ['#77ee77', '#22aa22', '#ee4444', '#ffcc33']
+
+  // when
+  const shades = [cellShade(0, 0), cellShade(1, 0)]
+
+  // then
+  for (const s of shades) {
+    expect(lum(s)).toBeLessThan(0.05)
+    for (const p of pieces) expect(contrast(s, p)).toBeGreaterThanOrEqual(3)
+  }
 })

@@ -2,7 +2,7 @@ import { type CSSProperties, type KeyboardEvent as ReactKeyEvent, type TouchEven
 import { isNewHighScore, loadHighScore, saveHighScore } from './highScore.ts'
 import { loadWrap, saveWrap } from './wallsMode.ts'
 import { loadMuted, play, saveMuted } from './sound.ts'
-import { type GameState, SIZE, keyToDir, newGame, pauseIfRunning, speedLevel, step, swipeDir, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, cellShade, keyToDir, newGame, pauseIfRunning, speedLevel, step, swipeDir, tickMs, togglePause, turn } from './game.ts'
 
 const CELL_PX = 24
 // Shape and outline tell the cells apart without colour: round food, outlined head, inset body.
@@ -11,6 +11,8 @@ const BODY_LOOK: CSSProperties = { background: '#2a2', boxSizing: 'border-box', 
 const FOOD_LOOK: CSSProperties = { background: '#e44', borderRadius: '50%' }
 // The bonus food is a gold diamond, so it differs from the round red food by shape and colour.
 const BONUS_LOOK: CSSProperties = { background: '#fc3', clipPath: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)' }
+
+const TILES = Array.from({ length: SIZE * SIZE }, (_, i) => ({ x: i % SIZE, y: Math.floor(i / SIZE) }))
 
 function onKeyPress(g: GameState, key: string): GameState {
   const dir = keyToDir(key)
@@ -162,10 +164,18 @@ export default function App() {
       <div
         className="board"
         data-testid="board"
-        style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#222', touchAction: 'none' }}
+        style={{ position: 'relative', width: SIZE * CELL_PX, height: SIZE * CELL_PX, background: '#1c1c1c', touchAction: 'none' }}
         onTouchStart={onSwipeStart}
         onTouchEnd={onSwipeEnd}
       >
+        {TILES.map(({ x, y }) => (
+          <div
+            key={`${x},${y}`}
+            data-testid="tile"
+            aria-hidden="true"
+            style={{ position: 'absolute', left: x * CELL_PX, top: y * CELL_PX, width: CELL_PX, height: CELL_PX, background: cellShade(x, y) }}
+          />
+        ))}
         {game.snake.map((c, i) =>
           i === 0 ? cell(c.x, c.y, 'head', HEAD_LOOK) : cell(c.x, c.y, 'snake', BODY_LOOK),
         )}
