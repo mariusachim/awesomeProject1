@@ -95,6 +95,10 @@ export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 
   return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0 }
 }
 
+// R starts a new game in the same wall mode; it does nothing before the first key.
+export const restart = (state: GameState, rand: Rand): GameState =>
+  state.status === 'ready' ? state : newGame(rand, state.wrap)
+
 export function turn(state: GameState, dir: Dir): GameState {
   if (state.status === 'ready') {
     // The first key starts the game; a key against the heading only starts it.
