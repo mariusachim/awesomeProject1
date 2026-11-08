@@ -183,7 +183,20 @@ test('a new high score shows on the board too', () => {
   expect(text).toContain('New high score!')
 })
 
-test('the start and paused overlays use a light dim so the snake and food stay visible, game over keeps the strong dim', () => {
+test('the head is red on game over, green while running, and the game over panel sits away from it', () => {
+  // given
+  render(<App />)
+  expect(screen.getByTestId('head').style.background).toBe('rgb(119, 238, 119)')
+
+  // when
+  crash()
+
+  // then
+  expect(screen.getByTestId('head').style.background).toBe('rgb(238, 68, 68)')
+  expect(overlay()?.classList.contains('board-overlay-bottom')).toBe(true)
+})
+
+test('every overlay, game over included, uses a light dim so the snake and food stay visible', () => {
   // given
   render(<App />)
 
@@ -194,7 +207,7 @@ test('the start and paused overlays use a light dim so the snake and food stay v
   expect(overlay()?.classList.contains('board-overlay-light')).toBe(true)
   key('p')
   act(() => vi.advanceTimersByTime(200 * 30))
-  expect(overlay()?.getAttribute('class')).toBe('board-overlay')
+  expect(overlay()?.classList.contains('board-overlay-light')).toBe(true)
 })
 
 test('the start panel sits low, and the paused panel sits away from the snake head', () => {

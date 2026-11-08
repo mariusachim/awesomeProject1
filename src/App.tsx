@@ -33,6 +33,8 @@ const HEAD_LOOK: CSSProperties = {
   outlineOffset: -2,
   boxSizing: "border-box",
 };
+// On game over the head turns red to mark the crash cell; the outline keeps the shape.
+const CRASH_HEAD_LOOK: CSSProperties = { ...HEAD_LOOK, background: "#e44" };
 const BODY_LOOK: CSSProperties = {
   background: "#2a2",
   boxSizing: "border-box",
@@ -280,7 +282,7 @@ export default function App() {
         ))}
         {game.snake.map((c, i) =>
           i === 0
-            ? cell(c.x, c.y, "head", HEAD_LOOK)
+            ? cell(c.x, c.y, "head", over ? CRASH_HEAD_LOOK : HEAD_LOOK)
             : cell(c.x, c.y, "snake", BODY_LOOK),
         )}
         {cell(game.food.x, game.food.y, "food", FOOD_LOOK, "pulse")}
@@ -297,15 +299,11 @@ export default function App() {
           // The label is drawn by CSS from data-label, so the sr-only status below the board is the only spoken copy.
           <div
             data-testid="board-overlay"
-            className={
-              over
-                ? "board-overlay"
-                : `board-overlay board-overlay-light ${
-                    ready || game.snake[0].y < SIZE / 2
-                      ? "board-overlay-bottom"
-                      : "board-overlay-top"
-                  }`
-            }
+            className={`board-overlay board-overlay-light ${
+              ready || game.snake[0].y < SIZE / 2
+                ? "board-overlay-bottom"
+                : "board-overlay-top"
+            }`}
             aria-hidden="true"
           >
             <div
