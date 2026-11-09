@@ -63,6 +63,7 @@ function onKeyPress(g: GameState, key: string): GameState {
   const dir = keyToDir(key);
   if (dir) return turn(g, dir);
   if (key === " " || key.toLowerCase() === "p") return togglePause(g);
+  if (key === "Escape") return pauseIfRunning(g);
   if (key.toLowerCase() === "r") return restart(g, Math.random);
   if (key === "Enter" && g.status === "over")
     return newGame(Math.random, g.wrap);
