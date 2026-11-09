@@ -568,6 +568,14 @@ test('head and food in the same half put the panel at the other edge', () => {
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 12 } })).toBe('top')
 })
 
+test('game over puts the panel at the edge that covers neither head nor food', () => {
+  // given / when / then
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: 2 } })).toBe('bottom')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 12 } })).toBe('top')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 2 } })).toBe('top')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 1 } })).toBe('bottom')
+})
+
 test('with both edges free the panel stays away from the head', () => {
   // given / when / then
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 5 }], food: { x: 3, y: 7 } })).toBe('bottom')

@@ -4,14 +4,13 @@ export const SIZE = 15
 export const cellShade = (x: number, y: number): string => ((x + y) % 2 === 0 ? '#1c1c1c' : '#2c2c2c')
 
 type Edge = 'top' | 'bottom'
-// Panel height in rows on a small phone (24 px cells): the start panel has 5, the paused panel 4.
-const panelRows = (status: 'ready' | 'running' | 'paused' | 'over') => (status === 'ready' ? 5 : 4)
+// Panel height in rows on a small phone (24 px cells): the start and game over panels have 5, the paused panel 4.
+const panelRows = (status: 'ready' | 'running' | 'paused' | 'over') => (status === 'paused' ? 4 : 5)
 const covers = (edge: Edge, rows: number, y: number) => (edge === 'top' ? y < rows : y >= SIZE - rows)
 
-// The overlay panel goes to the edge away from the head; on start and pause it also keeps off the food.
+// The overlay panel goes to the edge away from the head; it also keeps off the food.
 export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'; snake: { y: number }[]; food: { y: number } }): Edge {
   const away: Edge = s.status === 'ready' || s.snake[0].y < SIZE / 2 ? 'bottom' : 'top'
-  if (s.status === 'over') return away
   // The cost of an edge: the food under the panel counts more than the head.
   const cost = (e: Edge) => 2 * +covers(e, panelRows(s.status), s.food.y) + +covers(e, panelRows(s.status), s.snake[0].y)
   const other: Edge = away === 'top' ? 'bottom' : 'top'
