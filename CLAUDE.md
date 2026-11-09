@@ -97,6 +97,14 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
   issue.
   If such a change is necessary, say so in a comment on the issue.
 
+# Agent monitoring
+
+- Each Claude step in `.github/workflows/` sends OpenTelemetry metrics and events to Grafana Cloud
+  (free plan): prompts, replies, tool calls, tokens and cost. There is no proxy.
+- The repo secrets `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_EXPORTER_OTLP_HEADERS` hold the
+  destination. Copy both from the OpenTelemetry tile in Grafana Cloud. Without them, telemetry is off.
+- Filter one run with the attributes `github.job` and `github.run_id`.
+
 # Game rules: read-only safe
 
 - The game runs only in the browser. No backend, no server calls, no secrets, no tracking.
