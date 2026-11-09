@@ -17,7 +17,9 @@ If an issue without the label `needs-human` is open, stop and say
 
 ## 2. Learn the game
 
-- Read `CLAUDE.md` and every `docs/features/FEAT-*.md`. The acceptance criteria tell you what
+- Read `CLAUDE.md` and the built features:
+  `gh issue list --label feature --state closed --limit 1000 --json number,title,body,stateReason`.
+  Use only the issues with `stateReason` `COMPLETED`. Their acceptance criteria tell you what
   the game must do.
 - Read the code in `src/` that draws the game, so that your proposal names what to change.
 - Run `gh issue list --label ux-improvement --state all --limit 100 --json number,title,state`
@@ -42,7 +44,7 @@ A game over while you think is not a problem of the game.
 
 Look at each moment of the run through these lenses, and write down at least three candidates:
 
-- Broken: a control or a state that does not work, or a FEAT criterion that the page breaks.
+- Broken: a control or a state that does not work, or a feature criterion that the page breaks.
 - Access: focus that you cannot see, a control with no name, text contrast below WCAG AA,
   a touch target smaller than 44x44 px, colour as the only signal.
 - Friction: extra keys or taps in the core loop, a horizontal scroll, a board that does not fit
@@ -60,7 +62,7 @@ Look at each moment of the run through these lenses, and write down at least thr
 - Improve what the game already has: how it looks, reads, sounds and feels. Do not add a new
   rule, mode or control. That is the work of the product owner.
 - Keep it small: one PR.
-- Do not break a FEAT acceptance criterion. Do not repeat or undo an earlier improvement.
+- Do not break a feature acceptance criterion. Do not repeat or undo an earlier improvement.
   If a closed issue describes a problem that is back, propose it again and name the closed issue.
 - Build on the current colours, type and spacing. Each animation stops when the player sets
   `prefers-reduced-motion`.
@@ -78,7 +80,7 @@ Use these sections in the body:
 - **Why**: how the change makes the run more pleasant.
 - **Proposal**: the change, and the files in `src/` that it touches.
 - **Acceptance criteria**: Given/When/Then.
-- **FEAT**: the FEAT files that the change touches, if there are some.
+- **Features**: the feature issues (`#<number>`) that the change touches, if there are some.
 - **Other ideas**: your other candidates, one line each. A later run can take one.
 
 ## 7. Report
