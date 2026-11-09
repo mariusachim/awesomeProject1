@@ -27,6 +27,11 @@ export function saveMuted(muted: boolean): void {
   }
 }
 
+export function vibrate(): void {
+  // optional call: browsers without the Vibration API (e.g. iOS Safari) skip it
+  navigator.vibrate?.(150)
+}
+
 let ctx: AudioContext | undefined
 
 export function play(sound: Sound): void {

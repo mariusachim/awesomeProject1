@@ -8,7 +8,7 @@ import {
 } from "react";
 import { isNewHighScore, loadHighScore, saveHighScore } from "./highScore.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
-import { loadMuted, play, saveMuted } from "./sound.ts";
+import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
   type GameState,
   SIZE,
@@ -128,7 +128,10 @@ export default function App() {
     const was = prev.current;
     prev.current = { score: game.score, over };
     if (muted) return;
-    if (over && !was.over) play("over");
+    if (over && !was.over) {
+      play("over");
+      vibrate();
+    }
     else if (game.score > was.score) play("eat");
   }, [game.score, over, muted]);
 
