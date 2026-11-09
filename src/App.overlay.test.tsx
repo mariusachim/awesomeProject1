@@ -135,7 +135,7 @@ test('pausing shows the resume hint for keyboard and touch on the board', () => 
   key('p')
 
   // then
-  expect(lines()).toEqual(['Press Space or P to resume', 'Tap Resume'])
+  expect(lines()).toEqual(['Press Space or P to resume', 'Tap Resume', 'H resets the high score'])
   key('p')
   expect(overlay()).toBeNull()
 })
@@ -148,7 +148,7 @@ test('game over shows the final score and a restart hint on the board', () => {
   crash()
 
   // then
-  expect(lines()).toEqual(['Final score: 0', 'Press Enter to restart', 'Tap Restart'])
+  expect(lines()).toEqual(['Final score: 0', 'Press Enter to restart', 'Tap Restart', 'H resets the high score'])
 })
 
 test('game over speaks the result once and shows only the Restart button below the board', () => {
