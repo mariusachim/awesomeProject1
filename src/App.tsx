@@ -106,7 +106,9 @@ export default function App() {
   );
   const [best, setBest] = useState(loadHighScore);
   const [muted, setMuted] = useState(loadMuted);
-  const highScore = Math.max(best, game.score);
+  // The score of the run when H cleared the record: that run no longer counts. Back to 0 on a new run.
+  const [cleared, setCleared] = useState(0);
+  const highScore = Math.max(best, game.score > cleared ? game.score : 0);
   const over = game.status === "over";
   const paused = game.status === "paused";
   const ready = game.status === "ready";
@@ -119,6 +121,7 @@ export default function App() {
     return () => clearInterval(id);
   }, [game.score]);
 
+  if (game.score === 0 && cleared !== 0) setCleared(0);
   if (highScore > best) setBest(highScore);
   // The record before this run: it is refreshed while the score is 0, and frozen once the run scores.
   const [record, setRecord] = useState(best);
@@ -142,8 +145,19 @@ export default function App() {
   useEffect(() => saveWrap(game.wrap), [game.wrap]);
 
   useEffect(() => {
-    if (best > 0) saveHighScore(best);
+    saveHighScore(best);
   }, [best]);
+
+  useEffect(() => {
+    const onReset = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() !== "h" || game.status === "running") return;
+      setBest(0);
+      setRecord(0);
+      setCleared(game.score);
+    };
+    window.addEventListener("keydown", onReset);
+    return () => window.removeEventListener("keydown", onReset);
+  }, [game.status, game.score]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => setGame((g) => onKeyPress(g, e.key));
@@ -399,6 +413,10 @@ export default function App() {
                     className="overlay-line overlay-hint hint-touch"
                     data-text="Tap Restart"
                   />
+                  <span
+                    className="overlay-line overlay-hint"
+                    data-text="H resets the high score"
+                  />
                 </>
               )}
               {paused && (
@@ -410,6 +428,10 @@ export default function App() {
                   <span
                     className="overlay-line overlay-hint hint-touch"
                     data-text="Tap Resume"
+                  />
+                  <span
+                    className="overlay-line overlay-hint"
+                    data-text="H resets the high score"
                   />
                 </>
               )}
