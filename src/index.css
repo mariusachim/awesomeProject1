@@ -191,18 +191,23 @@ button:focus-visible {
 }
 
 .stats {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 4px 24px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: auto auto;
+  justify-content: start;
+  align-content: end;
+  gap: 0 24px;
   height: 4.5rem;
   margin-bottom: 12px;
   overflow: hidden;
 }
 
 .stat {
-  display: flex;
-  flex-direction: column;
+  /* Subgrid: all labels share row 1 and all values row 2, baseline-aligned. */
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  align-items: baseline;
   margin: 0;
 }
 
