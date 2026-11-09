@@ -4,8 +4,8 @@ export const SIZE = 15
 export const cellShade = (x: number, y: number): string => ((x + y) % 2 === 0 ? '#1c1c1c' : '#2c2c2c')
 
 type Edge = 'top' | 'bottom'
-// Panel height in rows: the start panel has 4, the paused panel 3.
-const panelRows = (status: 'ready' | 'running' | 'paused' | 'over') => (status === 'ready' ? 4 : 3)
+// Panel height in rows on a small phone (24 px cells): the start panel has 5, the paused panel 4.
+const panelRows = (status: 'ready' | 'running' | 'paused' | 'over') => (status === 'ready' ? 5 : 4)
 const covers = (edge: Edge, rows: number, y: number) => (edge === 'top' ? y < rows : y >= SIZE - rows)
 
 // The overlay panel goes to the edge away from the head; on start and pause it also keeps off the food.
