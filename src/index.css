@@ -1,3 +1,14 @@
+:root {
+  --cell: 24px;
+}
+
+/* A big screen has room for 15 cells of 32 px, and the board still fits with the stats. */
+@media (min-width: 600px) and (min-height: 800px) {
+  :root {
+    --cell: 32px;
+  }
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -31,7 +42,7 @@ button {
 
 .messages {
   margin-top: 12px;
-  min-height: 170px;
+  min-height: 44px;
 }
 
 .board {

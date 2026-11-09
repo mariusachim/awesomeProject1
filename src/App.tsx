@@ -25,7 +25,8 @@ import {
   turn,
 } from "./game.ts";
 
-const CELL_PX = 24;
+// The cell size is the CSS variable --cell (index.css): one value sizes the board and every cell.
+const px = (n: number) => `calc(var(--cell) * ${n})`;
 // Shape and outline tell the cells apart without colour: round food, outlined head, inset body.
 const HEAD_LOOK: CSSProperties = {
   background: "#7e7",
@@ -213,10 +214,10 @@ export default function App() {
       className={className}
       style={{
         position: "absolute",
-        left: x * CELL_PX,
-        top: y * CELL_PX,
-        width: CELL_PX,
-        height: CELL_PX,
+        left: px(x),
+        top: px(y),
+        width: px(1),
+        height: px(1),
         ...look,
       }}
     />
@@ -263,8 +264,8 @@ export default function App() {
         data-testid="board"
         style={{
           position: "relative",
-          width: SIZE * CELL_PX,
-          height: SIZE * CELL_PX,
+          width: px(SIZE),
+          height: px(SIZE),
           background: "#1c1c1c",
           touchAction: "none",
         }}
@@ -278,10 +279,10 @@ export default function App() {
             aria-hidden="true"
             style={{
               position: "absolute",
-              left: x * CELL_PX,
-              top: y * CELL_PX,
-              width: CELL_PX,
-              height: CELL_PX,
+              left: px(x),
+              top: px(y),
+              width: px(1),
+              height: px(1),
               background: cellShade(x, y),
             }}
           />
