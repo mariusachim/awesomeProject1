@@ -101,6 +101,21 @@ test('toggling the walls changes the line on the start screen', () => {
   expect(overlayTexts()).not.toContain(SOLID)
 })
 
+test('the board border class follows the walls mode, also when the game is over', () => {
+  // given
+  render(<App />)
+  const board = screen.getByTestId('board')
+  expect(board.classList.contains('board-wrap')).toBe(false)
+
+  // when
+  fireEvent.click(walls('solid'))
+
+  // then
+  expect(board.classList.contains('board-wrap')).toBe(true)
+  fireEvent.click(walls('wrap'))
+  expect(board.classList.contains('board-wrap')).toBe(false)
+})
+
 test('the walls line is gone once the game runs', () => {
   // given
   render(<App />)

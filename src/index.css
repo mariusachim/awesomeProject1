@@ -57,6 +57,11 @@ button:disabled {
   border-radius: 4px;
 }
 
+/* The line style is the Walls mode: solid kills, dashed wraps. Same width, so the layout holds. */
+.board-wrap {
+  border-style: dashed;
+}
+
 /* Colour is the steady state, so it holds with reduced motion too. */
 .board-over {
   border-color: #e44;
