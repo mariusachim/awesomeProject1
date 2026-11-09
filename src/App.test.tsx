@@ -265,6 +265,27 @@ test.each([' ', 'p'])('key "%s" pauses and resumes the game', (key) => {
   expect(head()).toBe('8,7')
 })
 
+test('key Escape pauses a running game and never resumes it', () => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.keyDown(window, { key: 'Escape' })
+  tick(3)
+
+  // then
+  expect(screen.getByText('Paused')).toBeTruthy()
+  expect(head()).toBe('7,7')
+
+  // when
+  fireEvent.keyDown(window, { key: 'Escape' })
+  tick()
+
+  // then
+  expect(screen.getByText('Paused')).toBeTruthy()
+  expect(head()).toBe('7,7')
+})
+
 test('the Pause button pauses and the Resume button resumes', () => {
   // given
   render(<App />)
