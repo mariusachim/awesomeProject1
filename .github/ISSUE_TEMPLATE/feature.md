@@ -1,6 +1,7 @@
-# FEAT-NNN: <title>
-
-Issue: #<issue>
+---
+name: Feature
+about: A small feature for the pipeline. Add the label feature to start it.
+---
 
 ## Story
 

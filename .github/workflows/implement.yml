@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          # Not the commit that started the run: the spec PR of the same run merges later.
+          # Not the commit that started the run: the other pipeline can merge while this job waits for "feature-pipeline".
           ref: main
           fetch-depth: 0
       - uses: actions/setup-node@v7
