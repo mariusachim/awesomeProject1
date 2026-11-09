@@ -204,7 +204,8 @@ export default function App() {
     label?: string,
   ) => (
     <div
-      key={`${id}${x},${y}`}
+      // The head is keyed by score, not position: it remounts on each meal so the flash replays.
+      key={id === "head" ? `head${game.score}` : `${id}${x},${y}`}
       data-testid={id}
       role={label ? "img" : undefined}
       aria-label={label}
@@ -287,7 +288,15 @@ export default function App() {
         ))}
         {game.snake.map((c, i) =>
           i === 0
-            ? cell(c.x, c.y, "head", over ? CRASH_HEAD_LOOK : HEAD_LOOK)
+            ? cell(
+                c.x,
+                c.y,
+                "head",
+                over ? CRASH_HEAD_LOOK : HEAD_LOOK,
+                game.score > 0 && game.status === "running"
+                  ? "flash"
+                  : undefined,
+              )
             : cell(c.x, c.y, "snake", BODY_LOOK),
         )}
         {cell(game.food.x, game.food.y, "food", FOOD_LOOK, "pulse")}

@@ -856,6 +856,34 @@ test('the score bumps when the snake eats, not at 0 or after a restart', () => {
   expect(scoreValue().classList.contains('bump')).toBe(false)
 })
 
+test('the head flashes when the snake eats, not at 0, when paused or when over', () => {
+  // given
+  render(<App />)
+  const flashing = () => screen.getByTestId('head').classList.contains('flash')
+
+  // then
+  expect(flashing()).toBe(false)
+
+  // when
+  eatFood()
+
+  // then
+  expect(flashing()).toBe(true)
+
+  // when
+  fireEvent.keyDown(window, { key: 'p' })
+
+  // then
+  expect(flashing()).toBe(false)
+
+  // when
+  fireEvent.keyDown(window, { key: 'p' })
+  gameOver()
+
+  // then
+  expect(flashing()).toBe(false)
+})
+
 test('the board shows 225 silent checkerboard tiles of two shades', () => {
   // given
   render(<App />)

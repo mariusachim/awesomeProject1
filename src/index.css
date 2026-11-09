@@ -146,6 +146,17 @@ button {
     animation: bump 200ms ease-out;
   }
 
+  .flash {
+    animation: flash 180ms ease-out;
+  }
+
+  @keyframes flash {
+    50% {
+      transform: scale(1.25);
+      background: #cfc;
+    }
+  }
+
   @keyframes bump {
     50% {
       transform: scale(1.25);
