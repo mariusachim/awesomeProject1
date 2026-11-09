@@ -4,3 +4,6 @@ target/
 node_modules/
 dist/
 coverage/
+
+# Local Claude Code settings (OTEL), secrets come from the macOS Keychain
+.claude/settings.local.json
