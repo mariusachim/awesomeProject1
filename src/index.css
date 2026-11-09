@@ -29,6 +29,13 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  color: #595959;
+  background: #e8e8e8;
+  border: 2px dashed #8a8a8a;
+  cursor: not-allowed;
+}
+
 .pause {
   min-width: 7rem;
 }
