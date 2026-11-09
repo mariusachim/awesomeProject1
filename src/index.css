@@ -29,6 +29,14 @@ button {
   cursor: pointer;
 }
 
+/* #595959 on #e8e8e8 is about 5.9:1; the dashed border shows "inactive" without colour alone. */
+button:disabled {
+  color: #595959;
+  background: #e8e8e8;
+  border: 2px dashed #767676;
+  cursor: not-allowed;
+}
+
 .pause {
   min-width: 7rem;
 }
