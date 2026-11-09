@@ -794,6 +794,28 @@ test('the speed level goes back to 1 on restart', () => {
   expect(screen.getByText('Speed 1')).toBeTruthy()
 })
 
+test('the length starts at 1, grows by 1 per food and goes back to 1 on restart', () => {
+  // given
+  localStorage.clear()
+  render(<App />)
+
+  // then
+  expect(screen.getByText('Length 1')).toBeTruthy()
+
+  // when
+  eatFood()
+
+  // then
+  expect(screen.getByText('Length 2')).toBeTruthy()
+
+  // when
+  gameOver()
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // then
+  expect(screen.getByText('Length 1')).toBeTruthy()
+})
+
 test('a second game that only ties the new record shows no message', () => {
   // given
   localStorage.clear()
