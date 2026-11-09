@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -11,6 +11,8 @@ const state = (over: Partial<GameState>): GameState => ({
   wrap: false,
   bonus: null,
   eaten: 0,
+  sinceFood: null,
+  gain: 0,
   ...over,
 })
 
@@ -593,4 +595,51 @@ test('game over keeps the old rule', () => {
   // given / when / then
   expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: 1 } })).toBe('bottom')
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: SIZE - 1 } })).toBe('top')
+})
+
+test.each([[null, 1], [1, 2], [10, 2], [11, 1]])('a meal after %s moves scores %s', (moves, points) => {
+  // when / then
+  expect(mealPoints(moves)).toBe(points)
+})
+
+const eat = (over: Partial<GameState>) => step(state({ food: { x: 6, y: 5 }, ...over }), () => 0)
+
+test('a meal 10 moves after the last one scores 2 and sets the gain', () => {
+  // when
+  const next = eat({ sinceFood: 9 })
+
+  // then
+  expect([next.score, next.gain, next.sinceFood]).toEqual([2, 2, 0])
+})
+
+test('a meal 11 moves after the last one scores 1', () => {
+  // when
+  const next = eat({ sinceFood: 10 })
+
+  // then
+  expect([next.score, next.gain]).toEqual([1, 1])
+})
+
+test('the first meal of a game scores 1', () => {
+  // when
+  const next = eat({})
+
+  // then
+  expect(next.score).toBe(1)
+})
+
+test('a move without a meal counts up and clears the gain', () => {
+  // when
+  const next = step(state({ sinceFood: 3, gain: 2 }), () => 0)
+
+  // then
+  expect([next.sinceFood, next.gain]).toEqual([4, 0])
+})
+
+test('a new game carries no streak', () => {
+  // when
+  const game = newGame(() => 0)
+
+  // then
+  expect([game.sinceFood, game.gain]).toEqual([null, 0])
 })
