@@ -27,6 +27,7 @@ FIELDS = [
     ("Deployment side-effects risk level", r"low|medium|high", "low/medium/high"),
     ("New tasks created", LINKS, "none, or links to the new issues"),
     ("Diagrams updated", LINKS, "none, or links to the diagrams"),
+    ("Closes the issue", YES_NO, "yes/no"),
 ]
 LABELS = [f[0] for f in FIELDS]
 
@@ -41,13 +42,14 @@ Replace each placeholder from the issue and the diff:
 - Frontend changes, Backend changes, DB migration needed, 3rd party integration work, Infra changes: yes or no.
 - Deployment side-effects risk level: high when the deployment changes stored data, a public API or the infrastructure.
 - New tasks created: links to the issues that you created for follow-up work, or none.
-- Diagrams updated: links to the diagram files that the diff changes, or none."""
+- Diagrams updated: links to the diagram files that the diff changes, or none.
+- Closes the issue: no when more work on the issue follows in another pull request, else yes."""
 
 
 def render(values):
     lines = lambda labels: "\n".join(f"- {label}: {values[label]}" for label in labels)
     return (f"### Effort\n\nPaid by the Claude subscription.\n\n{lines(LABELS[:2])}\n\n"
-            f"### System Changes\n\n{lines(LABELS[2:])}\n")
+            f"### System Changes\n\n{lines(LABELS[2:-1])}\n\n{lines(LABELS[-1:])}\n")
 
 
 def parse(body):
@@ -144,11 +146,14 @@ def hook(event):
 def close(pr):
     issue, problems = check(pr)
     if issue:
+        values = parse(pr["body"])[0]
         marker = f"<!-- issue-closeout pr=#{pr['number']} -->"
         # The marker keeps a re-run from posting the section twice.
         if marker not in gh("issue", "view", issue, "--json", "comments", "--jq", ".comments[].body"):
-            gh("issue", "comment", issue, "--body", f"{render(parse(pr['body'])[0])}\n{marker}")
-        gh("issue", "close", issue, "--reason", "completed")
+            gh("issue", "comment", issue, "--body", f"{render(values)}\n{marker}")
+        # Only an explicit "no" keeps the issue open, for example a spec PR before the PR that builds it.
+        if values["Closes the issue"].lower() != "no":
+            gh("issue", "close", issue, "--reason", "completed")
     return problems
 
 
