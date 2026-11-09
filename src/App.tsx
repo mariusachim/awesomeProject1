@@ -299,7 +299,7 @@ export default function App() {
         </button>
       </div>
       <div
-        className={over ? "board board-over" : "board"}
+        className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}`}
         data-testid="board"
         style={{
           position: "relative",
