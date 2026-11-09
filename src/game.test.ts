@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, cellShade, keyToDir, newGame, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -548,4 +548,35 @@ test('both shades are dark and keep 3:1 contrast against the game pieces', () =>
     expect(lum(s)).toBeLessThan(0.05)
     for (const p of pieces) expect(contrast(s, p)).toBeGreaterThanOrEqual(3)
   }
+})
+
+const edge = (over: Partial<GameState>) => overlayEdge(state(over))
+
+test('start screen with the food in the bottom rows puts the panel at the top', () => {
+  // given / when / then
+  expect(edge({ status: 'ready', snake: [{ x: 7, y: 7 }], food: { x: 3, y: SIZE - 1 } })).toBe('top')
+})
+
+test('paused with the head on top and the food in the bottom rows puts the panel at the top', () => {
+  // given / when / then
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 2 } })).toBe('top')
+})
+
+test('head and food in the same half put the panel at the other edge', () => {
+  // given / when / then
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 1 }], food: { x: 3, y: 2 } })).toBe('bottom')
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 12 } })).toBe('top')
+})
+
+test('with both edges free the panel stays away from the head', () => {
+  // given / when / then
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 5 }], food: { x: 3, y: 7 } })).toBe('bottom')
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 9 }], food: { x: 3, y: 7 } })).toBe('top')
+  expect(edge({ status: 'ready', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 7 } })).toBe('bottom')
+})
+
+test('game over keeps the old rule', () => {
+  // given / when / then
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: 1 } })).toBe('bottom')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: SIZE - 1 } })).toBe('top')
 })

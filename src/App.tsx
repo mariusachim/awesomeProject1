@@ -15,6 +15,7 @@ import {
   cellShade,
   keyToDir,
   newGame,
+  overlayEdge,
   pauseIfRunning,
   restart,
   speedLevel,
@@ -315,9 +316,9 @@ export default function App() {
           <div
             data-testid="board-overlay"
             className={`board-overlay board-overlay-light ${
-              ready || game.snake[0].y < SIZE / 2
-                ? "board-overlay-bottom"
-                : "board-overlay-top"
+              overlayEdge(game) === "top"
+                ? "board-overlay-top"
+                : "board-overlay-bottom"
             }`}
             aria-hidden="true"
           >
