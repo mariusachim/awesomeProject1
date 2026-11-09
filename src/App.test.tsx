@@ -597,7 +597,7 @@ test('restart keeps the chosen mode', () => {
   startKey()
   rand.mockReturnValueOnce(110.5 / 221)
   tick(2)
-  expect(screen.getByText('Score: 2')).toBeTruthy()
+  expect(screen.getByText('Score: 3')).toBeTruthy()
   for (const key of ['ArrowUp', 'ArrowLeft', 'ArrowDown']) {
     fireEvent.keyDown(window, { key })
     tick()
@@ -866,8 +866,8 @@ test('the 5th food brings a bonus food with a screen reader label, a diamond sha
   for (let i = 0; i < 12 && !screen.queryByTestId('bonus'); i++) tick()
 
   // then
-  expect(screen.getByText('Score: 5')).toBeTruthy()
-  const bonus = screen.getByRole('img', { name: 'Bonus food, 15 moves left' })
+  expect(screen.getByText('Score: 9')).toBeTruthy()
+  const bonus =screen.getByRole('img', { name: 'Bonus food, 15 moves left' })
   expect(bonus).toBe(screen.getByTestId('bonus'))
   expect(bonus.style.clipPath).toContain('polygon')
   expect(bonus.style.background).not.toBe(screen.getByTestId('food').style.background)
@@ -986,4 +986,26 @@ test('the speed value pulses when the level goes up, not at level 1 or after a r
   // then
   expect(speedValue().textContent).toBe('1')
   expect(speedValue().classList.contains('bump')).toBe(false)
+})
+
+test('the score pop shows +1 for the first meal and +2 for a quick second one', () => {
+  // given: each food sits right in front of the snake
+  const rand = vi.spyOn(Math, 'random')
+  rand.mockReturnValueOnce(111.5 / 222)
+  rand.mockReturnValueOnce(111.5 / 221)
+  renderReady(<App />)
+  startKey()
+  const pop = () => screen.queryByText(/^\+\d$/)?.textContent
+
+  // when
+  for (let i = 0; i < 12 && !pop(); i++) tick()
+
+  // then
+  expect(pop()).toBe('+1')
+
+  // when
+  for (let i = 0; i < 12 && pop() !== '+2'; i++) tick()
+
+  // then
+  expect(pop()).toBe('+2')
 })

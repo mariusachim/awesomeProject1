@@ -216,6 +216,16 @@ button:focus-visible {
   grid-template-rows: subgrid;
   align-items: baseline;
   margin: 0;
+  position: relative;
+}
+
+/* Out of the grid flow, so the pop moves no stat. */
+.pop {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.875rem;
+  color: #ffd54f;
 }
 
 .stat-label {

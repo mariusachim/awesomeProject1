@@ -77,7 +77,9 @@ function Stat({
   spoken,
   big,
   pulse = big && value !== 0,
+  gain = 0,
 }: {
+  gain?: number; // points of the last move: shown as a "+N" pop beside the value
   label: string;
   value: number | string;
   spoken: string;
@@ -96,6 +98,12 @@ function Stat({
       >
         {value}
       </span>
+      {gain > 0 && (
+        // Keyed by value, so the pop replays on each meal.
+        <span aria-hidden="true" className="pop bump" key={`pop${value}`}>
+          +{gain}
+        </span>
+      )}
       <span className="sr-only">{spoken}</span>
     </p>
   );
@@ -256,6 +264,7 @@ export default function App() {
           value={game.score}
           spoken={`Score: ${game.score}`}
           big
+          gain={game.gain}
         />
         <Stat
           label="Speed"
