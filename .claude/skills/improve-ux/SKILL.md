@@ -14,9 +14,9 @@ proposed, from the analysis to the merge, without a human.
 - Take the oldest issue without the label `needs-human`. If there is none, stop and say
   "No UI/UX improvement to build."
 - Run `gh issue view <issue>`. Read the proposal and the acceptance criteria.
-  Read the FEAT files that the issue names.
+  Read the feature issues that the issue names, with `gh issue view <number> --json title,body`.
 - Read the code in `src/` that the change touches.
-- Close the issue as not planned if the proposal breaks a FEAT acceptance criterion, adds a new
+- Close the issue as not planned if the proposal breaks a feature acceptance criterion, adds a new
   rule, mode or control, or breaks a game rule in `CLAUDE.md`:
   `gh issue close <issue> --reason "not planned" --comment "<the reason>"`. Then stop.
 

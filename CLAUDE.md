@@ -1,7 +1,8 @@
 # Snake factory
 
 A browser snake game in React and TypeScript. Claude agents build it one feature at a time:
-a product-owner agent writes `docs/features/FEAT-NNN.md`, and an implementer agent builds it.
+a product-owner agent files a `feature` issue whose body is the spec, and an implementer agent
+builds it.
 The game is live at https://mariusachim.github.io/awesomeProject1/.
 
 ## Commands
@@ -73,9 +74,10 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
 - Every 2 hours at the even hours UTC (00:15, 02:15, ...), a routine starts
   `.github/workflows/feature-factory.yml`. It runs the product owner (`/propose-feature`) and
   then the implementer (`/implement-feature`).
-- A human can also add a FEAT file to `main`. The human first opens its issue, as the product
-  owner does: the label `feature` and the title `FEAT-NNN: <title>`. The next feature-factory
-  run builds it.
+- A human can also file a feature: open an issue with the Feature template
+  (`.github/ISSUE_TEMPLATE/feature.md`) and add the label `feature`. The next feature-factory
+  run builds it. The template adds no label, because the repo is public and the label is the
+  only gate.
 - Every 2 hours at the odd hours UTC (01:15, 03:15, ...), a routine starts
   `.github/workflows/design-review.yml`. It runs the designer (`/review-design`) and then the
   UX developer (`/improve-ux`). The designer plays the live game, looks for what makes it more
@@ -84,14 +86,24 @@ GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
   `ux-improvement` issue and merges the PR, or closes the issue as not planned.
 - Work in progress is one `ux-improvement` issue. The designer files nothing while one is open.
 - The label `ux-bug` is the old label of the design review. Its issues are history.
-- Each FEAT file has one issue with the label `feature`. The issue state is the feature state.
+- Each feature is one issue with the label `feature`. The issue body is the spec, and the issue
+  state is the feature state. The issues FEAT-001 to FEAT-028 carry their old number in the title.
 - Work in progress is one feature. The product owner proposes nothing while a `feature` issue
   is open.
 - The owner allows the pipeline to merge its own PRs when all checks pass.
 - The label `needs-human` means that the pipeline stopped on that issue. The pipeline does not
   touch that issue again. A human removes the label or closes the issue.
-- In the pipeline, do not change `.github/`, `CLAUDE.md`, `.claude/` or an existing FEAT file.
+- In the pipeline, do not change `.github/`, `CLAUDE.md`, `.claude/` or the body of a feature
+  issue.
   If such a change is necessary, say so in a comment on the issue.
+
+# Agent monitoring
+
+- Each Claude step in `.github/workflows/` sends OpenTelemetry metrics and events to Grafana Cloud
+  (free plan): prompts, replies, tool calls, tokens and cost. There is no proxy.
+- The repo secrets `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_EXPORTER_OTLP_HEADERS` hold the
+  destination. Copy both from the OpenTelemetry tile in Grafana Cloud. Without them, telemetry is off.
+- Filter one run with the attributes `github.job` and `github.run_id`.
 
 # Game rules: read-only safe
 

@@ -1,6 +1,6 @@
 ---
 name: propose-feature
-description: Act as the product owner of the snake game. Invent one new small feature, write it as docs/features/FEAT-NNN.md, and merge it through an issue and a PR. Use when the feature pipeline runs /propose-feature.
+description: Act as the product owner of the snake game. Invent one new small feature and file it as an issue with the label feature. The issue body is the spec. Use when the feature pipeline runs /propose-feature.
 ---
 
 # Propose a feature
@@ -16,18 +16,14 @@ Do nothing else.
 
 ## 2. Learn the game
 
-- Read `CLAUDE.md`, `docs/features/TEMPLATE.md`, every `docs/features/FEAT-*.md`, and the code
-  in `src/`.
-- The next number is the highest FEAT number plus one, with three digits.
-  With no FEAT file, the next number is `FEAT-001`.
+- Read `CLAUDE.md`, the spec template `.github/ISSUE_TEMPLATE/feature.md`, and the code in `src/`.
+- Read the earlier features:
+  `gh issue list --label feature --state all --limit 1000 --json number,title,body,stateReason`.
+  `COMPLETED` features are built. `NOT_PLANNED` features were dropped.
 
 ## 3. Choose the feature
 
-- With no FEAT file yet, write FEAT-001 "Basic playable snake": a grid board, a snake that moves
-  on a timer, arrow keys and WASD to turn (no turn back into itself), food on a random free cell,
-  growth when the snake eats, a score, game over when the snake hits a wall or itself, and a
-  restart.
-- Otherwise, invent one feature that the game does not have yet. Change the kind of feature
+- Invent one feature that the game does not have yet. Change the kind of feature
   from day to day: gameplay, difficulty, scoring, visuals, controls, accessibility, sound made
   in the browser, game modes, polish.
 - Keep it small: one developer day and one PR. Split a big idea and write only its first part.
@@ -37,23 +33,20 @@ Do nothing else.
   no asset from another origin.
 - Do not repeat or undo an earlier feature.
 
-## 4. Open the issue
+## 4. File the issue
 
-`gh issue create --label feature --title "FEAT-NNN: <title>" --body "<one-sentence summary>. Spec: docs/features/FEAT-NNN.md"`
+Fill in the template without its front matter, and create the issue. Use a quoted heredoc,
+so that backticks in the markdown stay as they are:
 
-Note the issue number.
+```bash
+gh issue create --label feature --title "<title>" --body-file - <<'EOF'
+<the filled template>
+EOF
+```
 
-## 5. Write the spec and merge it
+- The title is the feature in a few words, with no number.
+- Do not close the issue. The `issue-closeout` workflow closes it when the feature is built.
 
-- Run `git switch main && git pull`. Then, in a separate command, run
-  `git switch -c docs/<issue>-feat-NNN`. The hook checks the branch before each command.
-- Copy `docs/features/TEMPLATE.md` to `docs/features/FEAT-NNN.md` and fill it in.
-  Put the issue number in the `Issue:` line.
-- Commit only that file, with the subject `docs(#<issue>): add the feat-NNN spec`.
-- Push the branch. Open the PR with the same title and the body `Refs #<issue>`.
-- Wait for the checks, then merge as `CLAUDE.md` says.
-- Do not close the issue. The implementer closes it when the feature is built.
+## 5. Report
 
-## 6. Report
-
-Print the FEAT number, the title, the issue number and the PR number.
+Print the issue number and the title.

@@ -1,15 +1,14 @@
 ---
 name: work-break-down
 argument-hint: <gh-issue-number>
-description: Break a FEAT issue of the snake game into small tasks and post the plan as a comment on the issue. Use when /implement-feature plans a feature, or when the user runs /work-break-down.
+description: Break a feature issue of the snake game into small tasks and post the plan as a comment on the issue. Use when /implement-feature plans a feature, or when the user runs /work-break-down.
 ---
 
-# Break down a FEAT issue into smaller tasks
+# Break down a feature issue into smaller tasks
 
 ## Workflow
 
-1. Run `gh issue view <issue> --json number,title,body`. Read the FEAT file in
-   `docs/features/` that the issue names.
+1. Run `gh issue view <issue> --json number,title,body`. The body is the spec.
 2. Read the code in `src/` that the feature touches.
 3. Answer each question in **Analysis** in a few lines.
 4. Post the plan as a comment on the issue. Use a quoted heredoc, so that backticks in the

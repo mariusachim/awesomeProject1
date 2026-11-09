@@ -8,7 +8,7 @@ import {
 } from "react";
 import { isNewHighScore, loadHighScore, saveHighScore } from "./highScore.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
-import { loadMuted, play, saveMuted } from "./sound.ts";
+import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
   type GameState,
   SIZE,
@@ -128,7 +128,10 @@ export default function App() {
     const was = prev.current;
     prev.current = { score: game.score, over };
     if (muted) return;
-    if (over && !was.over) play("over");
+    if (over && !was.over) {
+      play("over");
+      vibrate();
+    }
     else if (game.score > was.score) play("eat");
   }, [game.score, over, muted]);
 
@@ -309,8 +312,31 @@ export default function App() {
             "bonus",
             BONUS_LOOK,
             "pulse",
-            "Bonus food",
+            `Bonus food, ${game.bonus.movesLeft} moves left`,
           )}
+        {game.bonus && (
+          // A sibling of the diamond, because the diamond's clip-path would cut the number.
+          <div
+            data-testid="bonus-count"
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              left: px(game.bonus.cell.x),
+              top: px(game.bonus.cell.y),
+              width: px(1),
+              height: px(1),
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#222",
+              fontSize: "0.5em",
+              fontWeight: 700,
+              pointerEvents: "none",
+            }}
+          >
+            {game.bonus.movesLeft}
+          </div>
+        )}
         {(ready || paused || over) && (
           // The label is drawn by CSS from data-label, so the sr-only status below the board is the only spoken copy.
           <div
