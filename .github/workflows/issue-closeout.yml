@@ -2,11 +2,9 @@ name: Issue closeout
 
 on:
   pull_request:
-    types: [opened, edited, reopened, synchronize]
-  # pull_request_target runs this file and the script from the base branch, so a PR cannot change them,
-  # and it gets a token that can write to issues also for a PR from a fork. Nothing from the PR is checked out.
-  pull_request_target:
-    types: [closed]
+    # Not pull_request_target: GitHub blocks it in public repos, and this workflow needs no secrets.
+    # shortcut: a PR from a fork gets a read-only token, so its issue stays open; close that issue by hand.
+    types: [opened, edited, reopened, synchronize, closed]
 
 permissions: {}
 
@@ -14,7 +12,7 @@ jobs:
   check:
     # Make this job a required status check on the default branch, so a PR without the section cannot merge.
     name: issue-closeout-check
-    if: github.event_name == 'pull_request'
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -24,7 +22,7 @@ jobs:
 
   close:
     name: issue-closeout-close
-    if: github.event_name == 'pull_request_target' && github.event.pull_request.merged
+    if: github.event.action == 'closed' && github.event.pull_request.merged
     runs-on: ubuntu-latest
     permissions:
       contents: read
