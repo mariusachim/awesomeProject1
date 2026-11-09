@@ -75,11 +75,13 @@ function Stat({
   value,
   spoken,
   big,
+  pulse = big && value !== 0,
 }: {
   label: string;
   value: number | string;
   spoken: string;
   big?: boolean;
+  pulse?: boolean;
 }) {
   return (
     <p className={big ? "stat stat-big" : "stat"}>
@@ -88,7 +90,7 @@ function Stat({
       </span>
       <span
         aria-hidden="true"
-        className={big && value !== 0 ? "stat-value bump" : "stat-value"}
+        className={pulse ? "stat-value bump" : "stat-value"}
         key={value}
       >
         {value}
@@ -244,6 +246,7 @@ export default function App() {
           label="Speed"
           value={speedLevel(game.score)}
           spoken={`Speed ${speedLevel(game.score)}`}
+          pulse={speedLevel(game.score) !== 1}
         />
         <Stat
           label="Length"
