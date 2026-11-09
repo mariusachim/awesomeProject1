@@ -941,3 +941,28 @@ test('the board shows 225 silent checkerboard tiles of two shades', () => {
     expect(t.getAttribute('aria-hidden')).toBe('true')
   })
 })
+
+test('the speed value pulses when the level goes up, not at level 1 or after a restart', () => {
+  // given
+  render(<App />)
+  const speedValue = () => screen.getByText('Speed', { selector: '.stat-label' }).nextElementSibling as HTMLElement
+
+  // then
+  expect(speedValue().classList.contains('bump')).toBe(false)
+
+  // when
+  eatFood()
+
+  // then
+  expect(speedValue().textContent).toBe('2')
+  expect(speedValue().classList.contains('bump')).toBe(true)
+  expect(screen.getByText('Speed 2')).toBeTruthy()
+
+  // when
+  gameOver()
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // then
+  expect(speedValue().textContent).toBe('1')
+  expect(speedValue().classList.contains('bump')).toBe(false)
+})
