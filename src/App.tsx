@@ -227,6 +227,9 @@ export default function App() {
     />
   );
 
+  // The spec counts the length from 1, but the snake starts with 3 cells.
+  const length = game.snake.length - 2;
+
   return (
     <main>
       <h1>Snake</h1>
@@ -241,6 +244,11 @@ export default function App() {
           label="Speed"
           value={speedLevel(game.score)}
           spoken={`Speed ${speedLevel(game.score)}`}
+        />
+        <Stat
+          label="Length"
+          value={length}
+          spoken={`Length ${length}`}
         />
         <Stat
           label="High score"
