@@ -389,6 +389,10 @@ export default function App() {
             }}
           />
         ))}
+        {(ready || paused) && (
+          // Under the pieces, so the snake and food keep their colour while the tiles dim.
+          <div data-testid="board-dim" aria-hidden="true" className="board-dim" />
+        )}
         {game.snake.map((c, i) =>
           i === 0
             ? cell(
@@ -471,6 +475,8 @@ export default function App() {
           <div
             data-testid="board-overlay"
             className={`board-overlay board-overlay-light ${
+              over ? "" : "board-overlay-under"
+            } ${
               overlayEdge(game) === "top"
                 ? "board-overlay-top"
                 : "board-overlay-bottom"

@@ -103,6 +103,18 @@ button:disabled {
   background: rgba(0, 0, 0, 0.3);
 }
 
+/* Ready and paused: the dim moves to .board-dim, under the pieces, so this layer only holds the panel. */
+.board-overlay-under {
+  background: none;
+}
+
+.board-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
 /* Ready and paused: the panel sits at the edge away from the snake head, so the snake stays uncovered. */
 .board-overlay-bottom {
   justify-content: flex-end;
