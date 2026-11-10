@@ -503,6 +503,12 @@ export default function App() {
                     className="overlay-line"
                     data-text={`Final score: ${game.score}`}
                   />
+                  {game.streaks > 0 && (
+                    <span
+                      className="overlay-line"
+                      data-text={`Streak meals: ${game.streaks}`}
+                    />
+                  )}
                   {newBest && (
                     <span
                       className="overlay-line"
@@ -568,6 +574,9 @@ export default function App() {
           <div role="alert">
             <p className="sr-only">Game over</p>
             <p className="sr-only">Final score: {game.score}</p>
+            {game.streaks > 0 && (
+              <p className="sr-only">Streak meals: {game.streaks}</p>
+            )}
             {newBest && <p className="sr-only">New high score!</p>}
             <button onClick={() => setGame(newGame(Math.random, game.wrap))}>
               Restart

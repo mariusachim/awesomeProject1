@@ -170,6 +170,37 @@ test('game over speaks the result once and shows only the Restart button below t
   expect(visible.map((e) => e.tagName)).toEqual(['BUTTON'])
 })
 
+test('the game over overlay shows the streak meals, and screen readers hear them', () => {
+  // given: eat the food at 0,0, then the next one at 4,0 six moves later
+  render(<App />)
+  key('ArrowUp')
+  act(() => vi.advanceTimersByTime(200 * 7))
+  key('ArrowLeft')
+  act(() => vi.advanceTimersByTime(200 * 7))
+  key('ArrowDown')
+  act(() => vi.advanceTimersByTime(200))
+  key('ArrowRight')
+  act(() => vi.advanceTimersByTime(200 * 4))
+  key('ArrowUp')
+
+  // when
+  act(() => vi.advanceTimersByTime(200 * 30))
+
+  // then
+  expect(lines()).toContain('Streak meals: 1')
+  expect(screen.getAllByText('Streak meals: 1')).toHaveLength(1)
+})
+
+test('no streak meals line when the game ended without one', () => {
+  // given / when
+  render(<App />)
+  crash()
+
+  // then
+  expect(lines().some((l) => l?.startsWith('Streak'))).toBe(false)
+  expect(screen.queryByText(/Streak meals/)).toBeNull()
+})
+
 test('a new high score shows on the board too', () => {
   // given
   render(<App />)

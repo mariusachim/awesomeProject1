@@ -12,6 +12,7 @@ const state = (over: Partial<GameState>): GameState => ({
   bonus: null,
   eaten: 0,
   meals: 0,
+  streaks: 0,
   rocks: [],
   shrink: null,
   sinceFood: null,
@@ -614,6 +615,20 @@ test('a meal 10 moves after the last one scores 2 and sets the gain', () => {
 
   // then
   expect([next.score, next.gain, next.sinceFood]).toEqual([2, 2, 0])
+})
+
+test('a streak meal counts one streak, a slow meal does not', () => {
+  // when
+  const fast = eat({ sinceFood: 9, streaks: 2 })
+  const slow = eat({ sinceFood: 10, streaks: 2 })
+
+  // then
+  expect([fast.streaks, slow.streaks]).toEqual([3, 2])
+})
+
+test('a new game has no streak meals', () => {
+  // when / then
+  expect(newGame(() => 0).streaks).toBe(0)
 })
 
 test('a meal 11 moves after the last one scores 1', () => {
