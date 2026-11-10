@@ -116,7 +116,9 @@ function Stat({
   big,
   pulse = big && value !== 0,
   gain = 0,
+  beats,
 }: {
+  beats?: boolean; // the score passes the saved high score: dark gold, and data-record for who misses colour
   gain?: number; // points of the last move: shown as a "+N" pop beside the value
   label: string;
   value: number | string;
@@ -125,7 +127,7 @@ function Stat({
   pulse?: boolean;
 }) {
   return (
-    <p className={big ? "stat stat-big" : "stat"}>
+    <p className={big ? "stat stat-big" : "stat"} data-record={beats || undefined}>
       <span aria-hidden="true" className="stat-label">
         {label}
       </span>
@@ -333,6 +335,7 @@ export default function App() {
           spoken={`Score: ${game.score}`}
           big
           gain={game.gain}
+          beats={record > 0 && game.score > record}
         />
         <Stat
           label="Speed"
