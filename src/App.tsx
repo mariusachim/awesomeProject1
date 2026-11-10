@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { isNewHighScore, loadHighScore, saveHighScore } from "./highScore.ts";
+import { LONGEST_KEY, isNewHighScore, loadHighScore, saveHighScore } from "./highScore.ts";
 import { type Skin, SKINS, loadSkin, nextSkin, saveSkin } from "./skin.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
 import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
@@ -151,6 +151,7 @@ export default function App() {
     newGame(Math.random, loadWrap(), "ready"),
   );
   const [best, setBest] = useState(loadHighScore);
+  const [longest, setLongest] = useState(() => loadHighScore(LONGEST_KEY));
   const [muted, setMuted] = useState(loadMuted);
   const [skin, setSkin] = useState(loadSkin);
   // The score of the run when H cleared the record: that run no longer counts. Back to 0 on a new run.
@@ -161,6 +162,10 @@ export default function App() {
   const over = game.status === "over";
   const paused = game.status === "paused";
   if (over && last !== game.score) setLast(game.score);
+  // The spec counts the length from 1, but the snake starts with 3 cells.
+  const length = game.snake.length - 2;
+  // The record counts the snake of a finished game; a missing or bad saved value loads as 0.
+  if (over && length > longest) setLongest(length);
   const ready = game.status === "ready";
 
   useEffect(() => {
@@ -209,6 +214,10 @@ export default function App() {
     window.addEventListener("keydown", onSkin);
     return () => window.removeEventListener("keydown", onSkin);
   }, []);
+
+  useEffect(() => {
+    if (longest > 0) saveHighScore(longest, LONGEST_KEY);
+  }, [longest]);
 
   useEffect(() => {
     saveHighScore(best);
@@ -312,9 +321,6 @@ export default function App() {
       {children}
     </div>
   );
-
-  // The spec counts the length from 1, but the snake starts with 3 cells.
-  const length = game.snake.length - 2;
 
   return (
     <main>
@@ -517,6 +523,10 @@ export default function App() {
                       data-text={`Streak meals: ${game.streaks}`}
                     />
                   )}
+                  <span
+                    className="overlay-line"
+                    data-text={`Longest: ${longest}`}
+                  />
                   {newBest && (
                     <span
                       className="overlay-line"
@@ -585,6 +595,7 @@ export default function App() {
             {game.streaks > 0 && (
               <p className="sr-only">Streak meals: {game.streaks}</p>
             )}
+            <p className="sr-only">Longest: {longest}</p>
             {newBest && <p className="sr-only">New high score!</p>}
           </div>
         )}
