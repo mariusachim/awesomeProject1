@@ -214,7 +214,7 @@ button:disabled {
   @keyframes bump {
     50% {
       transform: scale(1.25);
-      color: #ffd54f;
+      color: #8a5a00;
     }
   }
 }
@@ -261,7 +261,8 @@ button:focus-visible {
   top: 0;
   right: 0;
   font-size: 0.875rem;
-  color: #ffd54f;
+  font-weight: bold;
+  color: #8a5a00;
 }
 
 .stat-label {
