@@ -154,9 +154,12 @@ export default function App() {
   const [muted, setMuted] = useState(loadMuted);
   // The score of the run when H cleared the record: that run no longer counts. Back to 0 on a new run.
   const [cleared, setCleared] = useState(0);
+  // The score of the last finished game; kept for the session only.
+  const [last, setLast] = useState<number | null>(null);
   const highScore = Math.max(best, game.score > cleared ? game.score : 0);
   const over = game.status === "over";
   const paused = game.status === "paused";
+  if (over && last !== game.score) setLast(game.score);
   const ready = game.status === "ready";
 
   useEffect(() => {
@@ -328,6 +331,9 @@ export default function App() {
           value={highScore}
           spoken={`High score: ${highScore}`}
         />
+        {last !== null && (
+          <Stat label="Last" value={last} spoken={`Last: ${last}`} />
+        )}
       </div>
       <div className="controls">
         <button
