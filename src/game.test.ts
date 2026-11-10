@@ -13,6 +13,7 @@ const state = (over: Partial<GameState>): GameState => ({
   eaten: 0,
   sinceFood: null,
   gain: 0,
+  count: 0,
   ...over,
 })
 
@@ -247,7 +248,7 @@ test('togglePause pauses a running game and resumes a paused one', () => {
 
   // then
   expect(paused.status).toBe('paused')
-  expect(resumed).toEqual(running)
+  expect(resumed).toEqual({ ...running, count: 3 })
 })
 
 test('togglePause does nothing when the game is over', () => {
