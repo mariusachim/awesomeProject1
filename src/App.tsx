@@ -543,7 +543,7 @@ export default function App() {
           </div>
         )}
       </div>
-      <p className="help">C changes the snake colour</p>
+      <p className="help hint-keys">C changes the snake colour</p>
       <div className="messages">
         {ready && (
           <p role="status" className="sr-only">
