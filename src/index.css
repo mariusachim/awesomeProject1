@@ -274,6 +274,11 @@ button:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
+/* Dark gold: 4.8:1 on the page background. */
+[data-record] .stat-value {
+  color: #8a5a00;
+}
+
 .stat-big .stat-value {
   font-size: 2.25rem;
   line-height: 1;
