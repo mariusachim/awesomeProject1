@@ -31,6 +31,8 @@ export type GameState = {
   eaten: number // normal foods eaten since the last bonus food was placed
   sinceFood: number | null // moves since the last normal food; null before the first one of a game
   gain: number // points the last move scored
+  meals: number // normal foods eaten in this game
+  rocks: Cell[] // blocks that end the game when the head enters
   count: number // resume countdown: 3, 2, 1 while the snake waits; 0 when none
 }
 export type Bonus = { cell: Cell; movesLeft: number }
@@ -97,23 +99,32 @@ function freeCells(taken: Cell[]): Cell[] {
   return free
 }
 
-export function placeFood(snake: Cell[], rand: Rand): Cell {
-  const free = freeCells(snake)
+export function placeFood(snake: Cell[], rand: Rand, rocks: Cell[] = []): Cell {
+  const free = freeCells([...snake, ...rocks])
   return free[Math.floor(rand() * free.length)]
 }
 
 // The bonus food needs a cell that is free of the snake and of the normal food; null when none is left.
-export function placeBonus(snake: Cell[], food: Cell, rand: Rand): Cell | null {
-  const free = freeCells([...snake, food])
+export function placeBonus(snake: Cell[], food: Cell, rand: Rand, rocks: Cell[] = []): Cell | null {
+  const free = freeCells([...snake, food, ...rocks])
   return free[Math.floor(rand() * free.length)] ?? null
 }
 
 const wrapCell = (c: Cell): Cell => ({ x: (c.x + SIZE) % SIZE, y: (c.y + SIZE) % SIZE })
 
+export const ROCK_EVERY = 5
+
+// A rock needs a free cell, and never the cell the head enters next; null when none is left.
+export function placeRock(s: Pick<GameState, 'snake' | 'food' | 'bonus' | 'rocks' | 'wrap'>, dir: Dir, rand: Rand): Cell | null {
+  const ahead = { x: s.snake[0].x + DELTA[dir].x, y: s.snake[0].y + DELTA[dir].y }
+  const free = freeCells([...s.snake, s.food, ...(s.bonus ? [s.bonus.cell] : []), ...s.rocks, s.wrap ? wrapCell(ahead) : ahead])
+  return free[Math.floor(rand() * free.length)] ?? null
+}
+
 export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 'running'): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0, sinceFood: null, gain: 0, count: 0 }
+  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, rocks: [], sinceFood: null, gain: 0, count: 0 }
 }
 
 // R starts a new game in the same wall mode; it does nothing before the first key.
@@ -155,14 +166,18 @@ export function step(state: GameState, rand: Rand): GameState {
   const eatsFood = same(head, state.food)
   const eatsBonus = state.bonus !== null && same(head, state.bonus.cell)
   const body = eatsFood || eatsBonus ? state.snake : state.snake.slice(0, -1)
-  if (outside(head) || body.some((c) => same(c, head))) return { ...state, dir, queue, status: 'over' }
+  if (outside(head) || state.rocks.some((c) => same(c, head)) || body.some((c) => same(c, head))) return { ...state, dir, queue, status: 'over' }
   const snake = [head, ...body]
-  return { ...state, snake, dir, queue, ...settleFood(state, snake, eatsFood, eatsBonus, rand) }
+  const settled = settleFood(state, snake, eatsFood, eatsBonus, rand)
+  const meals = state.meals + (eatsFood ? 1 : 0)
+  // Every ROCK_EVERY-th meal adds a rock; it is placed after the foods, so it avoids them.
+  const rock = eatsFood && meals % ROCK_EVERY === 0 ? placeRock({ ...state, ...settled, snake }, dir, rand) : null
+  return { ...state, snake, dir, queue, ...settled, meals, rocks: rock ? [...state.rocks, rock] : state.rocks }
 }
 
 // What the move changes besides the snake: the foods, the score and the count of eaten foods.
 function settleFood(state: GameState, snake: Cell[], eatsFood: boolean, eatsBonus: boolean, rand: Rand) {
-  const food = eatsFood ? placeFood(snake, rand) : state.food
+  const food = eatsFood ? placeFood(snake, rand, state.rocks) : state.food
   const eaten = state.eaten + (eatsFood ? 1 : 0)
   const spawn = eaten >= BONUS_EVERY
   const moves = state.sinceFood === null ? null : state.sinceFood + 1
@@ -173,7 +188,7 @@ function settleFood(state: GameState, snake: Cell[], eatsFood: boolean, eatsBonu
     sinceFood: eatsFood ? 0 : moves,
     score: state.score + gain,
     eaten: spawn ? 0 : eaten,
-    bonus: nextBonus(state.bonus, eatsBonus, spawn ? placeBonus(snake, food, rand) : null),
+    bonus: nextBonus(state.bonus, eatsBonus, spawn ? placeBonus(snake, food, rand, state.rocks) : null),
   }
 }
 
