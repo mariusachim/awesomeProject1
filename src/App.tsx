@@ -51,6 +51,9 @@ const BONUS_LOOK: CSSProperties = {
   clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
 };
 
+// A rock is grey, a colour none of the snake, food and bonus food uses.
+const ROCK_LOOK: CSSProperties = { background: "#888", boxSizing: "border-box", border: "2px solid #555" };
+
 const wallsHint = (wrap: boolean) =>
   wrap
     ? "Walls off: the snake passes through the edge"
@@ -347,6 +350,7 @@ export default function App() {
               )
             : cell(c.x, c.y, "snake", BODY_LOOK),
         )}
+        {game.rocks.map((r) => cell(r.x, r.y, "rock", ROCK_LOOK))}
         {cell(game.food.x, game.food.y, "food", FOOD_LOOK, "pulse")}
         {game.bonus &&
           cell(

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SIZE, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -11,6 +11,8 @@ const state = (over: Partial<GameState>): GameState => ({
   wrap: false,
   bonus: null,
   eaten: 0,
+  meals: 0,
+  rocks: [],
   sinceFood: null,
   gain: 0,
   count: 0,
@@ -643,4 +645,67 @@ test('a new game carries no streak', () => {
 
   // then
   expect([game.sinceFood, game.gain]).toEqual([null, 0])
+})
+
+test('a new game has no rocks', () => {
+  // when
+  const game = newGame(() => 0)
+
+  // then
+  expect(game.rocks).toEqual([])
+})
+
+test('the 5th food adds a rock off the snake, the foods and the cell ahead of the head', () => {
+  // given
+  const game = state({ food: { x: 6, y: 5 }, meals: 4 })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.rocks).toHaveLength(1)
+  for (const c of [...next.snake, next.food, { x: 7, y: 5 }]) expect(next.rocks[0]).not.toEqual(c)
+})
+
+test('no rock before the 5th food', () => {
+  // given
+  const game = state({ food: { x: 6, y: 5 }, meals: 2 })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.rocks).toEqual([])
+})
+
+test('hitting a rock ends the game', () => {
+  // given
+  const game = state({ rocks: [{ x: 6, y: 5 }] })
+
+  // when
+  const next = step(game, () => 0)
+
+  // then
+  expect(next.status).toBe('over')
+})
+
+test('food and bonus food never land on a rock', () => {
+  // given
+  const snake = [{ x: 0, y: 0 }]
+  const rocks = [{ x: 1, y: 0 }]
+
+  // when / then
+  expect(placeFood(snake, () => 0, rocks)).toEqual({ x: 2, y: 0 })
+  expect(placeBonus(snake, { x: 2, y: 0 }, () => 0, rocks)).toEqual({ x: 3, y: 0 })
+})
+
+test('a rock avoids the cell ahead of a wrapping head', () => {
+  // given
+  const game = state({ snake: [{ x: SIZE - 1, y: 0 }], wrap: true, food: { x: 5, y: 5 } })
+
+  // when
+  const rock = placeRock(game, 'right', () => 0)
+
+  // then
+  expect(rock).toEqual({ x: 1, y: 0 })
 })
