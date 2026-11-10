@@ -263,6 +263,34 @@ test('the panel keeps off the food in the top row, even when the snake head is l
   expect(overlay()?.classList.contains('board-overlay-top')).toBe(false)
 })
 
+test('ready and paused dim the tiles below the food and snake, so the pieces keep their colour', () => {
+  // given
+  render(<App />)
+  const below = (a: Node, b: Node) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING)
+
+  // when / then
+  expect(below(screen.getByTestId('board-dim'), screen.getByTestId('food'))).toBe(true)
+  expect(below(screen.getByTestId('board-dim'), screen.getByTestId('head'))).toBe(true)
+  expect(overlay()?.classList.contains('board-overlay-under')).toBe(true)
+  key('ArrowRight')
+  key('p')
+  expect(screen.getByTestId('board-dim')).toBeTruthy()
+  key('p')
+  expect(screen.queryByTestId('board-dim')).toBeNull()
+})
+
+test('game over keeps the dim over everything', () => {
+  // given
+  render(<App />)
+
+  // when
+  crash()
+
+  // then
+  expect(screen.queryByTestId('board-dim')).toBeNull()
+  expect(overlay()?.classList.contains('board-overlay-under')).toBe(false)
+})
+
 test('Enter restarts after game over', () => {
   // given
   render(<App />)
