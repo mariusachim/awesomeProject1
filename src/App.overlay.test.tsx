@@ -152,7 +152,7 @@ test('game over shows the final score and a restart hint on the board', () => {
   crash()
 
   // then
-  expect(lines()).toEqual(['Final score: 0', 'Press Enter to restart', 'Tap Restart', 'H resets the high score'])
+  expect(lines()).toEqual(['Final score: 0', 'Longest: 1', 'Press Enter to restart', 'Tap Restart', 'H resets the high score'])
 })
 
 test('game over speaks the result once and shows only the Restart button below the board', () => {

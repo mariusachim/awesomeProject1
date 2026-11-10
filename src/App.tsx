@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { isNewHighScore, loadHighScore, saveHighScore } from "./highScore.ts";
+import { isNewHighScore, loadHighScore, loadLongest, saveHighScore, saveLongest } from "./highScore.ts";
 import { type Skin, SKINS, loadSkin, nextSkin, saveSkin } from "./skin.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
 import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
@@ -151,6 +151,8 @@ export default function App() {
     newGame(Math.random, loadWrap(), "ready"),
   );
   const [best, setBest] = useState(loadHighScore);
+  // The longest snake of any finished game; 0 when none is saved.
+  const [longest, setLongest] = useState(loadLongest);
   const [muted, setMuted] = useState(loadMuted);
   const [skin, setSkin] = useState(loadSkin);
   // The score of the run when H cleared the record: that run no longer counts. Back to 0 on a new run.
@@ -314,6 +316,9 @@ export default function App() {
 
   // The spec counts the length from 1, but the snake starts with 3 cells.
   const length = game.snake.length - 2;
+  const longestNow = Math.max(longest, length);
+  if (over && length > longest) setLongest(length);
+  useEffect(() => saveLongest(longest), [longest]);
 
   return (
     <main>
@@ -515,6 +520,10 @@ export default function App() {
                       data-text={`Streak meals: ${game.streaks}`}
                     />
                   )}
+                  <span
+                    className="overlay-line"
+                    data-text={`Longest: ${longestNow}`}
+                  />
                   {newBest && (
                     <span
                       className="overlay-line"
@@ -583,6 +592,7 @@ export default function App() {
             {game.streaks > 0 && (
               <p className="sr-only">Streak meals: {game.streaks}</p>
             )}
+            <p className="sr-only">Longest: {longestNow}</p>
             {newBest && <p className="sr-only">New high score!</p>}
             <button onClick={() => setGame(newGame(Math.random, game.wrap))}>
               Restart
