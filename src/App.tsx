@@ -352,6 +352,7 @@ export default function App() {
           label="High score"
           value={highScore}
           spoken={`High score: ${highScore}`}
+          big
         />
         {last !== null && (
           <Stat label="Last" value={last} spoken={`Last: ${last}`} />

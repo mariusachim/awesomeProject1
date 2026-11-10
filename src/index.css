@@ -239,7 +239,7 @@ button:focus-visible {
   grid-template-rows: auto auto;
   justify-content: start;
   align-content: end;
-  gap: 0 24px;
+  gap: 0 16px;
   height: 4.5rem;
   margin-bottom: 12px;
   overflow: hidden;
@@ -270,7 +270,8 @@ button:focus-visible {
 }
 
 .stat-value {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: bold;
   font-variant-numeric: tabular-nums;
 }
 
