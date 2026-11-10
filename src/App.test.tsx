@@ -254,7 +254,7 @@ test('hitting the wall shows Game over with the score', () => {
   expect(screen.getByText('Final score: 0')).toBeTruthy()
 })
 
-test('the Pause button stays in the control row, disabled, after game over', () => {
+test('after game over the Restart button takes the Pause slot in the control row', () => {
   // given
   render(<App />)
 
@@ -262,8 +262,24 @@ test('the Pause button stays in the control row, disabled, after game over', () 
   tick(10)
 
   // then
-  const pause = screen.getByRole('button', { name: 'Pause' }) as HTMLButtonElement
-  expect(pause.disabled).toBe(true)
+  const restart = screen.getByRole('button', { name: 'Restart' }) as HTMLButtonElement
+  expect(restart.disabled).toBe(false)
+  expect(restart.parentElement?.className).toBe('controls')
+  expect(screen.queryByRole('button', { name: 'Pause' })).toBeNull()
+  expect(screen.getAllByRole('button', { name: 'Restart' })).toHaveLength(1)
+})
+
+test('Space on the focused Restart button starts a new game', () => {
+  // given
+  render(<App />)
+  tick(10)
+
+  // when
+  pressSpaceOn(screen.getByRole('button', { name: 'Restart' }))
+
+  // then
+  expect(screen.queryByText('Game over')).toBeNull()
+  expect(head()).toBe('7,7')
 })
 
 test('the Restart button starts a new game', () => {
