@@ -12,6 +12,9 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
+const countdown = () => {
+  for (let i = 0; i < 3; i++) act(() => vi.advanceTimersByTime(1000))
+}
 const key = (k: string) => fireEvent.keyDown(window, { key: k })
 const overlay = () => screen.queryByTestId('board-overlay')
 const label = () => overlay()?.querySelector('.overlay-panel')?.getAttribute('data-label')
@@ -86,6 +89,7 @@ test('the board border turns red on game over, not when paused, and resets on re
   // when / then
   expect(board.classList.contains('board-over')).toBe(false)
   key('p')
+  countdown()
   key('ArrowUp')
   act(() => vi.advanceTimersByTime(200 * 30))
   expect(board.classList.contains('board-over')).toBe(true)
@@ -206,6 +210,7 @@ test('every overlay, game over included, uses a light dim so the snake and food 
   key('p')
   expect(overlay()?.classList.contains('board-overlay-light')).toBe(true)
   key('p')
+  countdown()
   act(() => vi.advanceTimersByTime(200 * 30))
   expect(overlay()?.classList.contains('board-overlay-light')).toBe(true)
 })

@@ -23,6 +23,9 @@ afterEach(() => {
 })
 
 const head = () => screen.getByTestId('head').getAttribute('data-pos')
+const countdown = () => {
+  for (let i = 0; i < 3; i++) act(() => vi.advanceTimersByTime(1000))
+}
 const tick = (n = 1) => act(() => vi.advanceTimersByTime(200 * n))
 
 const hidePage = () => {
@@ -258,7 +261,7 @@ test.each([' ', 'p'])('key "%s" pauses and resumes the game', (key) => {
 
   // when
   fireEvent.keyDown(window, { key })
-  tick()
+  countdown()
 
   // then
   expect(screen.queryByText('Paused')).toBeNull()
@@ -300,7 +303,7 @@ test('the Pause button pauses and the Resume button resumes', () => {
 
   // when
   fireEvent.click(screen.getByRole('button', { name: 'Resume' }))
-  tick()
+  countdown()
 
   // then
   expect(screen.queryByRole('button', { name: 'Resume' })).toBeNull()
@@ -315,7 +318,7 @@ test('a turn key while paused does not turn the snake', () => {
   // when
   fireEvent.keyDown(window, { key: 'ArrowUp' })
   fireEvent.keyDown(window, { key: 'p' })
-  tick()
+  countdown()
 
   // then
   expect(head()).toBe('8,7')
@@ -483,6 +486,7 @@ test('pausing and resuming keeps the speed of the score', () => {
 
   // when
   fireEvent.keyDown(window, { key: 'p' })
+  countdown()
   advance(190)
 
   // then
@@ -940,6 +944,7 @@ test('the head flashes when the snake eats, not at 0, when paused or when over',
 
   // when
   fireEvent.keyDown(window, { key: 'p' })
+  countdown()
   gameOver()
 
   // then

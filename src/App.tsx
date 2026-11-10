@@ -21,7 +21,9 @@ import {
   speedLevel,
   step,
   swipeDir,
+  tickCount,
   tickMs,
+  COUNT_MS,
   togglePause,
   turn,
 } from "./game.ts";
@@ -148,6 +150,12 @@ export default function App() {
     }
     else if (game.score > was.score) play("eat");
   }, [game.score, over, muted]);
+
+  useEffect(() => {
+    if (game.count === 0) return;
+    const id = setTimeout(() => setGame(tickCount), COUNT_MS);
+    return () => clearTimeout(id);
+  }, [game.count]);
 
   useEffect(() => saveMuted(muted), [muted]);
 
@@ -372,6 +380,25 @@ export default function App() {
             {game.bonus.movesLeft}
           </div>
         )}
+        {game.count > 0 && (
+          <div
+            data-testid="countdown"
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "4em",
+              fontWeight: 700,
+              color: "#fff",
+              pointerEvents: "none",
+            }}
+          >
+            {game.count}
+          </div>
+        )}
         {(ready || paused || over) && (
           // The label is drawn by CSS from data-label, so the sr-only status below the board is the only spoken copy.
           <div
@@ -457,6 +484,11 @@ export default function App() {
             </span>
             <span className="hint-touch">Swipe on the board to start</span>
             <span>{wallsHint(game.wrap)}</span>
+          </p>
+        )}
+        {game.count > 0 && (
+          <p role="status" className="sr-only">
+            {game.count}
           </p>
         )}
         {paused && (

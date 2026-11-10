@@ -31,6 +31,7 @@ export type GameState = {
   eaten: number // normal foods eaten since the last bonus food was placed
   sinceFood: number | null // moves since the last normal food; null before the first one of a game
   gain: number // points the last move scored
+  count: number // resume countdown: 3, 2, 1 while the snake waits; 0 when none
 }
 export type Bonus = { cell: Cell; movesLeft: number }
 export type Rand = () => number
@@ -112,7 +113,7 @@ const wrapCell = (c: Cell): Cell => ({ x: (c.x + SIZE) % SIZE, y: (c.y + SIZE) %
 export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 'running'): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0, sinceFood: null, gain: 0 }
+  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0, sinceFood: null, gain: 0, count: 0 }
 }
 
 // R starts a new game in the same wall mode; it does nothing before the first key.
@@ -133,15 +134,19 @@ export function turn(state: GameState, dir: Dir): GameState {
 
 export function togglePause(state: GameState): GameState {
   if (state.status === 'over' || state.status === 'ready') return state
-  return { ...state, status: state.status === 'running' ? 'paused' : 'running' }
+  return state.status === 'running' ? { ...state, status: 'paused', count: 0 } : { ...state, status: 'running', count: 3 }
 }
 
+export const COUNT_MS = 1000
+
+export const tickCount = (state: GameState): GameState => (state.count > 0 ? { ...state, count: state.count - 1 } : state)
+
 export function pauseIfRunning(state: GameState): GameState {
-  return state.status === 'running' ? { ...state, status: 'paused' } : state
+  return state.status === 'running' ? { ...state, status: 'paused', count: 0 } : state
 }
 
 export function step(state: GameState, rand: Rand): GameState {
-  if (state.status !== 'running') return state
+  if (state.status !== 'running' || state.count > 0) return state
   const [first, ...queue] = state.queue
   const dir = first ?? state.dir
   const d = DELTA[dir]
