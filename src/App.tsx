@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { isNewHighScore, loadHighScore, saveHighScore } from "./highScore.ts";
+import { type Skin, SKINS, loadSkin, nextSkin, saveSkin } from "./skin.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
 import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
@@ -33,14 +34,13 @@ import {
 // The cell size is the CSS variable --cell (index.css): one value sizes the board and every cell.
 const px = (n: number) => `calc(var(--cell) * ${n})`;
 // Shape and outline tell the cells apart without colour: round food, outlined head, inset body.
-const HEAD_LOOK: CSSProperties = {
-  background: "#7e7",
-  outline: "2px solid #efe",
+const headLook = (skin: Skin, crashed: boolean): CSSProperties => ({
+  // On game over the head turns red to mark the crash cell; the outline keeps the shape.
+  background: crashed ? "#e44" : SKINS[skin].head,
+  outline: `2px solid ${SKINS[skin].outline}`,
   outlineOffset: -2,
   boxSizing: "border-box",
-};
-// On game over the head turns red to mark the crash cell; the outline keeps the shape.
-const CRASH_HEAD_LOOK: CSSProperties = { ...HEAD_LOOK, background: "#e44" };
+});
 // Eye centres in percent of the head cell, two per direction: the eyes sit on the side of the last move.
 const EYES: Record<Dir, [number, number][]> = {
   right: [[70, 28], [70, 72]],
@@ -65,11 +65,11 @@ const eye = ([x, y]: [number, number]) => (
     }}
   />
 );
-const BODY_LOOK: CSSProperties = {
-  background: "#2a2",
+const bodyLook = (skin: Skin): CSSProperties => ({
+  background: SKINS[skin].body,
   boxSizing: "border-box",
   border: "2px solid #222",
-};
+});
 const FOOD_LOOK: CSSProperties = { background: "#e44", borderRadius: "50%" };
 // The bonus food is a gold diamond, so it differs from the round red food by shape and colour.
 const BONUS_LOOK: CSSProperties = {
@@ -152,6 +152,7 @@ export default function App() {
   );
   const [best, setBest] = useState(loadHighScore);
   const [muted, setMuted] = useState(loadMuted);
+  const [skin, setSkin] = useState(loadSkin);
   // The score of the run when H cleared the record: that run no longer counts. Back to 0 on a new run.
   const [cleared, setCleared] = useState(0);
   // The score of the last finished game; kept for the session only.
@@ -198,6 +199,16 @@ export default function App() {
   useEffect(() => saveMuted(muted), [muted]);
 
   useEffect(() => saveWrap(game.wrap), [game.wrap]);
+
+  useEffect(() => saveSkin(skin), [skin]);
+
+  useEffect(() => {
+    const onSkin = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === "c") setSkin(nextSkin);
+    };
+    window.addEventListener("keydown", onSkin);
+    return () => window.removeEventListener("keydown", onSkin);
+  }, []);
 
   useEffect(() => {
     saveHighScore(best);
@@ -384,14 +395,14 @@ export default function App() {
                 c.x,
                 c.y,
                 "head",
-                over ? CRASH_HEAD_LOOK : HEAD_LOOK,
+                headLook(skin, over),
                 game.score > 0 && game.status === "running"
                   ? "flash"
                   : undefined,
                 undefined,
                 EYES[game.dir].map(eye),
               )
-            : cell(c.x, c.y, "snake", BODY_LOOK),
+            : cell(c.x, c.y, "snake", bodyLook(skin)),
         )}
         {game.rocks.map((r) => cell(r.x, r.y, "rock", ROCK_LOOK))}
         {cell(game.food.x, game.food.y, "food", FOOD_LOOK, "pulse")}
@@ -532,6 +543,7 @@ export default function App() {
           </div>
         )}
       </div>
+      <p className="help">C changes the snake colour</p>
       <div className="messages">
         {ready && (
           <p role="status" className="sr-only">
