@@ -78,16 +78,18 @@ jobs:
             --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git *),Bash(gh *),Bash(npm *),Bash(npx *),Bash(crapper *),Bash(dryer *),Bash(mutator *)"
       # total_cost_usd is the number that /cost shows: tokens at API list prices, subagents included.
       # It runs also when the implementer fails, because that run costs money too.
+      # The closeout section has the cost when the PR opens; this total of the whole run has its own label.
       - name: Post the token cost on the issue
         if: ${{ !cancelled() && steps.issue.outputs.number != '' && steps.claude.outputs.execution_file != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
           ISSUE: ${{ steps.issue.outputs.number }}
           RESULT: ${{ steps.claude.outputs.execution_file }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           cost=$(jq '[.[] | select(.type == "result")][-1].total_cost_usd // empty' "$RESULT")
           [ -n "$cost" ] || exit 0
           # modelUsage has one key per model of the run, subagents included.
           models=$(jq -r '[.[] | select(.type == "result")][-1].modelUsage // {} | keys | join(", ")' "$RESULT")
           # shortcut: the subscription line assumes claude_code_oauth_token above; change it if the job moves to an API key.
-          gh issue comment "$ISSUE" --body "$(printf 'Paid by the Claude subscription.\nToken cost equivalent of the implementer run: $%.2f\nModel: %s' "$cost" "${models:-unknown}")"
+          gh issue comment "$ISSUE" --body "$(printf 'Paid by the Claude subscription.\nTotal token cost equivalent of implementer run %s: $%.2f\nModel: %s' "$RUN_URL" "$cost" "${models:-unknown}")"

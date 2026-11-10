@@ -27,7 +27,8 @@ The game is live at https://mariusachim.github.io/awesomeProject1/.
 # Git workflow
 
 Every change goes through a pull request. Nothing goes to `main` directly.
-GitHub enforces this: `main` needs a PR and a green `ci` check, also for admins.
+GitHub enforces this: `main` needs a PR and green `ci` and `issue-closeout-check` checks,
+also for admins.
 
 ## Never commit to `main`
 

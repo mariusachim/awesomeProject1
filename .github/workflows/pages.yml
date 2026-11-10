@@ -6,6 +6,7 @@ on:
     # Deploy only when a merge changes the built game, not for docs or CI changes.
     paths:
       - src/**
+      - public/**
       - index.html
       - package.json
       - package-lock.json
