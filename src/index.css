@@ -131,6 +131,7 @@ button:disabled {
   align-items: center;
   flex-direction: column;
   gap: 0.4rem;
+  max-width: 100%;
 }
 
 .board-overlay-light .overlay-panel {
@@ -154,7 +155,7 @@ button:disabled {
 
 .overlay-hint::after {
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 1.125rem;
 }
 
 @media (prefers-reduced-motion: no-preference) {
