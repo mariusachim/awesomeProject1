@@ -906,7 +906,9 @@ test('the 5th food brings a bonus food with a screen reader label, a diamond sha
   // given: each food sits right in front of the snake, on row 7, and the bonus food falls on 0,0
   const rand = vi.spyOn(Math, 'random')
   rand.mockReturnValueOnce(111.5 / 222)
-  for (const free of [221, 220, 219, 218, 217]) rand.mockReturnValueOnce(111.5 / free)
+  // each meal but the 5th also rolls for a shrink fruit, which stays low here
+  for (const free of [221, 220, 219, 218]) rand.mockReturnValueOnce(111.5 / free).mockReturnValueOnce(0.5)
+  rand.mockReturnValueOnce(111.5 / 217)
   renderReady(<App />)
   startKey()
   expect(screen.queryByTestId('bonus')).toBeNull()
@@ -927,7 +929,9 @@ test('the bonus food shows its moves left, one lower after each move', () => {
   // given
   const rand = vi.spyOn(Math, 'random')
   rand.mockReturnValueOnce(111.5 / 222)
-  for (const free of [221, 220, 219, 218, 217]) rand.mockReturnValueOnce(111.5 / free)
+  // each meal but the 5th also rolls for a shrink fruit, which stays low here
+  for (const free of [221, 220, 219, 218]) rand.mockReturnValueOnce(111.5 / free).mockReturnValueOnce(0.5)
+  rand.mockReturnValueOnce(111.5 / 217)
   renderReady(<App />)
   startKey()
   for (let i = 0; i < 12 && !screen.queryByTestId('bonus'); i++) tick()

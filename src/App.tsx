@@ -77,6 +77,12 @@ const BONUS_LOOK: CSSProperties = {
   clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
 };
 
+// The shrink fruit is a blue triangle, so it differs from the round food and the diamond by shape and colour.
+const SHRINK_LOOK: CSSProperties = {
+  background: "#39f",
+  clipPath: "polygon(50% 5%, 95% 95%, 5% 95%)",
+};
+
 // A rock is grey, a colour none of the snake, food and bonus food uses.
 const ROCK_LOOK: CSSProperties = { background: "#888", boxSizing: "border-box", border: "2px solid #555" };
 
@@ -391,6 +397,15 @@ export default function App() {
             BONUS_LOOK,
             "pulse",
             `Bonus food, ${game.bonus.movesLeft} moves left`,
+          )}
+        {game.shrink &&
+          cell(
+            game.shrink.cell.x,
+            game.shrink.cell.y,
+            "shrink",
+            SHRINK_LOOK,
+            "pulse",
+            `Shrink fruit, ${game.shrink.movesLeft} moves left`,
           )}
         {game.bonus && (
           // A sibling of the diamond, because the diamond's clip-path would cut the number.

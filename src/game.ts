@@ -34,6 +34,7 @@ export type GameState = {
   meals: number // normal foods eaten in this game
   rocks: Cell[] // blocks that end the game when the head enters
   count: number // resume countdown: 3, 2, 1 while the snake waits; 0 when none
+  shrink: Bonus | null // the shrink fruit on the board, if any
 }
 export type Bonus = { cell: Cell; movesLeft: number }
 export type Rand = () => number
@@ -114,17 +115,31 @@ const wrapCell = (c: Cell): Cell => ({ x: (c.x + SIZE) % SIZE, y: (c.y + SIZE) %
 
 export const ROCK_EVERY = 5
 
+export const SHRINK_MOVES = 10
+export const SHRINK_CUT = 3
+export const SHRINK_MIN = 2
+const SHRINK_CHANCE = 1 / 8
+
+// The shrink fruit needs a cell free of the snake, the foods and the rocks; null when none is left.
+export function placeShrink(snake: Cell[], food: Cell, bonus: Bonus | null, rocks: Cell[], rand: Rand): Cell | null {
+  const free = freeCells([...snake, food, ...(bonus ? [bonus.cell] : []), ...rocks])
+  return free[Math.floor(rand() * free.length)] ?? null
+}
+
+// The snake loses up to SHRINK_CUT tail cells, but keeps SHRINK_MIN.
+const shrinkSnake = (snake: Cell[]): Cell[] => snake.slice(0, Math.max(SHRINK_MIN, snake.length - SHRINK_CUT))
+
 // A rock needs a free cell, and never the cell the head enters next; null when none is left.
-export function placeRock(s: Pick<GameState, 'snake' | 'food' | 'bonus' | 'rocks' | 'wrap'>, dir: Dir, rand: Rand): Cell | null {
+export function placeRock(s: Pick<GameState, 'snake' | 'food' | 'bonus' | 'rocks' | 'wrap' | 'shrink'>, dir: Dir, rand: Rand): Cell | null {
   const ahead = { x: s.snake[0].x + DELTA[dir].x, y: s.snake[0].y + DELTA[dir].y }
-  const free = freeCells([...s.snake, s.food, ...(s.bonus ? [s.bonus.cell] : []), ...s.rocks, s.wrap ? wrapCell(ahead) : ahead])
+  const free = freeCells([...s.snake, s.food, ...(s.bonus ? [s.bonus.cell] : []), ...(s.shrink ? [s.shrink.cell] : []),...s.rocks, s.wrap ? wrapCell(ahead) : ahead])
   return free[Math.floor(rand() * free.length)] ?? null
 }
 
 export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 'running'): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, rocks: [], sinceFood: null, gain: 0, count: 0 }
+  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, count: 0 }
 }
 
 // R starts a new game in the same wall mode; it does nothing before the first key.
@@ -167,17 +182,31 @@ export function step(state: GameState, rand: Rand): GameState {
   const eatsBonus = state.bonus !== null && same(head, state.bonus.cell)
   const body = eatsFood || eatsBonus ? state.snake : state.snake.slice(0, -1)
   if (outside(head) || state.rocks.some((c) => same(c, head)) || body.some((c) => same(c, head))) return { ...state, dir, queue, status: 'over' }
-  const snake = [head, ...body]
-  const settled = settleFood(state, snake, eatsFood, eatsBonus, rand)
+  const eatsShrink = state.shrink !== null && same(head, state.shrink.cell)
+  const grown = [head, ...body]
+  const settled = settleFood(state, grown, eatsFood, eatsBonus, rand)
+  const shrink = nextShrink(state, grown, settled.food, eatsFood, eatsShrink, rand)
+  const snake = eatsShrink ? shrinkSnake(grown) : grown
   const meals = state.meals + (eatsFood ? 1 : 0)
   // Every ROCK_EVERY-th meal adds a rock; it is placed after the foods, so it avoids them.
-  const rock = eatsFood && meals % ROCK_EVERY === 0 ? placeRock({ ...state, ...settled, snake }, dir, rand) : null
-  return { ...state, snake, dir, queue, ...settled, meals, rocks: rock ? [...state.rocks, rock] : state.rocks }
+  const rock = eatsFood && meals % ROCK_EVERY === 0 ? placeRock({ ...state, ...settled, shrink, snake: grown }, dir, rand) : null
+  return { ...state, snake, dir, queue, ...settled, shrink, meals, rocks: rock ? [...state.rocks, rock] : state.rocks }
 }
+
+// An eaten shrink fruit is gone, an old one counts down, and a meal may start a new one when none is on the board.
+function nextShrink(state: GameState, snake: Cell[], food: Cell, eatsFood: boolean, eatsShrink: boolean, rand: Rand): Bonus | null {
+  if (state.shrink) return eatsShrink ? null : countDown(state.shrink)
+  const cell = eatsFood && rand() >= 1 - SHRINK_CHANCE ? placeShrink(snake, food, state.bonus, state.rocks, rand) : null
+  return cell && { cell, movesLeft: SHRINK_MOVES }
+}
+
+const countDown = (b: Bonus): Bonus | null => (b.movesLeft > 1 ? { ...b, movesLeft: b.movesLeft - 1 } : null)
 
 // What the move changes besides the snake: the foods, the score and the count of eaten foods.
 function settleFood(state: GameState, snake: Cell[], eatsFood: boolean, eatsBonus: boolean, rand: Rand) {
-  const food = eatsFood ? placeFood(snake, rand, state.rocks) : state.food
+  // The shrink fruit blocks a cell like a rock does, for the new foods.
+  const blocked = [...state.rocks, ...(state.shrink ? [state.shrink.cell] : [])]
+  const food = eatsFood ? placeFood(snake, rand, blocked) : state.food
   const eaten = state.eaten + (eatsFood ? 1 : 0)
   const spawn = eaten >= BONUS_EVERY
   const moves = state.sinceFood === null ? null : state.sinceFood + 1
@@ -188,12 +217,12 @@ function settleFood(state: GameState, snake: Cell[], eatsFood: boolean, eatsBonu
     sinceFood: eatsFood ? 0 : moves,
     score: state.score + gain,
     eaten: spawn ? 0 : eaten,
-    bonus: nextBonus(state.bonus, eatsBonus, spawn ? placeBonus(snake, food, rand, state.rocks) : null),
+    bonus: nextBonus(state.bonus, eatsBonus, spawn ? placeBonus(snake, food, rand, blocked) : null),
   }
 }
 
 // An eaten bonus is gone, an old one counts down and expires, and a fresh one starts at the full count.
 function nextBonus(old: Bonus | null, eaten: boolean, fresh: Cell | null): Bonus | null {
-  if (old && !eaten) return old.movesLeft > 1 ? { ...old, movesLeft: old.movesLeft - 1 } : null
+  if (old && !eaten) return countDown(old)
   return fresh ? { cell: fresh, movesLeft: BONUS_MOVES } : null
 }
