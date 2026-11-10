@@ -155,7 +155,7 @@ test('game over shows the final score and a restart hint on the board', () => {
   expect(lines()).toEqual(['Final score: 0', 'Press Enter to restart', 'Tap Restart', 'H resets the high score'])
 })
 
-test('game over speaks the result once and shows only the Restart button below the board', () => {
+test('game over speaks the result once and adds nothing visible below the board', () => {
   // given
   render(<App />)
 
@@ -167,7 +167,7 @@ test('game over speaks the result once and shows only the Restart button below t
   expect(screen.getAllByText('Game over')).toHaveLength(1)
   expect(screen.getAllByText('Final score: 0')).toHaveLength(1)
   const visible = Array.from(alert.children).filter((e) => !e.classList.contains('sr-only'))
-  expect(visible.map((e) => e.tagName)).toEqual(['BUTTON'])
+  expect(visible).toEqual([])
 })
 
 test('the game over overlay shows the streak meals, and screen readers hear them', () => {

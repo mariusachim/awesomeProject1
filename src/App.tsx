@@ -254,6 +254,7 @@ export default function App() {
     };
   }, []);
 
+  const again = () => setGame(newGame(Math.random, game.wrap));
   const toggleWalls = () => setGame(newGame(Math.random, !game.wrap, "ready"));
   // Space and Enter belong to a focused button: keep the window handler from pausing or restarting.
   // Enter clicks the button itself; Space is cancelled by the window handler, so run the action here.
@@ -349,10 +350,11 @@ export default function App() {
       <div className="controls">
         <button
           className="pause"
-          disabled={over || ready}
-          onClick={() => setGame(togglePause)}
+          disabled={ready}
+          onClick={over ? again : () => setGame(togglePause)}
+          onKeyDown={over ? ownKeys(again) : undefined}
         >
-          {paused ? "Resume" : "Pause"}
+          {over ? "Restart" : paused ? "Resume" : "Pause"}
         </button>
         <button onClick={toggleWalls} onKeyDown={ownKeys(toggleWalls)}>
           Walls: {game.wrap ? "wrap" : "solid"}
@@ -584,9 +586,6 @@ export default function App() {
               <p className="sr-only">Streak meals: {game.streaks}</p>
             )}
             {newBest && <p className="sr-only">New high score!</p>}
-            <button onClick={() => setGame(newGame(Math.random, game.wrap))}>
-              Restart
-            </button>
           </div>
         )}
       </div>
