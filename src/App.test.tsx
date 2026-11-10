@@ -135,6 +135,51 @@ test('the food is a circle and the snake cells are squares', () => {
   screen.getAllByTestId('snake').forEach((c) => expect(c.style.borderRadius).not.toBe('50%'))
 })
 
+const eyes = () => screen.getAllByTestId('eye').map((e) => ({ x: parseFloat(e.style.left), y: parseFloat(e.style.top) }))
+
+test('a new game shows two eyes on the right side of the head', () => {
+  // given
+  renderReady(<App />)
+
+  // when
+  const found = eyes()
+
+  // then
+  expect(found).toHaveLength(2)
+  found.forEach((e) => expect(e.x).toBeGreaterThan(50))
+})
+
+test.each([
+  [['ArrowUp'], 'y', true],
+  [['ArrowUp', 'ArrowLeft'], 'x', true],
+  [['ArrowDown'], 'y', false],
+] as const)('the eyes move to the side of a turn: %j', (keys, axis, low) => {
+  // given
+  render(<App />)
+
+  // when
+  keys.forEach((key) => {
+    fireEvent.keyDown(window, { key })
+    tick()
+  })
+
+  // then
+  eyes().forEach((e) => (low ? expect(e[axis]).toBeLessThan(50) : expect(e[axis]).toBeGreaterThan(50)))
+})
+
+test('the eyes stay on the head when the game is over and add no announcement', () => {
+  // given
+  render(<App />)
+
+  // when
+  tick(30)
+
+  // then
+  expect(screen.getAllByTestId('eye')).toHaveLength(2)
+  screen.getAllByTestId('eye').forEach((e) => expect(e.getAttribute('aria-hidden')).toBe('true'))
+  expect(screen.getByTestId('head').getAttribute('aria-label')).toBeNull()
+})
+
 test('the head has an outline that the body cells do not have', () => {
   // given
   renderReady(<App />)
