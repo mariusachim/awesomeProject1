@@ -27,6 +27,7 @@ import {
   tickCount,
   tickMs,
   COUNT_MS,
+  formatTime,
   togglePause,
   turn,
 } from "./game.ts";
@@ -525,6 +526,10 @@ export default function App() {
                   )}
                   <span
                     className="overlay-line"
+                    data-text={`Time ${formatTime(game.ms)}`}
+                  />
+                  <span
+                    className="overlay-line"
                     data-text={`Longest: ${longest}`}
                   />
                   {newBest && (
@@ -595,6 +600,7 @@ export default function App() {
             {game.streaks > 0 && (
               <p className="sr-only">Streak meals: {game.streaks}</p>
             )}
+            <p className="sr-only">Time {formatTime(game.ms)}</p>
             <p className="sr-only">Longest: {longest}</p>
             {newBest && <p className="sr-only">New high score!</p>}
           </div>

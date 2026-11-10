@@ -152,7 +152,27 @@ test('game over shows the final score and a restart hint on the board', () => {
   crash()
 
   // then
-  expect(lines()).toEqual(['Final score: 0', 'Longest: 1', 'Press Enter to restart', 'Tap Restart', 'H resets the high score'])
+  expect(lines()).toEqual(['Final score: 0', 'Time 0:01', 'Longest: 1', 'Press Enter to restart', 'Tap Restart', 'H resets the high score'])
+})
+
+test('the time survived leaves out the pause and the countdown, and a new game starts at zero', () => {
+  // given
+  render(<App />)
+  key('ArrowUp')
+  act(() => vi.advanceTimersByTime(200))
+  key('p')
+  act(() => vi.advanceTimersByTime(60000))
+  key('p')
+  countdown()
+
+  // when
+  act(() => vi.advanceTimersByTime(200 * 30))
+
+  // then
+  expect(lines()[1]).toMatch(/^Time 0:0\d$/)
+  key('Enter')
+  crash()
+  expect(lines()[1]).toBe('Time 0:01')
 })
 
 test('game over speaks the result once and adds nothing visible below the board', () => {
