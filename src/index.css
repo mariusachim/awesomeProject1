@@ -47,6 +47,24 @@ button:disabled {
   margin-bottom: 12px;
 }
 
+/* Phone: the buttons go under the board, in thumb reach. Only the visual order changes, the DOM stays. */
+@media (max-width: 600px) {
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .controls {
+    order: 1;
+    margin: 12px 0 0;
+  }
+
+  .help,
+  .messages {
+    order: 2;
+  }
+}
+
 .messages {
   margin-top: 12px;
   min-height: 44px;
