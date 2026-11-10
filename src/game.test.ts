@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -17,8 +17,33 @@ const state = (over: Partial<GameState>): GameState => ({
   shrink: null,
   sinceFood: null,
   gain: 0,
+  ms: 0,
   count: 0,
   ...over,
+})
+
+test.each([[0, '0:00'], [7999, '0:07'], [65000, '1:05'], [600000, '10:00']])('formatTime(%i) is %s', (ms, text) => {
+  // when / then
+  expect(formatTime(ms)).toBe(text)
+})
+
+test('a running step adds one tick to the time, also the step that ends the game', () => {
+  // given
+  const g = state({ ms: 100 })
+
+  // when
+  const next = step(g, () => 0)
+  const dead = step(state({ ms: 100, snake: [{ x: 0, y: 5 }], dir: 'left' }), () => 0)
+
+  // then
+  expect(next.ms).toBe(100 + tickMs(0))
+  expect(dead.status).toBe('over')
+  expect(dead.ms).toBe(100 + tickMs(0))
+})
+
+test.each([state({ status: 'paused' }), state({ status: 'ready' }), state({ count: 2 })])('a step of a waiting game does not add time', (g) => {
+  // when / then
+  expect(step(g, () => 0).ms).toBe(0)
 })
 
 test('new game has a short snake, score 0 and food off the snake', () => {
