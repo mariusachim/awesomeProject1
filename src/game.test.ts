@@ -583,6 +583,12 @@ test('game over puts the panel at the edge that covers neither head nor food', (
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 1 } })).toBe('bottom')
 })
 
+test('paused panel covers 5 rows: food in the 5th row from the bottom sends it to the top', () => {
+  // given / when / then
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 6 }], food: { x: 3, y: SIZE - 5 } })).toBe('top')
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 9 }], food: { x: 3, y: 3 } })).toBe('bottom')
+})
+
 test('with both edges free the panel stays away from the head', () => {
   // given / when / then
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 5 }], food: { x: 3, y: 7 } })).toBe('bottom')
