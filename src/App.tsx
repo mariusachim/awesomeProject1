@@ -1,6 +1,7 @@
 import {
   type CSSProperties,
   type KeyboardEvent as ReactKeyEvent,
+  type ReactNode,
   type TouchEvent,
   useEffect,
   useRef,
@@ -10,6 +11,7 @@ import { isNewHighScore, loadHighScore, saveHighScore } from "./highScore.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
 import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
+  type Dir,
   type GameState,
   SIZE,
   cellShade,
@@ -39,6 +41,30 @@ const HEAD_LOOK: CSSProperties = {
 };
 // On game over the head turns red to mark the crash cell; the outline keeps the shape.
 const CRASH_HEAD_LOOK: CSSProperties = { ...HEAD_LOOK, background: "#e44" };
+// Eye centres in percent of the head cell, two per direction: the eyes sit on the side of the last move.
+const EYES: Record<Dir, [number, number][]> = {
+  right: [[70, 28], [70, 72]],
+  left: [[30, 28], [30, 72]],
+  up: [[28, 30], [72, 30]],
+  down: [[28, 70], [72, 70]],
+};
+const eye = ([x, y]: [number, number]) => (
+  <span
+    key={`${x},${y}`}
+    data-testid="eye"
+    aria-hidden="true"
+    style={{
+      position: "absolute",
+      left: `${x}%`,
+      top: `${y}%`,
+      width: "18%",
+      height: "18%",
+      transform: "translate(-50%, -50%)",
+      borderRadius: "50%",
+      background: "#111",
+    }}
+  />
+);
 const BODY_LOOK: CSSProperties = {
   background: "#2a2",
   boxSizing: "border-box",
@@ -243,6 +269,7 @@ export default function App() {
     look: CSSProperties,
     className?: string,
     label?: string,
+    children?: ReactNode,
   ) => (
     <div
       // The head is keyed by score, not position: it remounts on each meal so the flash replays.
@@ -260,7 +287,9 @@ export default function App() {
         height: px(1),
         ...look,
       }}
-    />
+    >
+      {children}
+    </div>
   );
 
   // The spec counts the length from 1, but the snake starts with 3 cells.
@@ -347,6 +376,8 @@ export default function App() {
                 game.score > 0 && game.status === "running"
                   ? "flash"
                   : undefined,
+                undefined,
+                EYES[game.dir].map(eye),
               )
             : cell(c.x, c.y, "snake", BODY_LOOK),
         )}
