@@ -14,21 +14,23 @@ jobs:
     name: issue-closeout-check
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - run: python3 .github/scripts/issue_closeout.py check
 
   close:
     name: issue-closeout-close
     if: github.event.action == 'closed' && github.event.pull_request.merged
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
       issues: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - run: python3 .github/scripts/issue_closeout.py close
         env:
           GH_TOKEN: ${{ github.token }}
