@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, SIZE, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -13,6 +13,7 @@ const state = (over: Partial<GameState>): GameState => ({
   eaten: 0,
   meals: 0,
   rocks: [],
+  shrink: null,
   sinceFood: null,
   gain: 0,
   count: 0,
@@ -708,4 +709,82 @@ test('a rock avoids the cell ahead of a wrapping head', () => {
 
   // then
   expect(rock).toEqual({ x: 1, y: 0 })
+})
+
+const long = (n: number) => Array.from({ length: n }, (_, i) => ({ x: 9 - i, y: 5 }))
+// The calls are: the new food, the 1-in-8 roll, the fruit cell.
+const seq = (...v: number[]) => () => v.shift() ?? 0
+
+test('eating a food may spawn a shrink fruit on a free cell', () => {
+  // given
+  const g = state({ food: { x: 6, y: 5 } })
+
+  // when
+  const next = step(g, seq(0.99, 0.99, 0.99))
+
+  // then
+  expect(next.shrink?.movesLeft).toBe(SHRINK_MOVES)
+  expect(next.shrink?.cell).toEqual({ x: 11, y: 14 }) // index 217 of the 220 free cells
+  expect(next.shrink?.cell).not.toEqual(next.food)
+})
+
+test('a low roll spawns no shrink fruit', () => {
+  // given
+  const g = state({ food: { x: 6, y: 5 } })
+
+  // when
+  const next = step(g, seq(0.5, 0.5, 0.5))
+
+  // then
+  expect(next.shrink).toBeNull()
+})
+
+test('shrink placement avoids snake, food, bonus and rocks', () => {
+  // given
+  const snake = [{ x: 0, y: 0 }]
+
+  // when
+  const cell = placeShrink(snake, { x: 1, y: 0 }, { cell: { x: 2, y: 0 }, movesLeft: 3 }, [{ x: 3, y: 0 }], () => 0)
+
+  // then
+  expect(cell).toEqual({ x: 4, y: 0 })
+})
+
+test('eating a shrink fruit cuts 3 tail cells, keeps the score and clears the fruit', () => {
+  // given
+  const g = state({ snake: long(6), score: 4, shrink: { cell: { x: 10, y: 5 }, movesLeft: 5 } })
+
+  // when
+  const next = step(g, () => 0.5)
+
+  // then
+  expect(next.snake).toHaveLength(3)
+  expect(next.score).toBe(4)
+  expect(next.shrink).toBeNull()
+  expect(next.status).toBe('running')
+})
+
+test('a shrink fruit never takes the snake below length 2', () => {
+  // given
+  const g = state({ shrink: { cell: { x: 6, y: 5 }, movesLeft: 5 } })
+
+  // when
+  const next = step(g, () => 0.5)
+
+  // then
+  expect(next.snake).toHaveLength(2)
+})
+
+test('a shrink fruit expires after SHRINK_MOVES moves', () => {
+  // given
+  let g = state({ snake: [{ x: 3, y: 5 }, { x: 2, y: 5 }, { x: 1, y: 5 }], shrink: { cell: { x: 5, y: 0 }, movesLeft: SHRINK_MOVES } })
+
+  // when
+  for (let i = 0; i < SHRINK_MOVES - 1; i++) g = step(g, () => 0.5)
+  const before = g.shrink
+  g = step(g, () => 0.5)
+
+  // then
+  expect(before?.movesLeft).toBe(1)
+  expect(g.shrink).toBeNull()
 })
