@@ -130,3 +130,31 @@ test('without audio support eating keeps the game running', () => {
   // then
   expect(screen.getByText('Score: 1')).toBeTruthy()
 })
+
+test('the M key mutes and unmutes', () => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.keyDown(window, { key: 'M' })
+
+  // then
+  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
+
+  // when
+  fireEvent.keyDown(window, { key: 'm' })
+
+  // then
+  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
+})
+
+test('Cmd+M does not mute', () => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.keyDown(window, { key: 'm', metaKey: true })
+
+  // then
+  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
+})
