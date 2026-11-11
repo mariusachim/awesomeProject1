@@ -19,7 +19,7 @@ const finish = () => {
 }
 const lines = () =>
   Array.from(screen.getByTestId('board-overlay').querySelectorAll('[data-text]')).map((e) => e.getAttribute('data-text'))
-const shown = (text: string) => lines().includes(text) && screen.getAllByText(text).length === 1
+const shown = (text: string) => lines().some((l) => l?.endsWith(` · ${text.replace(':', '')}`)) && screen.getAllByText(text).length === 1
 
 test('a record is shown and saved when none exists', () => {
   // given

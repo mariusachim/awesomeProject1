@@ -648,10 +648,10 @@ test('game over keeps the old rule', () => {
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: SIZE - 1 } })).toBe('top')
 })
 
-test('game over panel covers 7 rows: food under the 7th row sends it to the top', () => {
+test('game over panel covers 5 rows: food in the 5th row from the bottom sends it to the top', () => {
   // given / when / then
-  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 9 } })).toBe('top')
-  expect(edge({ status: 'paused', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 9 } })).toBe('bottom')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 10 } })).toBe('top')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 9 } })).toBe('bottom')
 })
 
 test('game over with the food far from the head keeps the head and body uncovered', () => {
@@ -665,7 +665,7 @@ test('game over with the food far from the head keeps the head and body uncovere
 
 test('game over covers the fewest body cells when both edges cover some', () => {
   // given
-  // head at row 7 (below a 7-row top panel); the body at rows 3-6 is under the top panel, under nothing at the bottom
+  // head at row 7 (below a 5-row top panel); the body at rows 3-4 is under the top panel, under nothing at the bottom
   const snake = [{ x: 7, y: 7 }, { x: 7, y: 6 }, { x: 7, y: 5 }, { x: 7, y: 4 }, { x: 7, y: 3 }]
 
   // when / then
