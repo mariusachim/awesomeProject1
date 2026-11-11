@@ -590,11 +590,7 @@ export default function App() {
                   )}
                   <span
                     className="overlay-line"
-                    data-text={`Time ${formatTime(game.ms)}`}
-                  />
-                  <span
-                    className="overlay-line"
-                    data-text={`Longest: ${longest}`}
+                    data-text={`Time ${formatTime(game.ms)} · Longest ${longest}`}
                   />
                   {newBest && (
                     <span
