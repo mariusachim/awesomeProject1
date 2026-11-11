@@ -401,10 +401,10 @@ export default function App() {
           disabled={ready}
           onClick={over ? again : () => setGame(togglePause)}
           onKeyDown={over ? ownKeys(again) : undefined}
-          aria-keyshortcuts={over ? undefined : "P"}
+          aria-keyshortcuts={over ? "R" : "P"}
         >
           {over ? "Restart" : paused ? "Resume" : "Pause"}
-          {!over && <kbd aria-hidden="true">P</kbd>}
+          <kbd aria-hidden="true">{over ? "R" : "P"}</kbd>
         </button>
         <button
           className="walls"
@@ -595,7 +595,7 @@ export default function App() {
                   )}
                   <span
                     className="overlay-line overlay-hint hint-keys"
-                    data-text="Press Enter to restart"
+                    data-text="Press Enter or R to restart"
                   />
                   <span
                     className="overlay-line overlay-hint hint-touch"

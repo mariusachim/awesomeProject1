@@ -152,7 +152,7 @@ test('game over shows the final score and a restart hint on the board', () => {
   crash()
 
   // then
-  expect(lines()).toEqual(['Final score: 0', 'Time 0:01', 'Longest: 1', 'Press Enter to restart', 'Tap Restart', 'H resets the high score'])
+  expect(lines()).toEqual(['Final score: 0', 'Time 0:01', 'Longest: 1', 'Press Enter or R to restart', 'Tap Restart', 'H resets the high score'])
 })
 
 test('the time survived leaves out the pause and the countdown, and a new game starts at zero', () => {
