@@ -611,7 +611,7 @@ export default function App() {
                     data-text="Tap Restart"
                   />
                   <span
-                    className="overlay-line overlay-hint"
+                    className="overlay-line overlay-hint hint-keys"
                     data-text="H resets the high score"
                   />
                 </>
@@ -627,7 +627,7 @@ export default function App() {
                     data-text="Tap Resume"
                   />
                   <span
-                    className="overlay-line overlay-hint"
+                    className="overlay-line overlay-hint hint-keys"
                     data-text="H resets the high score"
                   />
                 </>
