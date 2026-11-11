@@ -364,14 +364,28 @@ export default function App() {
           disabled={ready}
           onClick={over ? again : () => setGame(togglePause)}
           onKeyDown={over ? ownKeys(again) : undefined}
+          aria-keyshortcuts={over ? undefined : "P"}
         >
           {over ? "Restart" : paused ? "Resume" : "Pause"}
+          {!over && <kbd aria-hidden="true">P</kbd>}
         </button>
-        <button onClick={toggleWalls} onKeyDown={ownKeys(toggleWalls)}>
+        <button
+          className="walls"
+          onClick={toggleWalls}
+          onKeyDown={ownKeys(toggleWalls)}
+          aria-keyshortcuts="B"
+        >
           Walls: {game.wrap ? "wrap" : "solid"}
+          <kbd aria-hidden="true">B</kbd>
         </button>
-        <button onClick={toggleMute} onKeyDown={ownKeys(toggleMute)}>
+        <button
+          className="mute"
+          onClick={toggleMute}
+          onKeyDown={ownKeys(toggleMute)}
+          aria-keyshortcuts="M"
+        >
           {muted ? "Unmute" : "Mute"}
+          <kbd aria-hidden="true">M</kbd>
         </button>
       </div>
       <div
