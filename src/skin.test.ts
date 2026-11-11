@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest'
-import { KEY, SKINS, type Skin, loadSkin, nextSkin, parseSkin, saveSkin } from './skin.ts'
+import { KEY, SKINS, type Skin, bodyShade, loadSkin, nextSkin, parseSkin, saveSkin } from './skin.ts'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -37,6 +37,21 @@ test('every skin has its own body and a head outline apart from the head', () =>
     expect(s.head).not.toBe(s.body)
     expect(s.outline).not.toBe(s.head)
   }
+})
+
+test('the body shade keeps the base next to the head and fades to the floor at the tail', () => {
+  // given
+  const base = SKINS.green.body
+
+  // when
+  const first = bodyShade(base, 1, 6)
+  const last = bodyShade(base, 5, 6)
+
+  // then
+  expect(first).toBe(base)
+  expect(last).toBe('rgb(22, 111, 22)')
+  expect(bodyShade(base, 3, 6)).not.toBe(first)
+  expect(bodyShade(base, 9, 6)).toBe(last)
 })
 
 test('saves and loads a skin', () => {

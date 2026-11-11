@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { LONGEST_KEY, isNewHighScore, loadHighScore, saveHighScore } from "./highScore.ts";
-import { type Skin, SKINS, loadSkin, nextSkin, saveSkin } from "./skin.ts";
+import { type Skin, SKINS, bodyShade, loadSkin, nextSkin, saveSkin } from "./skin.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
 import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
@@ -66,8 +66,8 @@ const eye = ([x, y]: [number, number]) => (
     }}
   />
 );
-const bodyLook = (skin: Skin): CSSProperties => ({
-  background: SKINS[skin].body,
+const bodyLook = (skin: Skin, index: number, length: number): CSSProperties => ({
+  background: bodyShade(SKINS[skin].body, index, length),
   boxSizing: "border-box",
   border: "2px solid #222",
 });
@@ -457,7 +457,7 @@ export default function App() {
                 undefined,
                 EYES[game.dir].map(eye),
               )
-            : cell(c.x, c.y, "snake", bodyLook(skin)),
+            : cell(c.x, c.y, "snake", bodyLook(skin, i, game.snake.length)),
         )}
         {game.rocks.map((r) => cell(r.x, r.y, "rock", ROCK_LOOK))}
         {cell(game.food.x, game.food.y, "food", FOOD_LOOK, "pulse")}
