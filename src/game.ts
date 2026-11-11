@@ -36,6 +36,7 @@ export type GameState = {
   sinceFood: number | null // moves since the last normal food; null before the first one of a game
   gain: number // points the last move scored
   meals: number // normal foods eaten in this game
+  apples: number // normal and bonus foods eaten in this game, one each
   streaks: number // meals eaten within STREAK_MOVES moves of the previous one, in this game
   rocks: Cell[] // blocks that end the game when the head enters
   ms: number // time the snake has run in this game; pauses and the countdown do not count
@@ -148,7 +149,7 @@ export function placeRock(s: Pick<GameState, 'snake' | 'food' | 'bonus' | 'rocks
 export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 'running'): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, streaks: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, ms: 0, count: 0 }
+  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, apples: 0, streaks: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, ms: 0, count: 0 }
 }
 
 // R starts a new game in the same wall mode; it does nothing before the first key.
@@ -203,7 +204,8 @@ export function step(state: GameState, rand: Rand): GameState {
   const meals = state.meals + (eatsFood ? 1 : 0)
   // Every ROCK_EVERY-th meal adds a rock; it is placed after the foods, so it avoids them.
   const rock = eatsFood && meals % ROCK_EVERY === 0 ? placeRock({ ...state, ...settled, shrink, snake: grown }, dir, rand) : null
-  return { ...state, ms, snake, dir, queue, ...settled, shrink, meals, rocks: rock ? [...state.rocks, rock] : state.rocks }
+  const apples = state.apples + (eatsFood || eatsBonus ? 1 : 0)
+  return { ...state, ms, snake, dir, queue, ...settled, shrink, meals, apples, rocks: rock ? [...state.rocks, rock] : state.rocks }
 }
 
 // An eaten shrink fruit is gone, an old one counts down, and a meal may start a new one when none is on the board.
