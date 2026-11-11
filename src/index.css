@@ -44,7 +44,7 @@ button:disabled {
 }
 
 .pause {
-  min-width: 7rem;
+  min-width: 9rem;
 }
 
 /* Fixed widths: the label swaps (Pause/Resume, Mute/Unmute, solid/wrap) and the buttons must not move. */
