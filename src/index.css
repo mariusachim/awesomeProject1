@@ -40,6 +40,30 @@ button:disabled {
   min-width: 7rem;
 }
 
+/* Fixed widths: the label swaps (Pause/Resume, Mute/Unmute, solid/wrap) and the buttons must not move. */
+.walls {
+  min-width: 11rem;
+}
+
+.mute {
+  min-width: 8rem;
+}
+
+/* Dark grey on the light button face, about 7:1. */
+kbd {
+  margin-left: 8px;
+  padding: 0 5px;
+  font: inherit;
+  font-size: 0.75rem;
+  color: #333;
+  border: 1px solid #595959;
+  border-radius: 3px;
+}
+
+button:disabled kbd {
+  color: #595959;
+}
+
 .controls {
   display: flex;
   gap: 12px;
@@ -299,7 +323,8 @@ button:focus-visible {
 }
 
 @media (pointer: coarse) {
-  .hint-keys {
+  .hint-keys,
+  kbd {
     display: none;
   }
 
