@@ -25,7 +25,7 @@ import {
   step,
   swipeDir,
   tickCount,
-  tickMs,
+  boostMs,
   COUNT_MS,
   formatTime,
   togglePause,
@@ -171,13 +171,37 @@ export default function App() {
   if (over && length > longest) setLongest(length);
   const ready = game.status === "ready";
 
+  // True while the browser repeats the key of the current direction; it never applies outside a running game.
+  const [held, setHeld] = useState(false);
+  const boost = held && game.status === "running";
+  const gameRef = useRef(game);
+  useEffect(() => {
+    gameRef.current = game;
+  });
+
   useEffect(() => {
     const id = setInterval(
       () => setGame((g) => step(g, Math.random)),
-      tickMs(game.score),
+      boostMs(game.score, boost),
     );
     return () => clearInterval(id);
-  }, [game.score]);
+  }, [game.score, boost]);
+
+  useEffect(() => {
+    const onDown = (e: KeyboardEvent) => {
+      const g = gameRef.current;
+      setHeld(e.repeat && g.status === "running" && keyToDir(e.key) === g.dir);
+    };
+    const release = () => setHeld(false);
+    window.addEventListener("keydown", onDown);
+    window.addEventListener("keyup", release);
+    window.addEventListener("blur", release);
+    return () => {
+      window.removeEventListener("keydown", onDown);
+      window.removeEventListener("keyup", release);
+      window.removeEventListener("blur", release);
+    };
+  }, []);
 
   if (game.score === 0 && cleared !== 0) setCleared(0);
   if (highScore > best) setBest(highScore);

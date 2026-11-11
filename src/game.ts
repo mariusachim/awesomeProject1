@@ -75,6 +75,9 @@ const TICK_STEP_MS = 10
 
 export const tickMs = (score: number) => Math.max(MIN_TICK_MS, TICK_START_MS - TICK_STEP_MS * score)
 
+// Holding the key of the current direction halves the interval; the level and the score rules do not change.
+export const boostMs = (score: number, boost: boolean) => (boost ? tickMs(score) / 2 : tickMs(score))
+
 // The level rises with each shorter interval, and reads MAX at the shortest one.
 export const speedLevel = (score: number): number | 'MAX' => {
   const ms = tickMs(score)
