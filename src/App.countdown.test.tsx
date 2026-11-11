@@ -99,3 +99,14 @@ test('the number is announced in a polite live region', () => {
   // then
   expect(screen.getByRole('status').textContent).toBe('3')
 })
+
+test('the digit sits at the board edge, not in the centre over the snake', () => {
+  // given
+  resumed()
+
+  // when
+  const style = screen.getByTestId('countdown').style
+
+  // then
+  expect(style.alignItems).toBe('flex-end')
+})
