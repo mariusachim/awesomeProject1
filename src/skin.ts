@@ -10,6 +10,16 @@ export const SKINS = {
 export type Skin = keyof typeof SKINS
 const NAMES = Object.keys(SKINS) as Skin[]
 
+const TAIL_SHADE = 0.65
+
+// Body segment `index` (1 = next to the head) fades linearly to 65% of the base colour at the tail.
+export function bodyShade(color: string, index: number, length: number): string {
+  if (index <= 1 || length <= 2) return color
+  const f = 1 - (1 - TAIL_SHADE) * Math.min(1, (index - 1) / (length - 2))
+  const [r, g, b] = color.slice(1).split('').map((h) => Math.round(parseInt(h + h, 16) * f))
+  return `rgb(${r}, ${g}, ${b})`
+}
+
 export const parseSkin = (raw: string | null): Skin =>
   NAMES.find((n) => n === raw) ?? 'green'
 
