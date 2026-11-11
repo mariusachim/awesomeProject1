@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, togglePause, turn } from './game.ts'
+import { type GameState, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -364,6 +364,21 @@ test('tickMs starts at 200 ms and drops 10 ms per point', () => {
 test('tickMs never falls below 80 ms', () => {
   // when / then
   expect([12, 13, 100].map(tickMs)).toEqual([80, 80, 80])
+})
+
+test('boostMs halves the interval while the boost is on', () => {
+  // when / then
+  expect([0, 5].map((s) => boostMs(s, true))).toEqual([100, 75])
+})
+
+test('boostMs keeps the normal interval while the boost is off', () => {
+  // when / then
+  expect([0, 5].map((s) => boostMs(s, false))).toEqual([200, 150])
+})
+
+test('boostMs halves the minimum interval too', () => {
+  // when / then
+  expect([boostMs(100, true), boostMs(100, false)]).toEqual([40, 80])
 })
 
 test('speedLevel counts one per point, starting at 1', () => {
