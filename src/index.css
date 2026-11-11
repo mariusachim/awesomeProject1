@@ -1,5 +1,6 @@
 :root {
   --cell: 24px;
+  color-scheme: dark;
 }
 
 /* A big screen has room for 15 cells of 32 px, and the board still fits with the stats. */
@@ -11,6 +12,8 @@
 
 body {
   margin: 0;
+  color: #f0f0f0;
+  background: #161616;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -26,12 +29,16 @@ button {
   min-height: 44px;
   padding: 10px 20px;
   font-size: 1rem;
+  color: #f0f0f0;
+  background: #2b2b2b;
+  border: 1px solid #9a9a9a;
+  border-radius: 4px;
   cursor: pointer;
 }
 
 button:disabled {
-  color: #595959;
-  background: #e8e8e8;
+  color: #b0b0b0;
+  background: #1e1e1e;
   border: 2px dashed #8a8a8a;
   cursor: not-allowed;
 }
@@ -49,19 +56,19 @@ button:disabled {
   min-width: 8rem;
 }
 
-/* Dark grey on the light button face, about 7:1. */
+/* Light grey on the dark button face, about 9:1. */
 kbd {
   margin-left: 8px;
   padding: 0 5px;
   font: inherit;
   font-size: 0.75rem;
-  color: #333;
-  border: 1px solid #595959;
+  color: #ddd;
+  border: 1px solid #9a9a9a;
   border-radius: 3px;
 }
 
 button:disabled kbd {
-  color: #595959;
+  color: #b0b0b0;
 }
 
 .controls {
@@ -254,14 +261,14 @@ button:disabled kbd {
   @keyframes flash {
     50% {
       transform: scale(1.25);
-      background: #cfc;
+      background: #2f5a2f;
     }
   }
 
   @keyframes bump {
     50% {
       transform: scale(1.25);
-      color: #8a5a00;
+      color: #f5c04a;
     }
   }
 }
@@ -276,7 +283,7 @@ button:disabled kbd {
 }
 
 button:focus-visible {
-  outline: 3px solid #1a73e8;
+  outline: 3px solid #6cb2ff;
   outline-offset: 2px;
 }
 
@@ -309,7 +316,7 @@ button:focus-visible {
   right: 0;
   font-size: 0.875rem;
   font-weight: bold;
-  color: #8a5a00;
+  color: #f5c04a;
 }
 
 .stat-label {
@@ -322,9 +329,9 @@ button:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
-/* Dark gold: 4.8:1 on the page background. */
+/* Light gold: about 10:1 on the page background. */
 [data-record] .stat-value {
-  color: #8a5a00;
+  color: #f5c04a;
 }
 
 .stat-big .stat-value {
