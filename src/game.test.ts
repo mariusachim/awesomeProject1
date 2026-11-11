@@ -648,6 +648,30 @@ test('game over keeps the old rule', () => {
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: SIZE - 1 } })).toBe('top')
 })
 
+test('game over panel covers 7 rows: food under the 7th row sends it to the top', () => {
+  // given / when / then
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 9 } })).toBe('top')
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 9 } })).toBe('bottom')
+})
+
+test('game over with the food far from the head keeps the head and body uncovered', () => {
+  // given
+  const body = [{ x: 7, y: 0 }, { x: 7, y: 1 }, { x: 7, y: 2 }, { x: 7, y: 3 }]
+
+  // when / then
+  expect(edge({ status: 'over', snake: body, food: { x: 3, y: 14 } })).toBe('top')
+  expect(edge({ status: 'over', snake: [...body].reverse(), food: { x: 3, y: 7 } })).toBe('bottom')
+})
+
+test('game over covers the fewest body cells when both edges cover some', () => {
+  // given
+  // head at row 7 (below a 7-row top panel); the body at rows 3-6 is under the top panel, under nothing at the bottom
+  const snake = [{ x: 7, y: 7 }, { x: 7, y: 6 }, { x: 7, y: 5 }, { x: 7, y: 4 }, { x: 7, y: 3 }]
+
+  // when / then
+  expect(edge({ status: 'over', snake, food: { x: 3, y: 7 } })).toBe('bottom')
+})
+
 test.each([[null, 1], [1, 2], [10, 2], [11, 1]])('a meal after %s moves scores %s', (moves, points) => {
   // when / then
   expect(mealPoints(moves)).toBe(points)
