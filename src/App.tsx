@@ -582,6 +582,10 @@ export default function App() {
                     className="overlay-line"
                     data-text={`Final score: ${game.score}`}
                   />
+                  <span
+                    className="overlay-line"
+                    data-text={`Apples ${game.apples}`}
+                  />
                   {game.streaks > 0 && (
                     <span
                       className="overlay-line"
@@ -657,6 +661,7 @@ export default function App() {
           <div role="alert">
             <p className="sr-only">Game over</p>
             <p className="sr-only">Final score: {game.score}</p>
+            <p className="sr-only">Apples {game.apples}</p>
             {game.streaks > 0 && (
               <p className="sr-only">Streak meals: {game.streaks}</p>
             )}

@@ -12,6 +12,7 @@ const state = (over: Partial<GameState>): GameState => ({
   bonus: null,
   eaten: 0,
   meals: 0,
+  apples: 0,
   streaks: 0,
   rocks: [],
   shrink: null,
@@ -872,4 +873,17 @@ test('a shrink fruit expires after SHRINK_MOVES moves', () => {
   // then
   expect(before?.movesLeft).toBe(1)
   expect(g.shrink).toBeNull()
+})
+
+test('apples count each normal and each bonus food as one, and start at 0', () => {
+  // given
+  const food = state({ food: { x: 6, y: 5 }, apples: 2 })
+  const bonus = state({ bonus: { cell: { x: 6, y: 5 }, movesLeft: 9 }, apples: 2 })
+  const none = state({ apples: 2 })
+
+  // when / then
+  expect(step(food, () => 0).apples).toBe(3)
+  expect(step(bonus, () => 0).apples).toBe(3)
+  expect(step(none, () => 0).apples).toBe(2)
+  expect(newGame(() => 0).apples).toBe(0)
 })
