@@ -473,7 +473,13 @@ export default function App() {
             : cell(c.x, c.y, "snake", bodyLook(skin, i, game.snake.length)),
         )}
         {game.rocks.map((r) => cell(r.x, r.y, "rock", ROCK_LOOK))}
-        {cell(game.food.x, game.food.y, "food", FOOD_LOOK, "pulse")}
+        {cell(
+          game.food.x,
+          game.food.y,
+          "food",
+          FOOD_LOOK,
+          game.status === "running" ? "pulse food-idle" : "pulse",
+        )}
         {game.bonus &&
           cell(
             game.bonus.cell.x,

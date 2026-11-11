@@ -228,6 +228,19 @@ button:disabled kbd {
     animation: pulse 150ms ease-out;
   }
 
+  /* Starts after the spawn pulse; transform only, so nothing moves in the layout. */
+  .food-idle {
+    animation:
+      pulse 150ms ease-out,
+      idle 1.2s ease-in-out 150ms infinite;
+  }
+
+  @keyframes idle {
+    50% {
+      transform: scale(1.12);
+    }
+  }
+
   /* Transform does not change the layout, so the stats row and the board stay still. */
   .bump {
     display: inline-block;
