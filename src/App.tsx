@@ -291,7 +291,8 @@ export default function App() {
   }, []);
 
   const again = () => setGame(newGame(Math.random, game.wrap));
-  const toggleWalls = () => setGame(newGame(Math.random, !game.wrap, "ready"));
+  const toggleWalls = () =>
+    setGame((g) => newGame(Math.random, !g.wrap, "ready"));
   // Space and Enter belong to a focused button: keep the window handler from pausing or restarting.
   // Enter clicks the button itself; Space is cancelled by the window handler, so run the action here.
   const ownKeys =
@@ -304,6 +305,18 @@ export default function App() {
       }
     };
   const toggleMute = () => setMuted((m) => !m);
+
+  useEffect(() => {
+    const onToggle = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      if (k === "b") toggleWalls();
+      if (k === "m") toggleMute();
+    };
+    window.addEventListener("keydown", onToggle);
+    return () => window.removeEventListener("keydown", onToggle);
+    // Both toggles use functional updates, so the first render's closures stay correct.
+  }, []);
 
   const swipeFrom = useRef<{ x: number; y: number } | null>(null);
   const onSwipeStart = (e: TouchEvent<HTMLDivElement>) => {

@@ -127,3 +127,26 @@ test('the walls line is gone once the game runs', () => {
   expect(screen.queryByTestId('board-overlay')).toBeNull()
   expect(screen.queryByText(SOLID)).toBeNull()
 })
+
+test('the B key switches the walls mode and waits for the first key', () => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.keyDown(window, { key: 'b' })
+
+  // then
+  expect(walls('wrap')).toBeTruthy()
+  expect(screen.getByText('Press an arrow key or WASD to start')).toBeTruthy()
+})
+
+test('Ctrl+B does not switch the walls mode', () => {
+  // given
+  render(<App />)
+
+  // when
+  fireEvent.keyDown(window, { key: 'b', ctrlKey: true })
+
+  // then
+  expect(walls('solid')).toBeTruthy()
+})
