@@ -529,11 +529,14 @@ export default function App() {
               position: "absolute",
               inset: 0,
               display: "flex",
-              alignItems: "center",
+              alignItems:
+                overlayEdge(game) === "top" ? "flex-start" : "flex-end",
               justifyContent: "center",
+              padding: "1rem 0",
               fontSize: "4em",
               fontWeight: 700,
               color: "#fff",
+              textShadow: "0 0 6px #000, 0 0 2px #000",
               pointerEvents: "none",
             }}
           >
