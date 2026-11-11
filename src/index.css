@@ -81,6 +81,16 @@ button:disabled kbd {
   .controls {
     order: 1;
     margin: 12px 0 0;
+    width: 100%;
+    gap: 8px;
+  }
+
+  /* Equal shares of the row: fits from 320px and the label swaps cannot move a button. */
+  .controls button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 10px 4px;
+    font-size: 0.875rem;
   }
 
   .help,
@@ -320,6 +330,13 @@ button:focus-visible {
 
 .hint-touch {
   display: none;
+}
+
+/* A narrow non-touch window: the key hints would crowd the labels. */
+@media (max-width: 420px) {
+  kbd {
+    display: none;
+  }
 }
 
 @media (pointer: coarse) {
