@@ -1079,3 +1079,16 @@ test('the score pop shows +1 for the first meal and +2 for a quick second one', 
   // then
   expect(pop()).toBe('+2')
 })
+
+test('arrow keys do not scroll the page, but a modified arrow keeps its default', () => {
+  // given
+  renderReady(<App />)
+
+  // when
+  const plain = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].map((key) => fireEvent.keyDown(window, { key }))
+  const withCtrl = fireEvent.keyDown(window, { key: 'ArrowLeft', ctrlKey: true })
+
+  // then
+  expect(plain).toEqual([false, false, false, false])
+  expect(withCtrl).toBe(true)
+})

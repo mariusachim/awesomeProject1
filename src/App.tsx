@@ -264,8 +264,10 @@ export default function App() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => setGame((g) => onKeyPress(g, e.key));
     // Space is the pause key, so it must not also click a focused button.
+    // The arrow keys steer, so they must not also scroll the page.
     const noClick = (e: KeyboardEvent) => {
-      if (e.key === " ") e.preventDefault();
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === " " || e.key.startsWith("Arrow")) e.preventDefault();
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("keydown", noClick);

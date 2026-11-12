@@ -4,7 +4,7 @@
 }
 
 /* A big screen has room for 15 cells of 32 px, and the board still fits with the stats. */
-@media (min-width: 600px) and (min-height: 800px) {
+@media (min-width: 600px) and (min-height: 840px) {
   :root {
     --cell: 32px;
   }
