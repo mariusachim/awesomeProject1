@@ -590,7 +590,7 @@ export default function App() {
                   )}
                   <span
                     className="overlay-line"
-                    data-text={`Time ${formatTime(game.ms)} · Longest ${longest}`}
+                    data-text={`Time ${formatTime(game.ms)} · Apples ${game.apples} · Longest ${longest}`}
                   />
                   {newBest && (
                     <span
@@ -661,6 +661,7 @@ export default function App() {
               <p className="sr-only">Streak meals: {game.streaks}</p>
             )}
             <p className="sr-only">Time {formatTime(game.ms)}</p>
+            <p className="sr-only">Apples: {game.apples}</p>
             <p className="sr-only">Longest: {longest}</p>
             {newBest && <p className="sr-only">New high score!</p>}
           </div>

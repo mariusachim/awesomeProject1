@@ -12,6 +12,7 @@ const state = (over: Partial<GameState>): GameState => ({
   bonus: null,
   eaten: 0,
   meals: 0,
+  apples: 0,
   streaks: 0,
   rocks: [],
   shrink: null,
@@ -694,6 +695,28 @@ test('a streak meal counts one streak, a slow meal does not', () => {
 
   // then
   expect([fast.streaks, slow.streaks]).toEqual([3, 2])
+})
+
+test('a new game has eaten no apples', () => {
+  // when / then
+  expect(newGame(() => 0).apples).toBe(0)
+})
+
+test('a normal food and a bonus food count one apple each', () => {
+  // given
+  const normal = state({ food: { x: 6, y: 5 }, apples: 2 })
+  const bonus = state({ bonus: { cell: { x: 6, y: 5 }, movesLeft: 9 }, apples: 2 })
+
+  // when
+  const after = [step(normal, () => 0), step(bonus, () => 0)]
+
+  // then
+  expect(after.map((g) => g.apples)).toEqual([3, 3])
+})
+
+test('a move that eats nothing keeps the apples', () => {
+  // when / then
+  expect(step(state({ apples: 2 }), () => 0).apples).toBe(2)
 })
 
 test('a new game has no streak meals', () => {
