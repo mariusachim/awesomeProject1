@@ -116,6 +116,13 @@ button:disabled kbd {
   border-radius: 4px;
 }
 
+/* Desktop: the board is narrower than the control row, so it sits in the middle of the column. */
+@media (min-width: 600px) {
+  .board {
+    margin-inline: auto;
+  }
+}
+
 .board-milestone {
   border-color: #f5c04a;
   box-shadow: 0 0 12px #f5c04a;
