@@ -88,3 +88,13 @@ test('the help text mentions the C key', () => {
   // then
   expect(screen.getByText('C changes the snake colour')).toBeTruthy()
 })
+
+test('the C hint shows the key as a badge', () => {
+  // when
+  const { container } = render(<App />)
+
+  // then
+  const badge = container.querySelector('.help kbd')
+  expect(badge?.textContent).toBe('C')
+  expect(badge?.closest('[aria-hidden="true"]')).toBeTruthy()
+})
