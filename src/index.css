@@ -88,6 +88,9 @@ button:disabled kbd {
   main {
     display: flex;
     flex-direction: column;
+    /* The column never grows past the viewport, so the stats row cannot widen the page. */
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .controls {
@@ -408,6 +411,7 @@ button:focus-visible {
   .stats {
     grid-auto-columns: auto;
     justify-content: space-between;
+    column-gap: 8px;
   }
 
   .stat-label {
@@ -416,6 +420,12 @@ button:focus-visible {
 
   .stat-value {
     min-width: 3ch;
+  }
+}
+
+@media (max-width: 420px) {
+  .stat-label {
+    font-size: 0.8125rem;
   }
 }
 
