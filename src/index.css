@@ -199,7 +199,28 @@ button:disabled kbd {
   font-size: 1.125rem;
 }
 
+/* The ghost glow is motion, so it only shows when the player allows motion. */
+.ghost {
+  display: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  .ghost {
+    display: block;
+    background: #7fdc7f;
+    pointer-events: none;
+    animation: ghost 400ms ease-out forwards;
+  }
+
+  @keyframes ghost {
+    from {
+      opacity: var(--ghost);
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
   .board-overlay {
     animation: fade-in 150ms ease-out;
   }

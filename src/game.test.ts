@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type GameState, trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -895,4 +895,38 @@ test('a shrink fruit expires after SHRINK_MOVES moves', () => {
   // then
   expect(before?.movesLeft).toBe(1)
   expect(g.shrink).toBeNull()
+})
+
+const row = (...xs: number[]) => xs.map((x) => ({ x, y: 5 }))
+
+test('trailAfter adds the vacated tail cell, newest first, at most 3', () => {
+  // given
+  const snakes = [row(5, 4, 3), row(6, 5, 4), row(7, 6, 5), row(8, 7, 6), row(9, 8, 7)]
+  // when
+  const trail = snakes.slice(1).reduce((t, s, i) => trailAfter(t, snakes[i], s), [] as { x: number; y: number }[])
+  // then
+  expect(trail).toEqual(row(6, 5, 4))
+})
+
+test('trailAfter adds nothing when the snake grows', () => {
+  // given
+  const before = row(5, 4)
+  const after = row(6, 5, 4)
+  // when / then
+  expect(trailAfter([], before, after)).toEqual([])
+})
+
+test('trailAfter clears the trail when the snake is replaced', () => {
+  // given
+  const before = row(5, 4)
+  const after = [{ x: 1, y: 1 }, { x: 0, y: 1 }]
+  // when / then
+  expect(trailAfter(row(3), before, after)).toEqual([])
+})
+
+test('trailAfter keeps the trail when the snake did not move', () => {
+  // given
+  const snake = row(5, 4)
+  // when / then
+  expect(trailAfter(row(3), snake, snake)).toEqual(row(3))
 })

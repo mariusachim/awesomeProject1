@@ -242,3 +242,13 @@ function nextBonus(old: Bonus | null, eaten: boolean, fresh: Cell | null): Bonus
   if (old && !eaten) return countDown(old)
   return fresh ? { cell: fresh, movesLeft: BONUS_MOVES } : null
 }
+
+export const TRAIL = 3
+
+// The cells the tail left behind, newest first. A snake that did not advance from `before` is a new run: no trail.
+export function trailAfter(trail: Cell[], before: Cell[], after: Cell[]): Cell[] {
+  if (before === after) return trail
+  if (!same(after[1] ?? after[0], before[0])) return []
+  const left = before.filter((c) => !after.some((a) => same(a, c)))
+  return [...left.reverse(), ...trail].slice(0, TRAIL)
+}
