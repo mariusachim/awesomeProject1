@@ -34,6 +34,7 @@ import {
   formatTime,
   togglePause,
   turn,
+  nearWall,
 } from "./game.ts";
 
 // The cell size is the CSS variable --cell (index.css): one value sizes the board and every cell.
@@ -478,7 +479,7 @@ export default function App() {
         </button>
       </div>
       <div
-        className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}${speeding ? " board-speed" : ""}`}
+        className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}${speeding ? " board-speed" : ""}${nearWall(game) ? " board-wall" : ""}`}
         data-testid="board"
         style={{
           position: "relative",

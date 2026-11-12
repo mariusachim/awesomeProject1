@@ -162,6 +162,15 @@ export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 
   return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), golden: isGolden(rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, apples: 0, streaks: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, ms: 0, count: 0 }
 }
 
+// With solid walls, a running head on the edge and heading out dies on its next move.
+export function nearWall(s: Pick<GameState, 'status' | 'wrap' | 'snake' | 'dir'>): boolean {
+  if (s.status !== 'running' || s.wrap) return false
+  const inside = (n: number) => n >= 0 && n < SIZE
+  const x = s.snake[0].x + DELTA[s.dir].x
+  const y = s.snake[0].y + DELTA[s.dir].y
+  return !inside(x) || !inside(y)
+}
+
 // R starts a new game in the same wall mode; it does nothing before the first key.
 export const restart = (state: GameState, rand: Rand): GameState =>
   state.status === 'ready' ? state : newGame(rand, state.wrap)
