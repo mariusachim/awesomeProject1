@@ -342,6 +342,8 @@ button:focus-visible {
   display: grid;
   grid-auto-flow: column;
   grid-template-rows: auto auto;
+  /* Equal columns, so the gap between neighbouring labels is even. */
+  grid-auto-columns: 1fr;
   justify-content: start;
   align-content: end;
   gap: 0 16px;
