@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type GameState, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -16,6 +16,7 @@ const state = (over: Partial<GameState>): GameState => ({
   streaks: 0,
   rocks: [],
   shrink: null,
+  golden: false,
   sinceFood: null,
   gain: 0,
   ms: 0,
@@ -45,6 +46,49 @@ test('a running step adds one tick to the time, also the step that ends the game
 test.each([state({ status: 'paused' }), state({ status: 'ready' }), state({ count: 2 })])('a step of a waiting game does not add time', (g) => {
   // when / then
   expect(step(g, () => 0).ms).toBe(0)
+})
+
+test('the food kind is golden below the golden chance and normal otherwise', () => {
+  // when / then
+  expect(foodKind(GOLDEN_CHANCE - 0.001)).toBe('golden')
+  expect(foodKind(GOLDEN_CHANCE)).toBe('normal')
+})
+
+test('eating a golden apple scores 3 times a normal one and grows by one', () => {
+  // given
+  const game = state({ food: { x: 6, y: 5 }, golden: true })
+
+  // when
+  const next = step(game, () => 0.5)
+
+  // then
+  expect(next.score).toBe(3)
+  expect(next.snake.length).toBe(4)
+  expect(next.golden).toBe(false)
+})
+
+test('a golden apple on a streak scores 3 times the doubled value', () => {
+  // given
+  const game = state({ food: { x: 6, y: 5 }, golden: true, sinceFood: 2 })
+
+  // when
+  const next = step(game, () => 0.5)
+
+  // then
+  expect(next.score).toBe(6)
+})
+
+test('a new food is golden when the random number is below the golden chance', () => {
+  // given
+  const game = state({ food: { x: 6, y: 5 } })
+
+  // when
+  const next = step(game, () => 0.95)
+
+  // then
+  expect(next.golden).toBe(true)
+  expect(newGame(() => 0.95).golden).toBe(true)
+  expect(newGame(() => 0).golden).toBe(false)
 })
 
 test('new game has a short snake, score 0 and food off the snake', () => {

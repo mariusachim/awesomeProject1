@@ -42,6 +42,7 @@ export type GameState = {
   ms: number // time the snake has run in this game; pauses and the countdown do not count
   count: number // resume countdown: 3, 2, 1 while the snake waits; 0 when none
   shrink: Bonus | null // the shrink fruit on the board, if any
+  golden: boolean // the normal food is a golden apple worth triple points
 }
 export type Bonus = { cell: Cell; movesLeft: number }
 export type Rand = () => number
@@ -66,6 +67,12 @@ export const BONUS_EVERY = 5
 export const BONUS_POINTS = 3
 export const BONUS_MOVES = 15
 export const STREAK_MOVES = 10
+export const GOLDEN_CHANCE = 0.1
+export const GOLDEN_POINTS = 3
+
+export const foodKind = (r: number): 'golden' | 'normal' => (r < GOLDEN_CHANCE ? 'golden' : 'normal')
+// Rolls on the top of the range, like the shrink fruit, so a rand of 0 never gives a golden apple.
+const isGolden = (rand: Rand) => foodKind(1 - rand()) === 'golden'
 
 // A food eaten within STREAK_MOVES moves of the previous one scores double.
 export const mealPoints = (moves: number | null): number => (moves !== null && moves <= STREAK_MOVES ? 2 : 1)
@@ -152,7 +159,7 @@ export function placeRock(s: Pick<GameState, 'snake' | 'food' | 'bonus' | 'rocks
 export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 'running'): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, apples: 0, streaks: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, ms: 0, count: 0 }
+  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), golden: isGolden(rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, apples: 0, streaks: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, ms: 0, count: 0 }
 }
 
 // R starts a new game in the same wall mode; it does nothing before the first key.
@@ -207,7 +214,8 @@ export function step(state: GameState, rand: Rand): GameState {
   const meals = state.meals + (eatsFood ? 1 : 0)
   // Every ROCK_EVERY-th meal adds a rock; it is placed after the foods, so it avoids them.
   const rock = eatsFood && meals % ROCK_EVERY === 0 ? placeRock({ ...state, ...settled, shrink, snake: grown }, dir, rand) : null
-  return { ...state, ms, snake, dir, queue, ...settled, shrink, meals, rocks: rock ? [...state.rocks, rock] : state.rocks }
+  const golden = eatsFood ? isGolden(rand) : state.golden // rolled last, after every other random pick
+  return { ...state, ms, snake, dir, queue, ...settled, shrink, meals, golden, rocks: rock ? [...state.rocks, rock] : state.rocks }
 }
 
 // An eaten shrink fruit is gone, an old one counts down, and a meal may start a new one when none is on the board.
@@ -227,7 +235,7 @@ function settleFood(state: GameState, snake: Cell[], eatsFood: boolean, eatsBonu
   const eaten = state.eaten + (eatsFood ? 1 : 0)
   const spawn = eaten >= BONUS_EVERY
   const moves = state.sinceFood === null ? null : state.sinceFood + 1
-  const gain = (eatsFood ? mealPoints(moves) : 0) + (eatsBonus ? BONUS_POINTS : 0)
+  const gain = (eatsFood ? mealPoints(moves) * (state.golden ? GOLDEN_POINTS : 1) : 0) + (eatsBonus ? BONUS_POINTS : 0)
   return {
     food,
     gain,
