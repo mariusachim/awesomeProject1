@@ -363,6 +363,22 @@ button:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
+/* Desktop: heading, stats and hint share the board's axis. Values get 3 digits of room, so a growing score moves no stat. */
+@media (min-width: 600px) {
+  h1,
+  .help {
+    text-align: center;
+  }
+
+  .stats {
+    justify-content: center;
+  }
+
+  .stat-value {
+    min-width: 3ch;
+  }
+}
+
 /* Light gold: about 10:1 on the page background. */
 [data-record] .stat-value {
   color: #f5c04a;
