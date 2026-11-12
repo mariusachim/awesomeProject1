@@ -416,6 +416,7 @@ export default function App() {
           label="Length"
           value={length}
           spoken={`Length ${length}`}
+          pulse={length !== 1}
         />
         <Stat
           label="High score"

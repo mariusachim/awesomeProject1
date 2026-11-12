@@ -1058,6 +1058,23 @@ test('the speed value pulses when the level goes up, not at level 1 or after a r
   expect(speedValue().classList.contains('bump')).toBe(false)
 })
 
+test('the length value bumps when the snake grows, not at length 1', () => {
+  // given
+  render(<App />)
+  const lengthValue = () => screen.getByText('Length', { selector: '.stat-label' }).nextElementSibling as HTMLElement
+
+  // then
+  expect(lengthValue().classList.contains('bump')).toBe(false)
+
+  // when
+  eatFood()
+
+  // then
+  expect(lengthValue().textContent).toBe('2')
+  expect(lengthValue().classList.contains('bump')).toBe(true)
+  expect(screen.getByText('Length 2')).toBeTruthy()
+})
+
 test('the score pop shows +1 for the first meal and +2 for a quick second one', () => {
   // given: each food sits right in front of the snake
   const rand = vi.spyOn(Math, 'random')
