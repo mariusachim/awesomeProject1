@@ -14,6 +14,7 @@ import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
   type Cell,
   type Dir,
+  isMilestone,
   type GameState,
   TRAIL,
   trailAfter,
@@ -226,17 +227,30 @@ export default function App() {
   if (game.score === 0 && record !== highScore) setRecord(highScore);
   const newBest = over && isNewHighScore(record, game.score);
 
-  const prev = useRef({ score: game.score, over });
+  const [chimed, setChimed] = useState(0);
+  const prev = useRef({ score: game.score, over, apples: game.apples });
   useEffect(() => {
     const was = prev.current;
-    prev.current = { score: game.score, over };
+    prev.current = { score: game.score, over, apples: game.apples };
+    const milestone = game.apples > was.apples && isMilestone(game.apples);
+    if (milestone) setChimed((n) => n + 1);
     if (muted) return;
     if (over && !was.over) {
       play("over");
       vibrate();
     }
+    else if (milestone) play("chime");
     else if (game.score > was.score) play("eat");
-  }, [game.score, over, muted]);
+  }, [game.score, game.apples, over, muted]);
+
+  // Counts the milestones; each one flashes the board border for half a second.
+  const [shown, setShown] = useState(0);
+  const flashing = chimed > shown;
+  useEffect(() => {
+    if (!flashing) return;
+    const id = setTimeout(() => setShown(chimed), 500);
+    return () => clearTimeout(id);
+  }, [flashing, chimed]);
 
   useEffect(() => {
     if (game.count === 0) return;
@@ -444,7 +458,7 @@ export default function App() {
         </button>
       </div>
       <div
-        className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}`}
+        className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}`}
         data-testid="board"
         style={{
           position: "relative",

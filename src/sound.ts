@@ -1,9 +1,10 @@
 export const KEY = 'snake.muted'
 
-export type Sound = 'eat' | 'over'
+export type Sound = 'eat' | 'over' | 'chime'
 
 const TONES: Record<Sound, { hz: number; seconds: number }> = {
   eat: { hz: 880, seconds: 0.08 },
+  chime: { hz: 1320, seconds: 0.4 },
   over: { hz: 160, seconds: 0.3 },
 }
 
