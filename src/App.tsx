@@ -228,12 +228,15 @@ export default function App() {
   const newBest = over && isNewHighScore(record, game.score);
 
   const [chimed, setChimed] = useState(0);
+  const [sped, setSped] = useState(0);
   const prev = useRef({ score: game.score, over, apples: game.apples });
   useEffect(() => {
     const was = prev.current;
     prev.current = { score: game.score, over, apples: game.apples };
     const milestone = game.apples > was.apples && isMilestone(game.apples);
     if (milestone) setChimed((n) => n + 1);
+    const faster = game.score > was.score && speedLevel(game.score) !== speedLevel(was.score);
+    if (faster && !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) setSped((n) => n + 1);
     if (muted) return;
     if (over && !was.over) {
       play("over");
@@ -251,6 +254,15 @@ export default function App() {
     const id = setTimeout(() => setShown(chimed), 500);
     return () => clearTimeout(id);
   }, [flashing, chimed]);
+
+  // Counts the speed-ups; each one flashes the board border for 300 ms.
+  const [spedShown, setSpedShown] = useState(0);
+  const speeding = sped > spedShown;
+  useEffect(() => {
+    if (!speeding) return;
+    const id = setTimeout(() => setSpedShown(sped), 300);
+    return () => clearTimeout(id);
+  }, [speeding, sped]);
 
   useEffect(() => {
     if (game.count === 0) return;
@@ -459,7 +471,7 @@ export default function App() {
         </button>
       </div>
       <div
-        className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}`}
+        className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}${speeding ? " board-speed" : ""}`}
         data-testid="board"
         style={{
           position: "relative",
