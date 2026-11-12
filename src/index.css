@@ -80,6 +80,11 @@ button:disabled kbd {
 
 /* Phone: the buttons go under the board, in thumb reach. Only the visual order changes, the DOM stays. */
 @media (max-width: 600px) {
+  /* The board fills the column: 100vw minus 16px page padding and the 4px border, over 15 cells. */
+  :root {
+    --cell: calc((100vw - 20px) / 15);
+  }
+
   main {
     display: flex;
     flex-direction: column;
