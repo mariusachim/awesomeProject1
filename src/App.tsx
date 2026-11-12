@@ -690,6 +690,12 @@ export default function App() {
             Paused
           </p>
         )}
+        {game.score > 0 && !over && (
+          // Mounted only after the first meal and not at game over, so the alert stays the only message then.
+          <p role="status" className="sr-only">
+            Score {game.score}
+          </p>
+        )}
         {over && (
           <div role="alert">
             <p className="sr-only">Game over</p>
