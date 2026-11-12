@@ -3,10 +3,10 @@
   color-scheme: dark;
 }
 
-/* A big screen has room for 15 cells of 32 px, and the board still fits with the stats. */
-@media (min-width: 600px) and (min-height: 840px) {
+/* The cell grows with the window height, 24 to 32 px; 360px is the page around the 15 rows (32 px fits at 840). */
+@media (min-width: 600px) {
   :root {
-    --cell: 32px;
+    --cell: clamp(24px, calc((100dvh - 360px) / 15), 32px);
   }
 }
 
