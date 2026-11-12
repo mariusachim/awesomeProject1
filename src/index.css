@@ -403,6 +403,28 @@ button:focus-visible {
   }
 }
 
+/* Phone: labels stay on one line, columns fit their content and the row spans the board. */
+@media (max-width: 600px) {
+  .stats {
+    grid-auto-columns: auto;
+    justify-content: space-between;
+  }
+
+  .stat-label {
+    white-space: nowrap;
+  }
+
+  .stat-value {
+    min-width: 3ch;
+  }
+}
+
+@media (max-width: 340px) {
+  .stat-label {
+    font-size: 0.75rem;
+  }
+}
+
 /* #b0b0b0 on the page background is above 4.5:1. */
 .stat-muted {
   color: #b0b0b0;
