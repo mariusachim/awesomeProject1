@@ -135,8 +135,25 @@ button:disabled kbd {
 }
 
 /* Colour is the steady state, so it holds with reduced motion too. */
-.board-over {
+.board-over,
+.board-wall {
   border-color: #e44;
+}
+
+.board-wall {
+  box-shadow: 0 0 12px #e44;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .board-wall {
+    animation: wall-pulse 400ms ease-in-out infinite alternate;
+  }
+
+  @keyframes wall-pulse {
+    to {
+      box-shadow: 0 0 4px #e44;
+    }
+  }
 }
 
 /* Dim layer over the cells; #fff on rgba(0,0,0,0.7) over #222 is well above 4.5:1. */

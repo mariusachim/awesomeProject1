@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -978,4 +978,22 @@ test('trailAfter keeps the trail when the snake did not move', () => {
 test.each([[0, false], [9, false], [10, true], [11, false], [20, true]])('apples %i milestone is %s', (n, expected) => {
   // when / then
   expect(isMilestone(n)).toBe(expected)
+})
+
+test('nearWall is true for a running head on an edge cell heading out, with solid walls', () => {
+  // given
+  const at = (x: number, y: number, dir: Dir, over: Partial<GameState> = {}) =>
+    state({ snake: [{ x, y }, { x: 7, y: 7 }], dir, ...over })
+
+  // when / then
+  expect(nearWall(at(0, 5, 'left'))).toBe(true)
+  expect(nearWall(at(14, 5, 'right'))).toBe(true)
+  expect(nearWall(at(5, 0, 'up'))).toBe(true)
+  expect(nearWall(at(5, 14, 'down'))).toBe(true)
+  expect(nearWall(at(0, 5, 'up'))).toBe(false)
+  expect(nearWall(at(1, 5, 'left'))).toBe(false)
+  expect(nearWall(at(0, 5, 'left', { wrap: true }))).toBe(false)
+  expect(nearWall(at(0, 5, 'left', { status: 'paused' }))).toBe(false)
+  expect(nearWall(at(0, 5, 'left', { status: 'over' }))).toBe(false)
+  expect(nearWall(at(0, 5, 'left', { status: 'ready' }))).toBe(false)
 })
