@@ -690,7 +690,12 @@ export default function App() {
           </div>
         )}
       </div>
-      <p className="help hint-keys">C changes the snake colour</p>
+      <p className="help hint-keys">
+        <span className="sr-only">C changes the snake colour</span>
+        <span aria-hidden="true">
+          <kbd>C</kbd> changes the snake colour
+        </span>
+      </p>
       <div className="messages">
         {ready && (
           <p role="status" className="sr-only">
