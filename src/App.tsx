@@ -120,6 +120,7 @@ function Stat({
   value,
   spoken,
   big,
+  muted,
   pulse = big && value !== 0,
   gain = 0,
   beats,
@@ -130,6 +131,7 @@ function Stat({
   value: number | string;
   spoken: string;
   big?: boolean;
+  muted?: boolean; // no value yet: a dash in a dimmer colour
   pulse?: boolean;
 }) {
   return (
@@ -139,7 +141,7 @@ function Stat({
       </span>
       <span
         aria-hidden="true"
-        className={pulse ? "stat-value bump" : "stat-value"}
+        className={`stat-value${pulse ? " bump" : ""}${muted ? " stat-muted" : ""}`}
         key={value}
       >
         {value}
@@ -438,9 +440,12 @@ export default function App() {
           spoken={`High score: ${highScore}`}
           big
         />
-        {last !== null && (
-          <Stat label="Last" value={last} spoken={`Last: ${last}`} />
-        )}
+        <Stat
+          label="Last game"
+          value={last ?? "–"}
+          spoken={`Last game: ${last ?? "none"}`}
+          muted={last === null}
+        />
       </div>
       <div className="controls">
         <button

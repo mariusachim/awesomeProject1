@@ -379,6 +379,11 @@ button:focus-visible {
   }
 }
 
+/* #b0b0b0 on the page background is above 4.5:1. */
+.stat-muted {
+  color: #b0b0b0;
+}
+
 /* Light gold: about 10:1 on the page background. */
 [data-record] .stat-value {
   color: #f5c04a;
