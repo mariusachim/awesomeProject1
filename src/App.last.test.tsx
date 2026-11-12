@@ -17,12 +17,13 @@ const crash = () => {
   act(() => vi.advanceTimersByTime(200 * 30))
 }
 
-test('no last score before a game ends', () => {
+test('before a game ends Last game shows a dash', () => {
   // given / when
   render(<App />)
 
   // then
-  expect(screen.queryByText(/^Last/)).toBeNull()
+  expect(screen.getByText('Last game')).toBeTruthy()
+  expect(screen.getByText('–')).toBeTruthy()
 })
 
 test('the score of a finished game shows as Last after a restart', () => {
@@ -34,7 +35,7 @@ test('the score of a finished game shows as Last after a restart', () => {
   fireEvent.keyDown(window, { key: 'Enter' })
 
   // then
-  expect(screen.getByText('Last: 0')).toBeTruthy()
+  expect(screen.getByText('Last game: 0')).toBeTruthy()
 })
 
 test('a reload forgets the last score', () => {
@@ -47,5 +48,6 @@ test('a reload forgets the last score', () => {
   render(<App />)
 
   // then
-  expect(screen.queryByText(/^Last/)).toBeNull()
+  expect(screen.getByText('–')).toBeTruthy()
+  expect(screen.getByText('Last game: none')).toBeTruthy()
 })
