@@ -12,8 +12,11 @@ import { type Skin, SKINS, bodyShade, loadSkin, nextSkin, saveSkin } from "./ski
 import { loadWrap, saveWrap } from "./wallsMode.ts";
 import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
+  type Cell,
   type Dir,
   type GameState,
+  TRAIL,
+  trailAfter,
   SIZE,
   cellShade,
   keyToDir,
@@ -170,6 +173,19 @@ export default function App() {
   // The record counts the snake of a finished game; a missing or bad saved value loads as 0.
   if (over && length > longest) setLongest(length);
   const ready = game.status === "ready";
+  // The cells the tail left, for the fading glow. Only a running game keeps a trail.
+  const [trail, setTrail] = useState<{ snake: Cell[]; cells: Cell[] }>({
+    snake: game.snake,
+    cells: [],
+  });
+  if (trail.snake !== game.snake || (game.status !== "running" && trail.cells.length))
+    setTrail({
+      snake: game.snake,
+      cells:
+        game.status === "running"
+          ? trailAfter(trail.cells, trail.snake, game.snake)
+          : [],
+    });
 
   // True while the browser repeats the key of the current direction; it never applies outside a running game.
   const [held, setHeld] = useState(false);
@@ -458,6 +474,10 @@ export default function App() {
         {(ready || paused) && (
           // Under the pieces, so the snake and food keep their colour while the tiles dim.
           <div data-testid="board-dim" aria-hidden="true" className="board-dim" />
+        )}
+        {trail.cells.map((c, i) =>
+          // Under the snake and food (drawn later); --ghost is the glow strength, fainter the older the cell.
+          cell(c.x, c.y, "ghost", { "--ghost": 0.5 * (1 - i / TRAIL) } as CSSProperties, "ghost"),
         )}
         {game.snake.map((c, i) =>
           i === 0
