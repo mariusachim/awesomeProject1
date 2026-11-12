@@ -426,7 +426,7 @@ button:focus-visible {
 
 /* A narrow non-touch window: the key hints would crowd the labels. */
 @media (max-width: 420px) {
-  kbd {
+  button kbd {
     display: none;
   }
 }
