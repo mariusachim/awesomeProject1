@@ -123,6 +123,7 @@ button:disabled kbd {
   }
 }
 
+.board-speed,
 .board-milestone {
   border-color: #f5c04a;
   box-shadow: 0 0 12px #f5c04a;
