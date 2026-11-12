@@ -78,7 +78,10 @@ const MIN_TICK_MS = 80
 const TICK_START_MS = 200
 const TICK_STEP_MS = 10
 
-export const tickMs = (score: number) => Math.max(MIN_TICK_MS, TICK_START_MS - TICK_STEP_MS * score)
+// Every 10th apple of a game is a milestone.
+export const isMilestone = (apples: number) => apples > 0 && apples % 10 === 0
+
+export const tickMs =(score: number) => Math.max(MIN_TICK_MS, TICK_START_MS - TICK_STEP_MS * score)
 
 // Holding the key of the current direction halves the interval; the level and the score rules do not change.
 export const boostMs = (score: number, boost: boolean) => (boost ? tickMs(score) / 2 : tickMs(score))

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type GameState, trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type GameState, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -929,4 +929,9 @@ test('trailAfter keeps the trail when the snake did not move', () => {
   const snake = row(5, 4)
   // when / then
   expect(trailAfter(row(3), snake, snake)).toEqual(row(3))
+})
+
+test.each([[0, false], [9, false], [10, true], [11, false], [20, true]])('apples %i milestone is %s', (n, expected) => {
+  // when / then
+  expect(isMilestone(n)).toBe(expected)
 })

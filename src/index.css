@@ -116,6 +116,11 @@ button:disabled kbd {
   border-radius: 4px;
 }
 
+.board-milestone {
+  border-color: #f5c04a;
+  box-shadow: 0 0 12px #f5c04a;
+}
+
 /* The line style is the Walls mode: solid kills, dashed wraps. Same width, so the layout holds. */
 .board-wrap {
   border-style: dashed;
