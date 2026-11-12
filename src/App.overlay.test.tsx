@@ -152,7 +152,7 @@ test('game over shows the final score and a restart hint on the board', () => {
   crash()
 
   // then
-  expect(lines()).toEqual(['Final score: 0', 'Time 0:01 · Longest 1', 'Press Enter or R to restart', 'Tap Restart', 'H resets the high score'])
+  expect(lines()).toEqual(['Final score: 0', 'Time 0:01 · Apples 0 · Longest 1', 'Press Enter or R to restart', 'Tap Restart', 'H resets the high score'])
 })
 
 const hHint = () => screen.getByTestId('board-overlay').querySelector('[data-text="H resets the high score"]')
@@ -194,10 +194,10 @@ test('the time survived leaves out the pause and the countdown, and a new game s
   act(() => vi.advanceTimersByTime(200 * 30))
 
   // then
-  expect(lines()[1]).toMatch(/^Time 0:0\d · Longest 1$/)
+  expect(lines()[1]).toMatch(/^Time 0:0\d · Apples 0 · Longest 1$/)
   key('Enter')
   crash()
-  expect(lines()[1]).toBe('Time 0:01 · Longest 1')
+  expect(lines()[1]).toBe('Time 0:01 · Apples 0 · Longest 1')
 })
 
 test('game over speaks the result once and adds nothing visible below the board', () => {
@@ -234,6 +234,17 @@ test('the game over overlay shows the streak meals, and screen readers hear them
   // then
   expect(lines()).toContain('Streak meals: 1')
   expect(screen.getAllByText('Streak meals: 1')).toHaveLength(1)
+})
+
+test('game over reads the apple count with the other lines', () => {
+  // given
+  render(<App />)
+
+  // when
+  crash()
+
+  // then
+  expect(screen.getByRole('alert').textContent).toContain('Apples: 0')
 })
 
 test('no streak meals line when the game ended without one', () => {
