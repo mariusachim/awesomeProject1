@@ -76,6 +76,8 @@ const bodyLook = (skin: Skin, index: number, length: number): CSSProperties => (
   border: "2px solid #222",
 });
 const FOOD_LOOK: CSSProperties = { background: "#e44", borderRadius: "50%" };
+// The golden apple is round like the food but orange with a white ring; the bonus diamond is yellow.
+const GOLDEN_LOOK: CSSProperties = { background: "#f90", borderRadius: "50%", boxShadow: "0 0 0 2px #fff inset" };
 // The bonus food is a gold diamond, so it differs from the round red food by shape and colour.
 const BONUS_LOOK: CSSProperties = {
   background: "#fc3",
@@ -526,8 +528,9 @@ export default function App() {
           game.food.x,
           game.food.y,
           "food",
-          FOOD_LOOK,
+          game.golden ? GOLDEN_LOOK : FOOD_LOOK,
           game.status === "running" ? "pulse food-idle" : "pulse",
+          game.golden ? "Golden apple" : undefined,
         )}
         {game.bonus &&
           cell(

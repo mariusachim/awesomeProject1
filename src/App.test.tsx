@@ -921,9 +921,9 @@ test('a second game that only ties the new record shows no message', () => {
 test('the 5th food brings a bonus food with a screen reader label, a diamond shape and a gold colour', () => {
   // given: each food sits right in front of the snake, on row 7, and the bonus food falls on 0,0
   const rand = vi.spyOn(Math, 'random')
-  rand.mockReturnValueOnce(111.5 / 222)
-  // each meal but the 5th also rolls for a shrink fruit, which stays low here
-  for (const free of [221, 220, 219, 218]) rand.mockReturnValueOnce(111.5 / free).mockReturnValueOnce(0.5)
+  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0) // the 0 is the golden roll of a new game
+  // each meal but the 5th also rolls for a shrink fruit, which stays low here, then for a golden apple
+  for (const free of [221, 220, 219, 218]) rand.mockReturnValueOnce(111.5 / free).mockReturnValueOnce(0.5).mockReturnValueOnce(0)
   rand.mockReturnValueOnce(111.5 / 217)
   renderReady(<App />)
   startKey()
@@ -941,12 +941,26 @@ test('the 5th food brings a bonus food with a screen reader label, a diamond sha
   expect(screen.getByTestId('food').textContent).toBe('')
 })
 
+test('a golden apple shows in gold with a label, unlike the normal food and the bonus food', () => {
+  // given: the first roll places the food, the second makes it golden
+  vi.spyOn(Math, 'random').mockReturnValueOnce(0).mockReturnValueOnce(0.95)
+  renderReady(<App />)
+
+  // when
+  const food = screen.getByRole('img', { name: 'Golden apple' })
+
+  // then
+  expect(food).toBe(screen.getByTestId('food'))
+  expect(food.style.background).not.toBe('')
+  expect(food.style.background).not.toBe('rgb(255, 204, 51)') // the bonus diamond
+})
+
 test('the bonus food shows its moves left, one lower after each move', () => {
   // given
   const rand = vi.spyOn(Math, 'random')
-  rand.mockReturnValueOnce(111.5 / 222)
-  // each meal but the 5th also rolls for a shrink fruit, which stays low here
-  for (const free of [221, 220, 219, 218]) rand.mockReturnValueOnce(111.5 / free).mockReturnValueOnce(0.5)
+  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0) // the 0 is the golden roll of a new game
+  // each meal but the 5th also rolls for a shrink fruit, which stays low here, then for a golden apple
+  for (const free of [221, 220, 219, 218]) rand.mockReturnValueOnce(111.5 / free).mockReturnValueOnce(0.5).mockReturnValueOnce(0)
   rand.mockReturnValueOnce(111.5 / 217)
   renderReady(<App />)
   startKey()
@@ -1078,7 +1092,7 @@ test('the length value bumps when the snake grows, not at length 1', () => {
 test('the score pop shows +1 for the first meal and +2 for a quick second one', () => {
   // given: each food sits right in front of the snake
   const rand = vi.spyOn(Math, 'random')
-  rand.mockReturnValueOnce(111.5 / 222)
+  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0) // the 0 is the golden roll of a new game
   rand.mockReturnValueOnce(111.5 / 221)
   renderReady(<App />)
   startKey()
