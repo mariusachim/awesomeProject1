@@ -390,13 +390,14 @@ button:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
-/* Desktop: heading, stats and hint share the board's axis. Values get 3 digits of room, so a growing score moves no stat. */
-@media (min-width: 600px) {
-  h1,
-  .help {
-    text-align: center;
-  }
+/* Heading and hint share the board's axis at every width. */
+h1,
+.help {
+  text-align: center;
+}
 
+/* Desktop: stats share the axis too. Values get 3 digits of room, so a growing score moves no stat. */
+@media (min-width: 600px) {
   .stats {
     justify-content: center;
   }
