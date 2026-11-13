@@ -694,10 +694,10 @@ test('game over keeps the old rule', () => {
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: SIZE - 1 } })).toBe('top')
 })
 
-test('game over panel covers 5 rows: food in the 5th row from the bottom sends it to the top', () => {
+test('game over panel covers 4 rows: food in the 4th row from the bottom sends it to the top', () => {
   // given / when / then
-  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 10 } })).toBe('top')
-  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 9 } })).toBe('bottom')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 11 } })).toBe('top')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 10 } })).toBe('bottom')
 })
 
 test('game over with the food far from the head keeps the head and body uncovered', () => {
@@ -997,4 +997,9 @@ test('nearWall is true for a running head on an edge cell heading out, with soli
   expect(nearWall(at(0, 5, 'left', { status: 'paused' }))).toBe(false)
   expect(nearWall(at(0, 5, 'left', { status: 'over' }))).toBe(false)
   expect(nearWall(at(0, 5, 'left', { status: 'ready' }))).toBe(false)
+})
+
+test('paused still covers 5 rows: food 5 rows from the bottom goes to the top', () => {
+  // given / when / then
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 7 }], food: { x: 3, y: SIZE - 5 } })).toBe('top')
 })
