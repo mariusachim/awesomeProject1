@@ -232,6 +232,16 @@ export default function App() {
   if (game.score === 0 && record !== highScore) setRecord(highScore);
   const newBest = over && isNewHighScore(record, game.score);
 
+  // The ring marks the cell where the food was eaten; the food moves on a meal, so the old cell is the previous food.
+  const [seen, setSeen] = useState({ score: game.score, food: game.food, golden: game.golden });
+  const [ring, setRing] = useState<{ x: number; y: number; score: number } | null>(null);
+  if (game.score !== seen.score || game.food !== seen.food) {
+    // The golden apple keeps its own feedback, so it gets no red ring.
+    const meal = game.score > seen.score && game.food !== seen.food && !seen.golden;
+    setSeen({ score: game.score, food: game.food, golden: game.golden });
+    setRing(meal ? { ...seen.food, score: game.score } : null);
+  }
+
   const [chimed, setChimed] = useState(0);
   const [sped, setSped] = useState(0);
   const prev = useRef({ score: game.score, over, apples: game.apples });
@@ -392,8 +402,9 @@ export default function App() {
   ) => (
     <div
       // The head is keyed by score, not position: it remounts on each meal so the flash replays.
-      key={id === "head" ? `head${game.score}` : `${id}${x},${y}`}
+      key={id === "head" || id === "eat-ring" ? `${id}${game.score}` : `${id}${x},${y}`}
       data-testid={id}
+      aria-hidden={id === "eat-ring" || undefined}
       role={label ? "img" : undefined}
       aria-label={label}
       data-pos={`${x},${y}`}
@@ -510,6 +521,9 @@ export default function App() {
           // Under the pieces, so the snake and food keep their colour while the tiles dim.
           <div data-testid="board-dim" aria-hidden="true" className="board-dim" />
         )}
+        {ring &&
+          // Keyed by score so it remounts and replays on each meal; CSS hides it under reduced motion.
+          cell(ring.x, ring.y, "eat-ring", {}, "eat-ring")}
         {trail.cells.map((c, i) =>
           // Under the snake and food (drawn later); --ghost is the glow strength, fainter the older the cell.
           cell(c.x, c.y, "ghost", { "--ghost": 0.5 * (1 - i / TRAIL) } as CSSProperties, "ghost"),

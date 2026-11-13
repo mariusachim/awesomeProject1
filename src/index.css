@@ -271,7 +271,8 @@ button:disabled kbd {
 }
 
 /* The ghost glow is motion, so it only shows when the player allows motion. */
-.ghost {
+.ghost,
+.eat-ring {
   display: none;
 }
 
@@ -281,6 +282,22 @@ button:disabled kbd {
     background: #7fdc7f;
     pointer-events: none;
     animation: ghost 400ms ease-out forwards;
+  }
+
+  .eat-ring {
+    display: block;
+    box-sizing: border-box;
+    border: 2px solid #e44;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: eat-ring 300ms ease-out forwards;
+  }
+
+  @keyframes eat-ring {
+    to {
+      transform: scale(2);
+      opacity: 0;
+    }
   }
 
   @keyframes ghost {
