@@ -13,9 +13,11 @@ export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'
   const away: Edge = s.status === 'ready' || s.snake[0].y < SIZE / 2 ? 'bottom' : 'top'
   const rows = PANEL_ROWS
   // The cost of an edge: the food under the panel counts most, then the head, then each body cell.
+  // At game over the crash head counts most: the player must see what they hit.
+  const [foodW, headW] = s.status === 'over' ? [1, 2] : [2, 1]
   const cost = (e: Edge) =>
-    SIZE * SIZE * 2 * +covers(e, rows, s.food.y) +
-    SIZE * SIZE * +covers(e, rows, s.snake[0].y) +
+    SIZE * SIZE * foodW * +covers(e, rows, s.food.y) +
+    SIZE * SIZE * headW * +covers(e, rows, s.snake[0].y) +
     s.snake.filter((c) => covers(e, rows, c.y)).length
   const other: Edge = away === 'top' ? 'bottom' : 'top'
   return cost(other) < cost(away) ? other : away

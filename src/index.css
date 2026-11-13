@@ -205,6 +205,23 @@ button:disabled kbd {
   padding-top: 1rem;
 }
 
+/* Game over: a tighter panel (at most 5 rows) that sits close to the edge. */
+.board-overlay:not(.board-overlay-light) {
+  gap: 0.1rem;
+}
+
+.board-overlay:not(.board-overlay-light).board-overlay-top {
+  padding-top: 0.25rem;
+}
+
+.board-overlay:not(.board-overlay-light).board-overlay-bottom {
+  padding-bottom: 0.25rem;
+}
+
+.board-overlay:not(.board-overlay-light) .overlay-panel {
+  gap: 0;
+}
+
 .overlay-panel {
   display: flex;
   align-items: center;

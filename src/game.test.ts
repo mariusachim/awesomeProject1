@@ -660,12 +660,13 @@ test('head and food in the same half put the panel at the other edge', () => {
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 12 } })).toBe('top')
 })
 
-test('game over puts the panel at the edge that covers neither head nor food', () => {
+test('game over puts the panel at the edge that covers the head, and the food only when it must', () => {
   // given / when / then
   expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: 2 } })).toBe('bottom')
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 12 } })).toBe('top')
-  expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 2 } })).toBe('top')
-  expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 1 } })).toBe('bottom')
+  // the head wins over the food: the panel covers the food rather than the crash
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 2 } })).toBe('bottom')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 1 } })).toBe('top')
 })
 
 test('paused panel covers 5 rows: food in the 5th row from the bottom sends it to the top', () => {
@@ -704,7 +705,7 @@ test('game over with the food far from the head keeps the head and body uncovere
   const body = [{ x: 7, y: 0 }, { x: 7, y: 1 }, { x: 7, y: 2 }, { x: 7, y: 3 }]
 
   // when / then
-  expect(edge({ status: 'over', snake: body, food: { x: 3, y: 14 } })).toBe('top')
+  expect(edge({ status: 'over', snake: body, food: { x: 3, y: 14 } })).toBe('bottom')
   expect(edge({ status: 'over', snake: [...body].reverse(), food: { x: 3, y: 7 } })).toBe('bottom')
 })
 
