@@ -139,7 +139,7 @@ test('pausing shows the resume hint for keyboard and touch on the board', () => 
   key('p')
 
   // then
-  expect(lines()).toEqual(['Press Space or P to resume', 'Tap Resume', 'H resets the high score'])
+  expect(lines()).toEqual(['Press Space or P to resume', 'Tap Resume'])
   key('p')
   expect(overlay()).toBeNull()
 })
@@ -152,13 +152,14 @@ test('game over shows the final score and a restart hint on the board', () => {
   crash()
 
   // then
-  expect(lines()).toEqual(['Final score: 0', 'Time 0:01 · Apples 0 · Longest 1', 'Press Enter or R to restart', 'Tap Restart', 'H resets the high score'])
+  expect(lines()).toEqual(['Final score: 0', 'Time 0:01 · Apples 0 · Longest 1', 'Press Enter or R to restart', 'Tap Restart'])
 })
 
 const hHint = () => screen.getByTestId('board-overlay').querySelector('[data-text="H resets the high score"]')
 
 test('the H hint on Paused is key-only, so touch screens hide it', () => {
   // given
+  localStorage.setItem('snake.highScore', '7')
   render(<App />)
   key('ArrowRight')
 
@@ -171,6 +172,7 @@ test('the H hint on Paused is key-only, so touch screens hide it', () => {
 
 test('the H hint on Game over is key-only, so touch screens hide it', () => {
   // given
+  localStorage.setItem('snake.highScore', '7')
   render(<App />)
 
   // when

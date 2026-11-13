@@ -83,3 +83,46 @@ test('the paused panel hints at the reset key', () => {
   // then
   expect(container.querySelector('[data-text="H resets the high score"]')).not.toBeNull()
 })
+
+const hint = (c: HTMLElement) => c.querySelector('[data-text="H resets the high score"]')
+
+test('no H hint on Paused while the high score is 0', () => {
+  // given
+  localStorage.setItem('snake.highScore', '0')
+  const { container } = render(<App />)
+  press('ArrowRight')
+
+  // when
+  press('p')
+
+  // then
+  expect(hint(container)).toBeNull()
+})
+
+test('no H hint on Game over while the high score is 0', () => {
+  // given
+  localStorage.setItem('snake.highScore', '0')
+  const { container } = render(<App />)
+
+  // when
+  press('ArrowUp')
+  act(() => vi.advanceTimersByTime(3000))
+
+  // then
+  expect(screen.getByRole('alert')).not.toBeNull()
+  expect(hint(container)).toBeNull()
+})
+
+test('the H hint disappears from the panel once H resets the high score', () => {
+  // given
+  const { container } = render(<App />)
+  press('ArrowRight')
+  press('p')
+  expect(container.querySelector('[data-text="H resets the high score"]')).not.toBeNull()
+
+  // when
+  press('h')
+
+  // then
+  expect(container.querySelector('[data-text="H resets the high score"]')).toBeNull()
+})
