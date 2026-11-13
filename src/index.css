@@ -232,6 +232,12 @@ button:disabled kbd {
   font-size: 1.2rem;
 }
 
+/* The final score is the peak of the game over panel: about 2x the line size. */
+.overlay-score::after {
+  font-size: 2.4rem;
+  font-weight: bold;
+}
+
 .overlay-hint::after {
   text-align: center;
   font-size: 1.125rem;
