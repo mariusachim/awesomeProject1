@@ -664,10 +664,12 @@ export default function App() {
                     className="overlay-line overlay-hint hint-touch"
                     data-text="Tap Restart"
                   />
-                  <span
-                    className="overlay-line overlay-hint hint-keys"
-                    data-text="H resets the high score"
-                  />
+                  {highScore > 0 && (
+                    <span
+                      className="overlay-line overlay-hint hint-keys"
+                      data-text="H resets the high score"
+                    />
+                  )}
                 </>
               )}
               {paused && (
@@ -680,10 +682,12 @@ export default function App() {
                     className="overlay-line overlay-hint hint-touch"
                     data-text="Tap Resume"
                   />
-                  <span
-                    className="overlay-line overlay-hint hint-keys"
-                    data-text="H resets the high score"
-                  />
+                  {highScore > 0 && (
+                    <span
+                      className="overlay-line overlay-hint hint-keys"
+                      data-text="H resets the high score"
+                    />
+                  )}
                 </>
               )}
             </div>
