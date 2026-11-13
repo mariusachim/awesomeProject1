@@ -637,7 +637,7 @@ export default function App() {
               {over && (
                 <>
                   <span
-                    className="overlay-line"
+                    className="overlay-line overlay-score"
                     data-text={`Final score: ${game.score}`}
                   />
                   {game.streaks > 0 && (
