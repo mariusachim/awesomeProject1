@@ -432,7 +432,29 @@ h1,
 /* Desktop: stats share the axis too. Values get 3 digits of room, so a growing score moves no stat. */
 @media (min-width: 600px) {
   .stats {
-    justify-content: center;
+    grid-auto-columns: auto;
+    justify-content: space-between;
+    column-gap: 8px;
+  }
+
+  .stat-label {
+    white-space: nowrap;
+  }
+
+  /* Both rows are as wide as the board (15 cells plus its 2px borders), so the three edges line up. */
+  .stats,
+  .controls {
+    width: calc(15 * var(--cell) + 4px);
+    margin-inline: auto;
+  }
+
+  /* Equal shares of the row, so the label swaps cannot move a button. */
+  .controls button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 4px;
+    font-size: 0.875rem;
+    white-space: nowrap;
   }
 
   .stat-value {
