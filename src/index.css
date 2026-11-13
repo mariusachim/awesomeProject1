@@ -213,6 +213,20 @@ button:disabled kbd {
   max-width: 100%;
 }
 
+/* Game over: a tighter panel on a tighter edge, so it stays within 5 rows and clear of the crash head. */
+.board-overlay:not(.board-overlay-under) .overlay-panel {
+  gap: 0;
+  padding-block: 0.2rem;
+}
+
+.board-overlay:not(.board-overlay-under).board-overlay-top {
+  padding-top: 0.25rem;
+}
+
+.board-overlay:not(.board-overlay-under).board-overlay-bottom {
+  padding-bottom: 0.25rem;
+}
+
 .board-overlay-light .overlay-panel {
   padding: 0.4rem 0.8rem;
   border-radius: 8px;

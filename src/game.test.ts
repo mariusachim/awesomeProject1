@@ -659,12 +659,12 @@ test('head and food in the same half put the panel at the other edge', () => {
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 1 }], food: { x: 3, y: 2 } })).toBe('bottom')
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 12 } })).toBe('top')
 })
-
+test('game over puts the panel at the edge that covers the head, and the food only when it must', () => {
 test('game over puts the panel at the edge that covers neither head nor food', () => {
   // given / when / then
   expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: 2 } })).toBe('bottom')
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 12 } })).toBe('top')
-  expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 2 } })).toBe('top')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 2 } })).toBe('bottom')
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 1 } })).toBe('bottom')
 })
 
@@ -704,7 +704,7 @@ test('game over with the food far from the head keeps the head and body uncovere
   const body = [{ x: 7, y: 0 }, { x: 7, y: 1 }, { x: 7, y: 2 }, { x: 7, y: 3 }]
 
   // when / then
-  expect(edge({ status: 'over', snake: body, food: { x: 3, y: 14 } })).toBe('top')
+  expect(edge({ status: 'over', snake: body, food: { x: 3, y: 14 } })).toBe('bottom')
   expect(edge({ status: 'over', snake: [...body].reverse(), food: { x: 3, y: 7 } })).toBe('bottom')
 })
 
@@ -996,4 +996,10 @@ test('nearWall is true for a running head on an edge cell heading out, with soli
   expect(nearWall(at(0, 5, 'left', { status: 'paused' }))).toBe(false)
   expect(nearWall(at(0, 5, 'left', { status: 'over' }))).toBe(false)
   expect(nearWall(at(0, 5, 'left', { status: 'ready' }))).toBe(false)
+})
+
+test('game over keeps the crash head uncovered even when the panel then covers the food', () => {
+  // given / when / then
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 0 }], food: { x: 3, y: SIZE - 1 } })).toBe('bottom')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: SIZE - 1 }], food: { x: 3, y: 0 } })).toBe('top')
 })
