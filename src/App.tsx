@@ -75,6 +75,7 @@ const bodyLook = (skin: Skin, index: number, length: number): CSSProperties => (
   background: bodyShade(SKINS[skin].body, index, length),
   boxSizing: "border-box",
   border: "2px solid #222",
+  borderRadius: "30%",
 });
 const FOOD_LOOK: CSSProperties = { background: "#e44", borderRadius: "50%" };
 // The golden apple is round like the food but orange with a white ring; the bonus diamond is yellow.
