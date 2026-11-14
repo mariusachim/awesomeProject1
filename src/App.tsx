@@ -649,9 +649,11 @@ export default function App() {
                 c.y,
                 "head",
                 headLook(skin, over),
-                game.score > 0 && game.status === "running"
-                  ? "flash"
-                  : undefined,
+                over
+                  ? "head-crash"
+                  : game.score > 0 && game.status === "running"
+                    ? "flash"
+                    : undefined,
                 undefined,
                 EYES[game.dir].map(eye),
               )

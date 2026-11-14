@@ -1124,3 +1124,21 @@ test('arrow keys do not scroll the page, but a modified arrow keeps its default'
   expect(plain).toEqual([false, false, false, false])
   expect(withCtrl).toBe(true)
 })
+
+test('the head carries the head-crash class only at game over, and a restart removes it', () => {
+  // given
+  render(<App />)
+  expect(screen.getByTestId('head').classList.contains('head-crash')).toBe(false)
+
+  // when
+  tick(30)
+
+  // then
+  expect(screen.getByTestId('head').classList.contains('head-crash')).toBe(true)
+
+  // when
+  fireEvent.keyDown(window, { key: 'r' })
+
+  // then
+  expect(screen.getByTestId('head').classList.contains('head-crash')).toBe(false)
+})
