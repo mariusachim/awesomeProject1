@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, panelCoversFood, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -1002,4 +1002,14 @@ test('nearWall is true for a running head on an edge cell heading out, with soli
 test('paused still covers 5 rows: food 5 rows from the bottom goes to the top', () => {
   // given / when / then
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 7 }], food: { x: 3, y: SIZE - 5 } })).toBe('top')
+})
+
+test('the panel covers the food only when the food row is under the chosen edge at game over', () => {
+  // given
+  const over = (food: { x: number; y: number }) => state({ status: 'over', snake: [{ x: 7, y: 0 }], food })
+
+  // when / then
+  expect(panelCoversFood(over({ x: 3, y: SIZE - 1 }))).toBe(true)
+  expect(panelCoversFood(over({ x: 3, y: 5 }))).toBe(false)
+  expect(panelCoversFood({ ...over({ x: 3, y: SIZE - 1 }), status: 'running' })).toBe(false)
 })

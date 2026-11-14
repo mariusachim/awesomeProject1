@@ -23,6 +23,11 @@ export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'
   return cost(other) < cost(away) ? other : away
 }
 
+// At game over the food stays visible above the panel when the panel has to cover its row.
+export function panelCoversFood(s: Parameters<typeof overlayEdge>[0]): boolean {
+  return s.status === 'over' && covers(overlayEdge(s), PANEL_ROWS.over, s.food.y)
+}
+
 export type Dir ='up' | 'down' | 'left' | 'right'
 export type Cell = { x: number; y: number }
 export type GameState = {

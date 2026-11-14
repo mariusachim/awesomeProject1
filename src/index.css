@@ -616,3 +616,9 @@ h1,
     display: inline;
   }
 }
+
+/* Game over, panel on the food row: the food is drawn above the dim layer, with a dark outline against the panel text. */
+.food-over-panel {
+  z-index: 2;
+  box-shadow: 0 0 0 2px #000;
+}
