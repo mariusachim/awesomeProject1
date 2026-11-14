@@ -317,6 +317,7 @@ button:disabled kbd {
   .ghost {
     display: block;
     background: #7fdc7f;
+    border-radius: 30%; /* same as the snake body cells (App.tsx) */
     pointer-events: none;
     animation: ghost 400ms ease-out forwards;
   }
