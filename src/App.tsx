@@ -124,6 +124,33 @@ const SHRINK_LOOK: CSSProperties = {
   clipPath: "polygon(50% 5%, 95% 95%, 5% 95%)",
 };
 
+// A sibling of the pickup, because its clip-path would cut the number.
+const count = (
+  testId: string,
+  p: { cell: { x: number; y: number }; movesLeft: number },
+) => (
+  <div
+    data-testid={testId}
+    aria-hidden="true"
+    style={{
+      position: "absolute",
+      left: px(p.cell.x),
+      top: px(p.cell.y),
+      width: px(1),
+      height: px(1),
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "#222", // 5.4:1 on #fc3 and on #39f
+      fontSize: "0.5em",
+      fontWeight: 700,
+      pointerEvents: "none",
+    }}
+  >
+    {p.movesLeft}
+  </div>
+);
+
 // A rock is grey, a colour none of the snake, food and bonus food uses.
 const ROCK_LOOK: CSSProperties = {
   background: "#888",
@@ -657,29 +684,8 @@ export default function App() {
             "pulse",
             `Shrink fruit, ${game.shrink.movesLeft} moves left`,
           )}
-        {game.bonus && (
-          // A sibling of the diamond, because the diamond's clip-path would cut the number.
-          <div
-            data-testid="bonus-count"
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              left: px(game.bonus.cell.x),
-              top: px(game.bonus.cell.y),
-              width: px(1),
-              height: px(1),
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#222",
-              fontSize: "0.5em",
-              fontWeight: 700,
-              pointerEvents: "none",
-            }}
-          >
-            {game.bonus.movesLeft}
-          </div>
-        )}
+        {game.bonus && count("bonus-count", game.bonus)}
+        {game.shrink && count("shrink-count", game.shrink)}
         {game.count > 0 && (
           <div
             data-testid="countdown"

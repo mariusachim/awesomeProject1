@@ -25,3 +25,22 @@ test('a shrink fruit shows after a meal and differs from the food by shape', () 
   expect(fruit.style.borderRadius).toBe('')
   expect(screen.getByTestId('food').style.borderRadius).toBe('50%')
 })
+
+test('the shrink fruit shows its moves left, counts down and is hidden from screen readers', () => {
+  // given
+  vi.spyOn(Math, 'random').mockReturnValueOnce(110.5 / 222).mockReturnValue(0.99)
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+  act(() => vi.advanceTimersByTime(200))
+
+  // when / then
+  const count = screen.getByTestId('shrink-count')
+  expect(count.textContent).toBe('10')
+  expect(count.getAttribute('aria-hidden')).toBe('true')
+
+  // when
+  act(() => vi.advanceTimersByTime(200))
+
+  // then
+  expect(screen.getByTestId('shrink-count').textContent).toBe('9')
+})
