@@ -657,12 +657,12 @@ export default function App() {
                   />
                   {game.streaks > 0 && (
                     <span
-                      className="overlay-line"
+                      className="overlay-line overlay-detail"
                       data-text={`Streak meals: ${game.streaks}`}
                     />
                   )}
                   <span
-                    className="overlay-line"
+                    className="overlay-line overlay-detail"
                     data-text={`Time ${formatTime(game.ms)} · Apples ${game.apples} · Longest ${longest}`}
                   />
                   {newBest && (
@@ -672,11 +672,11 @@ export default function App() {
                     />
                   )}
                   <span
-                    className="overlay-line overlay-hint hint-keys"
+                    className="overlay-line overlay-hint overlay-restart hint-keys"
                     data-text="Press Enter or R to restart"
                   />
                   <span
-                    className="overlay-line overlay-hint hint-touch"
+                    className="overlay-line overlay-hint overlay-restart hint-touch"
                     data-text="Tap Restart"
                   />
                   {highScore > 0 && (

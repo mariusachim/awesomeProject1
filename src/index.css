@@ -276,6 +276,19 @@ button:disabled kbd {
   font-size: 1.125rem;
 }
 
+/* Game over: score, then soft details, then the bold restart hint set apart. */
+.overlay-detail::after {
+  color: #c8c8c8;
+}
+
+.overlay-restart {
+  margin-top: 0.4rem;
+}
+
+.overlay-restart::after {
+  font-weight: bold;
+}
+
 /* The ghost glow is motion, so it only shows when the player allows motion. */
 .ghost,
 .eat-ring {
