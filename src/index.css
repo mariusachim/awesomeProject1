@@ -111,6 +111,10 @@ button:disabled kbd {
     /* The column never grows past the viewport, so the stats row cannot widen the page. */
     width: 100%;
     box-sizing: border-box;
+    /* Free height splits above and below the column; a short phone still grows past it. */
+    min-height: 100vh;
+    min-height: 100dvh;
+    justify-content: center;
   }
 
   .controls {
