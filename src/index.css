@@ -529,12 +529,6 @@ h1,
   }
 }
 
-@media (max-width: 420px) {
-  .stat-label {
-    font-size: 0.8125rem;
-  }
-}
-
 @media (max-width: 340px) {
   .stat-label {
     font-size: 0.75rem;
