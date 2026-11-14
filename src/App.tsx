@@ -462,7 +462,7 @@ export default function App() {
       </div>
       <div className="controls">
         <button
-          className="pause"
+          className={paused || over ? "pause primary" : "pause"}
           disabled={ready}
           onClick={over ? again : () => setGame(togglePause)}
           onKeyDown={over ? ownKeys(again) : undefined}

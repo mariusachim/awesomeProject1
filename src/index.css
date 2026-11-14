@@ -47,6 +47,12 @@ button:disabled {
   min-width: 9rem;
 }
 
+/* Resume and Restart: the way back in. Same 1px border, so nothing moves. Text #f0f0f0 on #274027 is about 10:1. */
+.pause.primary {
+  background: #274027;
+  border-color: #8a8;
+}
+
 /* Fixed widths: the label swaps (Pause/Resume, Mute/Unmute, solid/wrap) and the buttons must not move. */
 .walls {
   min-width: 11rem;
