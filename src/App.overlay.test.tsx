@@ -360,3 +360,17 @@ test('Enter restarts after game over', () => {
   // then
   expect(overlay()).toBeNull()
 })
+
+test('only the start hints carry the pulse class, and none remains after the start', () => {
+  // given
+  render(<App />)
+
+  // when / then
+  expect(overlay()?.querySelectorAll('.start-hint')).toHaveLength(2)
+
+  // when
+  key('ArrowRight')
+
+  // then
+  expect(document.querySelector('.start-hint')).toBeNull()
+})

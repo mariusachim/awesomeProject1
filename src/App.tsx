@@ -730,11 +730,11 @@ export default function App() {
               {ready && (
                 <>
                   <span
-                    className="overlay-line overlay-hint hint-keys"
+                    className="overlay-line overlay-hint hint-keys start-hint"
                     data-text="Press an arrow key or WASD to start"
                   />
                   <span
-                    className="overlay-line overlay-hint hint-touch"
+                    className="overlay-line overlay-hint hint-touch start-hint"
                     data-text="Swipe on the board to start"
                   />
                   <span
