@@ -87,8 +87,9 @@ kbd {
   border-radius: 3px;
 }
 
+/* P does nothing before the first key; hidden, not removed, so the width stays. */
 button:disabled kbd {
-  color: #b0b0b0;
+  visibility: hidden;
 }
 
 .controls {
