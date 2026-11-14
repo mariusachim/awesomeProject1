@@ -35,6 +35,7 @@ import {
   keyToDir,
   newGame,
   overlayEdge,
+  panelCoversFood,
   pauseIfRunning,
   restart,
   speedLevel,
@@ -665,7 +666,11 @@ export default function App() {
           game.food.y,
           "food",
           game.golden ? GOLDEN_LOOK : FOOD_LOOK,
-          game.status === "running" ? "pulse food-idle" : "pulse",
+          game.status === "running"
+            ? "pulse food-idle"
+            : panelCoversFood(game)
+              ? "pulse food-over-panel"
+              : "pulse",
           game.golden ? "Golden apple" : undefined,
         )}
         {game.bonus &&
