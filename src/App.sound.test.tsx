@@ -158,3 +158,38 @@ test('Cmd+M does not mute', () => {
   // then
   expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
 })
+
+test('the muted button shows a sound-off mark and is pressed; the sound-on button shows neither', () => {
+  // given
+  render(<App />)
+  const mute = screen.getByRole('button', { name: 'Mute' })
+
+  // then
+  expect(mute.getAttribute('aria-pressed')).toBe('false')
+  expect(screen.queryByTestId('sound-off')).toBeNull()
+
+  // when
+  fireEvent.keyDown(window, { key: 'm' })
+
+  // then
+  const unmute = screen.getByRole('button', { name: 'Unmute' })
+  expect(unmute.getAttribute('aria-pressed')).toBe('true')
+  expect(unmute.querySelector('[data-testid="sound-off"]')).toBeTruthy()
+
+  // when
+  fireEvent.keyDown(window, { key: 'm' })
+
+  // then
+  expect(screen.queryByTestId('sound-off')).toBeNull()
+})
+
+test('a reload with sound off shows the mark at once', () => {
+  // given
+  localStorage.setItem('snake.muted', '1')
+
+  // when
+  render(<App />)
+
+  // then
+  expect(screen.getByTestId('sound-off')).toBeTruthy()
+})
