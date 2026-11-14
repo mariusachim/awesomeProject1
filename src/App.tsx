@@ -7,8 +7,20 @@ import {
   useRef,
   useState,
 } from "react";
-import { LONGEST_KEY, isNewHighScore, loadHighScore, saveHighScore } from "./highScore.ts";
-import { type Skin, SKINS, bodyShade, loadSkin, nextSkin, saveSkin } from "./skin.ts";
+import {
+  LONGEST_KEY,
+  isNewHighScore,
+  loadHighScore,
+  saveHighScore,
+} from "./highScore.ts";
+import {
+  type Skin,
+  SKINS,
+  bodyShade,
+  loadSkin,
+  nextSkin,
+  saveSkin,
+} from "./skin.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
 import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
@@ -49,10 +61,22 @@ const headLook = (skin: Skin, crashed: boolean): CSSProperties => ({
 });
 // Eye centres in percent of the head cell, two per direction: the eyes sit on the side of the last move.
 const EYES: Record<Dir, [number, number][]> = {
-  right: [[70, 28], [70, 72]],
-  left: [[30, 28], [30, 72]],
-  up: [[28, 30], [72, 30]],
-  down: [[28, 70], [72, 70]],
+  right: [
+    [70, 28],
+    [70, 72],
+  ],
+  left: [
+    [30, 28],
+    [30, 72],
+  ],
+  up: [
+    [28, 30],
+    [72, 30],
+  ],
+  down: [
+    [28, 70],
+    [72, 70],
+  ],
 };
 const eye = ([x, y]: [number, number]) => (
   <span
@@ -71,7 +95,11 @@ const eye = ([x, y]: [number, number]) => (
     }}
   />
 );
-const bodyLook = (skin: Skin, index: number, length: number): CSSProperties => ({
+const bodyLook = (
+  skin: Skin,
+  index: number,
+  length: number,
+): CSSProperties => ({
   background: bodyShade(SKINS[skin].body, index, length),
   boxSizing: "border-box",
   border: "2px solid #222",
@@ -79,7 +107,11 @@ const bodyLook = (skin: Skin, index: number, length: number): CSSProperties => (
 });
 const FOOD_LOOK: CSSProperties = { background: "#e44", borderRadius: "50%" };
 // The golden apple is round like the food but orange with a white ring; the bonus diamond is yellow.
-const GOLDEN_LOOK: CSSProperties = { background: "#f90", borderRadius: "50%", boxShadow: "0 0 0 2px #fff inset" };
+const GOLDEN_LOOK: CSSProperties = {
+  background: "#f90",
+  borderRadius: "50%",
+  boxShadow: "0 0 0 2px #fff inset",
+};
 // The bonus food is a gold diamond, so it differs from the round red food by shape and colour.
 const BONUS_LOOK: CSSProperties = {
   background: "#fc3",
@@ -93,7 +125,11 @@ const SHRINK_LOOK: CSSProperties = {
 };
 
 // A rock is grey, a colour none of the snake, food and bonus food uses.
-const ROCK_LOOK: CSSProperties = { background: "#888", boxSizing: "border-box", border: "2px solid #555" };
+const ROCK_LOOK: CSSProperties = {
+  background: "#888",
+  boxSizing: "border-box",
+  border: "2px solid #555",
+};
 
 const wallsHint = (wrap: boolean) =>
   wrap
@@ -137,7 +173,10 @@ function Stat({
   pulse?: boolean;
 }) {
   return (
-    <p className={big ? "stat stat-big" : "stat"} data-record={beats || undefined}>
+    <p
+      className={big ? "stat stat-big" : "stat"}
+      data-record={beats || undefined}
+    >
       <span aria-hidden="true" className="stat-label">
         {label}
       </span>
@@ -185,7 +224,10 @@ export default function App() {
     snake: game.snake,
     cells: [],
   });
-  if (trail.snake !== game.snake || (game.status !== "running" && trail.cells.length))
+  if (
+    trail.snake !== game.snake ||
+    (game.status !== "running" && trail.cells.length)
+  )
     setTrail({
       snake: game.snake,
       cells:
@@ -234,11 +276,20 @@ export default function App() {
   const newBest = over && isNewHighScore(record, game.score);
 
   // The ring marks the cell where the food was eaten; the food moves on a meal, so the old cell is the previous food.
-  const [seen, setSeen] = useState({ score: game.score, food: game.food, golden: game.golden });
-  const [ring, setRing] = useState<{ x: number; y: number; score: number } | null>(null);
+  const [seen, setSeen] = useState({
+    score: game.score,
+    food: game.food,
+    golden: game.golden,
+  });
+  const [ring, setRing] = useState<{
+    x: number;
+    y: number;
+    score: number;
+  } | null>(null);
   if (game.score !== seen.score || game.food !== seen.food) {
     // The golden apple keeps its own feedback, so it gets no red ring.
-    const meal = game.score > seen.score && game.food !== seen.food && !seen.golden;
+    const meal =
+      game.score > seen.score && game.food !== seen.food && !seen.golden;
     setSeen({ score: game.score, food: game.food, golden: game.golden });
     setRing(meal ? { ...seen.food, score: game.score } : null);
   }
@@ -251,14 +302,19 @@ export default function App() {
     prev.current = { score: game.score, over, apples: game.apples };
     const milestone = game.apples > was.apples && isMilestone(game.apples);
     if (milestone) setChimed((n) => n + 1);
-    const faster = game.score > was.score && speedLevel(game.score) !== speedLevel(was.score);
-    if (faster && !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) setSped((n) => n + 1);
+    const faster =
+      game.score > was.score &&
+      speedLevel(game.score) !== speedLevel(was.score);
+    if (
+      faster &&
+      !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    )
+      setSped((n) => n + 1);
     if (muted) return;
     if (over && !was.over) {
       play("over");
       vibrate();
-    }
-    else if (milestone) play("chime");
+    } else if (milestone) play("chime");
     else if (game.score > was.score) play("eat");
   }, [game.score, game.apples, over, muted]);
 
@@ -403,7 +459,11 @@ export default function App() {
   ) => (
     <div
       // The head is keyed by score, not position: it remounts on each meal so the flash replays.
-      key={id === "head" || id === "eat-ring" ? `${id}${game.score}` : `${id}${x},${y}`}
+      key={
+        id === "head" || id === "eat-ring"
+          ? `${id}${game.score}`
+          : `${id}${x},${y}`
+      }
       data-testid={id}
       aria-hidden={id === "eat-ring" || undefined}
       role={label ? "img" : undefined}
@@ -481,11 +541,27 @@ export default function App() {
           <kbd aria-hidden="true">B</kbd>
         </button>
         <button
-          className="mute"
+          className={`mute${muted ? " muted" : ""}`}
+          aria-pressed={muted}
           onClick={toggleMute}
           onKeyDown={ownKeys(toggleMute)}
           aria-keyshortcuts="M"
         >
+          {muted && (
+            <svg
+              className="sound-off"
+              data-testid="sound-off"
+              viewBox="0 0 16 16"
+              aria-hidden="true"
+            >
+              <path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor" />
+              <path
+                d="M11 5l4 6M15 5l-4 6"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+            </svg>
+          )}
           {muted ? "Unmute" : "Mute"}
           <kbd aria-hidden="true">M</kbd>
         </button>
@@ -520,14 +596,24 @@ export default function App() {
         ))}
         {(ready || paused) && (
           // Under the pieces, so the snake and food keep their colour while the tiles dim.
-          <div data-testid="board-dim" aria-hidden="true" className="board-dim" />
+          <div
+            data-testid="board-dim"
+            aria-hidden="true"
+            className="board-dim"
+          />
         )}
         {ring &&
           // Keyed by score so it remounts and replays on each meal; CSS hides it under reduced motion.
           cell(ring.x, ring.y, "eat-ring", {}, "eat-ring")}
         {trail.cells.map((c, i) =>
           // Under the snake and food (drawn later); --ghost is the glow strength, fainter the older the cell.
-          cell(c.x, c.y, "ghost", { "--ghost": 0.5 * (1 - i / TRAIL) } as CSSProperties, "ghost"),
+          cell(
+            c.x,
+            c.y,
+            "ghost",
+            { "--ghost": 0.5 * (1 - i / TRAIL) } as CSSProperties,
+            "ghost",
+          ),
         )}
         {game.snake.map((c, i) =>
           i === 0
