@@ -405,6 +405,22 @@ button:disabled kbd {
     animation: flash 180ms ease-out;
   }
 
+  /* Once, on the red crash head: scale and a white glow that fades; transform and shadow keep the layout still. */
+  .head-crash {
+    animation: head-crash 400ms ease-out;
+  }
+
+  @keyframes head-crash {
+    50% {
+      transform: scale(1.25);
+      box-shadow: 0 0 8px 4px #fff;
+    }
+
+    to {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+
   @keyframes flash {
     50% {
       transform: scale(1.25);
