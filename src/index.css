@@ -101,9 +101,11 @@ button:disabled kbd {
 
 /* Phone: the buttons go under the board, in thumb reach. Only the visual order changes, the DOM stays. */
 @media (max-width: 600px) {
-  /* The board fills the column: 100vw minus 16px page padding and the 4px border, over 15 cells. */
+  /* The board fills the column: 100vw minus the side padding and the 4px border, over 15 cells. */
   :root {
-    --cell: calc((100vw - 20px) / 15);
+    --pad-l: max(12px, env(safe-area-inset-left));
+    --pad-r: max(12px, env(safe-area-inset-right));
+    --cell: calc((100vw - var(--pad-l) - var(--pad-r) - 4px) / 15);
   }
 
   main {
@@ -112,6 +114,7 @@ button:disabled kbd {
     /* The column never grows past the viewport, so the stats row cannot widen the page. */
     width: 100%;
     box-sizing: border-box;
+    padding-inline: var(--pad-l) var(--pad-r);
     /* Free height splits above and below the column; a short phone still grows past it. */
     min-height: 100vh;
     min-height: 100dvh;
