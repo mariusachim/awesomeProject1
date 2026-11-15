@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, overlayEdge, panelCoversFood, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, overlayEdge, panelCoversFood, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -1049,4 +1049,14 @@ test('crashReason: running into a rock', () => {
 
   // when / then
   expect(crashReason(over)).toBe('you hit a rock')
+})
+
+test('the panel shifts away from the food side only while it covers the food', () => {
+  // given
+  const over = (food: { x: number; y: number }) => state({ status: 'over', snake: [{ x: 7, y: 0 }], food })
+
+  // when / then
+  expect(panelShift(over({ x: SIZE - 1, y: SIZE - 1 }))).toBe('left')
+  expect(panelShift(over({ x: 0, y: SIZE - 1 }))).toBe('right')
+  expect(panelShift(over({ x: SIZE - 1, y: 5 }))).toBeNull()
 })

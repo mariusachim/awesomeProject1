@@ -626,3 +626,17 @@ h1,
   z-index: 2;
   box-shadow: 0 0 0 2px #000;
 }
+
+/* Game over, food under the panel: the panel is one cell narrower and hugs the side away from the food. */
+.board-overlay .panel-left,
+.board-overlay .panel-right {
+  max-width: calc(100% - var(--cell));
+}
+
+.board-overlay .panel-left {
+  align-self: flex-start;
+}
+
+.board-overlay .panel-right {
+  align-self: flex-end;
+}
