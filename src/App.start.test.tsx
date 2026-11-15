@@ -72,3 +72,14 @@ test('the overlay line follows the button', () => {
   // then
   expect(line()).toContain('Start speed: fast')
 })
+
+test('the button shows a short label that fits one line, and its name stays Start speed', () => {
+  // given
+  render(<App />)
+
+  // when
+  const button = btn('normal')
+
+  // then
+  expect(button.textContent).toBe('Speed: normal')
+})
