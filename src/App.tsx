@@ -37,6 +37,7 @@ import {
   overlayEdge,
   crashReason,
   panelCoversFood,
+  panelShift,
   pauseIfRunning,
   restart,
   speedLevel,
@@ -730,7 +731,7 @@ export default function App() {
             aria-hidden="true"
           >
             <div
-              className="overlay-panel"
+              className={`overlay-panel ${panelShift(game) ? `panel-${panelShift(game)}` : ""}`}
               data-label={over ? `Game over: ${crashReason(game)}` : paused ? "Paused" : "Snake"}
             >
               {ready && (

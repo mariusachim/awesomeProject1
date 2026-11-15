@@ -28,6 +28,12 @@ export function panelCoversFood(s: Parameters<typeof overlayEdge>[0]): boolean {
   return s.status === 'over' && covers(overlayEdge(s), PANEL_ROWS.over, s.food.y)
 }
 
+// A food in a side column under the panel: the panel hugs the other side, so its text stays off the food.
+export function panelShift(s: Parameters<typeof overlayEdge>[0] & { food: { x: number } }): 'left' | 'right' | null {
+  if (!panelCoversFood(s)) return null
+  return s.food.x >= SIZE / 2 ? 'left' : 'right'
+}
+
 export type Dir ='up' | 'down' | 'left' | 'right'
 export type Cell = { x: number; y: number }
 export type GameState = {
