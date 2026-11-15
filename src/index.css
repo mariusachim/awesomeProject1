@@ -550,6 +550,15 @@ h1,
     white-space: nowrap;
   }
 
+  /* "Walls: solid" plus its badge needs about 133px; an equal share is about 101px. Same share for solid and wrap. */
+  .controls .walls {
+    flex-grow: 1.4;
+  }
+
+  .controls kbd {
+    margin-left: 6px;
+  }
+
   .stat-value {
     min-width: 3ch;
   }
