@@ -550,13 +550,21 @@ h1,
     white-space: nowrap;
   }
 
-  /* "Walls: solid" plus its badge needs about 133px; an equal share is about 101px. Same share for solid and wrap. */
+  /* "Walls: solid" plus its badge needs about 125px and "Speed: normal" about 118px. The shares are fixed, so the label swaps cannot move a button. */
+  .controls {
+    gap: 8px;
+  }
+
   .controls .walls {
-    flex-grow: 1.4;
+    flex-grow: 1.45;
+  }
+
+  .controls .start-speed {
+    flex-grow: 1.35;
   }
 
   .controls kbd {
-    margin-left: 6px;
+    margin-left: 4px;
   }
 
   .stat-value {
