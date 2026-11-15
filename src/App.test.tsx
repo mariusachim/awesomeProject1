@@ -1157,3 +1157,14 @@ test('game over with the food under the panel keeps the food visible under a see
   expect(screen.getByTestId('food').className).toContain('food-over-panel')
   expect(screen.getByTestId('board-overlay').querySelector('.overlay-panel')?.className).toMatch(/panel-(left|right)/)
 })
+
+test('start screen puts the panel on the edge away from a food in row 9', () => {
+  // given
+  vi.spyOn(Math, 'random').mockReturnValue(0.6)
+
+  // when
+  renderReady(<App />)
+
+  // then
+  expect(screen.getByTestId('board-overlay').className).toContain('board-overlay-top')
+})

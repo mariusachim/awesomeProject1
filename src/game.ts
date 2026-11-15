@@ -4,14 +4,15 @@ export const SIZE = 15
 export const cellShade = (x: number, y: number): string => ((x + y) % 2 === 0 ? '#1c1c1c' : '#2c2c2c')
 
 type Edge = 'top' | 'bottom'
-// Panel height in rows on a small phone (24 px cells): ready and paused cover 5; game over is tighter and covers 4.
-const PANEL_ROWS = { over: 4, other: 5 }
+// Panel height in rows on a small phone (24 px cells): ready covers 6 (four text lines), paused 5; game over is tighter and covers 4.
+const PANEL_ROWS = { over: 4, paused: 5, ready: 6 }
+const panelRows = (status: string) => (status === 'over' ? PANEL_ROWS.over : status === 'ready' ? PANEL_ROWS.ready : PANEL_ROWS.paused)
 const covers = (edge: Edge, rows: number, y: number) => (edge === 'top' ? y < rows : y >= SIZE - rows)
 
 // The overlay panel goes to the edge away from the head; it also keeps off the food and the body.
 export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'; snake: { y: number }[]; food: { y: number } }): Edge {
   const away: Edge = s.status === 'ready' || s.snake[0].y < SIZE / 2 ? 'bottom' : 'top'
-  const rows = s.status === 'over' ? PANEL_ROWS.over : PANEL_ROWS.other
+  const rows = panelRows(s.status)
   // The cost of an edge: the food under the panel counts most, then the head, then each body cell.
   // At game over the crash head counts most: the player must see what they hit.
   const [foodW, headW] = s.status === 'over' ? [1, 2] : [2, 1]
@@ -23,9 +24,9 @@ export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'
   return cost(other) < cost(away) ? other : away
 }
 
-// At game over the food stays visible above the panel when the panel has to cover its row.
+// When the panel has to cover the food row, the food stays visible beside it.
 export function panelCoversFood(s: Parameters<typeof overlayEdge>[0]): boolean {
-  return s.status === 'over' && covers(overlayEdge(s), PANEL_ROWS.over, s.food.y)
+  return s.status !== 'running' && covers(overlayEdge(s), panelRows(s.status), s.food.y)
 }
 
 // A food in a side column under the panel: the panel hugs the other side, so its text stays off the food.
