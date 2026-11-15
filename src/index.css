@@ -555,6 +555,12 @@ h1,
     flex-grow: 1.4;
   }
 
+  /* "Start speed: normal" does not fit one line in an equal share: wrap to two lines, the button keeps its height. */
+  .controls .start-speed {
+    white-space: normal;
+    line-height: 1.1;
+  }
+
   .controls kbd {
     margin-left: 6px;
   }
