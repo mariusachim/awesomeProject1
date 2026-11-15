@@ -524,10 +524,11 @@ h1,
 
 /* Desktop: stats share the axis too. Values get 3 digits of room, so a growing score moves no stat. */
 @media (min-width: 600px) {
+  /* Columns fit their labels and the spare room becomes the gaps, so labels never touch. */
   .stats {
-    grid-auto-columns: minmax(0, 1fr);
-    justify-content: stretch;
-    column-gap: 4px;
+    grid-auto-columns: auto;
+    justify-content: space-between;
+    column-gap: 8px;
   }
 
   .stat-label {
@@ -541,10 +542,10 @@ h1,
     margin-inline: auto;
   }
 
-  /* Equal shares of the row, so the label swaps cannot move a button. */
+  /* Each button is at least as wide as its content (the widest label swap), so text and badge keep 4px from the border. */
   .controls button {
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 1 1 auto;
+    min-width: max-content;
     padding-inline: 4px;
     font-size: 0.875rem;
     white-space: nowrap;
