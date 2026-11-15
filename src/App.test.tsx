@@ -1143,7 +1143,7 @@ test('the head carries the head-crash class only at game over, and a restart rem
   expect(screen.getByTestId('head').classList.contains('head-crash')).toBe(false)
 })
 
-test('game over with the food under the panel draws the food above it', () => {
+test('game over with the food under the panel keeps the food visible under a see-through panel', () => {
   // given
   vi.spyOn(Math, 'random').mockReturnValue(0.99)
   render(<App />)
@@ -1155,4 +1155,5 @@ test('game over with the food under the panel draws the food above it', () => {
   // then
   expect(screen.getByText('Game over')).toBeTruthy()
   expect(screen.getByTestId('food').className).toContain('food-over-panel')
+  expect(screen.getByTestId('board-overlay').querySelector('.overlay-panel')?.className).toMatch(/panel-(left|right)/)
 })
