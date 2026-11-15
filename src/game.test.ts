@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, overlayEdge, panelCoversFood, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, overlayEdge, panelCoversFood, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -1012,4 +1012,41 @@ test('the panel covers the food only when the food row is under the chosen edge 
   expect(panelCoversFood(over({ x: 3, y: SIZE - 1 }))).toBe(true)
   expect(panelCoversFood(over({ x: 3, y: 5 }))).toBe(false)
   expect(panelCoversFood({ ...over({ x: 3, y: SIZE - 1 }), status: 'running' })).toBe(false)
+})
+
+const crashOf = (over: Partial<GameState>) => step(state({ rocks: [], ...over }), () => 0)
+
+test('crashReason: running into the wall', () => {
+  // given
+  const over = crashOf({ snake: [{ x: 14, y: 5 }, { x: 13, y: 5 }, { x: 12, y: 5 }] })
+
+  // when / then
+  expect(crashReason(over)).toBe('you hit the wall')
+})
+
+test('crashReason: running into the own body', () => {
+  // given
+  const snake = [{ x: 5, y: 5 }, { x: 5, y: 4 }, { x: 6, y: 4 }, { x: 6, y: 5 }, { x: 6, y: 6 }]
+  const over = crashOf({ snake, dir: 'down' , queue: ['right']})
+
+  // when / then
+  expect(crashReason(over)).toBe('you bit yourself')
+})
+
+test('crashReason: with wrap-around walls it is always the body', () => {
+  // given
+  const snake = [{ x: 14, y: 5 }, { x: 14, y: 4 }, { x: 0, y: 4 }, { x: 0, y: 5 }, { x: 0, y: 6 }]
+  const over = crashOf({ snake, dir: 'down', queue: ['right'], wrap: true })
+
+  // when / then
+  expect(over.status).toBe('over')
+  expect(crashReason(over)).toBe('you bit yourself')
+})
+
+test('crashReason: running into a rock', () => {
+  // given
+  const over = crashOf({ rocks: [{ x: 6, y: 5 }] })
+
+  // when / then
+  expect(crashReason(over)).toBe('you hit a rock')
 })
