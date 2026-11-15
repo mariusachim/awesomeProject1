@@ -608,11 +608,12 @@ export default function App() {
         </button>
         <button
           className="start-speed"
+          aria-label={`Start speed: ${start}`}
           disabled={!ready}
           onClick={cycleStart}
           onKeyDown={ownKeys(cycleStart)}
         >
-          Start speed: {start}
+          Speed: {start}
         </button>
       </div>
       <div
