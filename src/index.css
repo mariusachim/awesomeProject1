@@ -554,9 +554,10 @@ h1,
 /* Phone: labels stay on one line, columns fit their content and the row spans the board. */
 @media (max-width: 600px) {
   .stats {
-    grid-auto-columns: minmax(0, 1fr);
-    justify-content: stretch;
-    column-gap: 4px;
+    /* Columns fit their labels (14px, 75px wide at most) and the spare room becomes the gaps, so labels never touch. */
+    grid-auto-columns: auto;
+    justify-content: space-between;
+    column-gap: 8px;
   }
 
   .stat-label {
