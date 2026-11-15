@@ -22,6 +22,7 @@ import {
   saveSkin,
 } from "./skin.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
+import { levelOf, loadStart, nextStart, paced, saveStart } from "./startSpeed.ts";
 import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
   type Cell,
@@ -40,7 +41,6 @@ import {
   panelShift,
   pauseIfRunning,
   restart,
-  speedLevel,
   step,
   swipeDir,
   tickCount,
@@ -235,6 +235,7 @@ export default function App() {
   const [best, setBest] = useState(loadHighScore);
   const [longest, setLongest] = useState(() => loadHighScore(LONGEST_KEY));
   const [muted, setMuted] = useState(loadMuted);
+  const [start, setStart] = useState(loadStart);
   const [skin, setSkin] = useState(loadSkin);
   // The score of the run when H cleared the record: that run no longer counts. Back to 0 on a new run.
   const [cleared, setCleared] = useState(0);
@@ -269,6 +270,10 @@ export default function App() {
   // True while the browser repeats the key of the current direction; it never applies outside a running game.
   const [held, setHeld] = useState(false);
   const boost = held && game.status === "running";
+  const startRef = useRef(start);
+  useEffect(() => {
+    startRef.current = start;
+  });
   const gameRef = useRef(game);
   useEffect(() => {
     gameRef.current = game;
@@ -277,10 +282,10 @@ export default function App() {
   useEffect(() => {
     const id = setInterval(
       () => setGame((g) => step(g, Math.random)),
-      boostMs(game.score, boost),
+      boostMs(paced(game.score, start), boost),
     );
     return () => clearInterval(id);
-  }, [game.score, boost]);
+  }, [game.score, boost, start]);
 
   useEffect(() => {
     const onDown = (e: KeyboardEvent) => {
@@ -334,7 +339,8 @@ export default function App() {
     if (milestone) setChimed((n) => n + 1);
     const faster =
       game.score > was.score &&
-      speedLevel(game.score) !== speedLevel(was.score);
+      levelOf(game.score, startRef.current) !==
+        levelOf(was.score, startRef.current);
     if (
       faster &&
       !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
@@ -451,6 +457,11 @@ export default function App() {
       }
     };
   const toggleMute = () => setMuted((m) => !m);
+  const cycleStart = () => {
+    const next = nextStart(start);
+    setStart(next);
+    saveStart(next);
+  };
 
   useEffect(() => {
     const onToggle = (e: KeyboardEvent) => {
@@ -527,9 +538,9 @@ export default function App() {
         />
         <Stat
           label="Speed"
-          value={speedLevel(game.score)}
-          spoken={`Speed ${speedLevel(game.score)}`}
-          pulse={speedLevel(game.score) !== 1}
+          value={levelOf(game.score, start)}
+          spoken={`Speed ${levelOf(game.score, start)}`}
+          pulse={levelOf(game.score, start) !== 1}
         />
         <Stat
           label="Length"
@@ -594,6 +605,14 @@ export default function App() {
           )}
           {muted ? "Unmute" : "Mute"}
           <kbd aria-hidden="true">M</kbd>
+        </button>
+        <button
+          className="start-speed"
+          disabled={!ready}
+          onClick={cycleStart}
+          onKeyDown={ownKeys(cycleStart)}
+        >
+          Start: {start}
         </button>
       </div>
       <div
