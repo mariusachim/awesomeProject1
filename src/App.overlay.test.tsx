@@ -74,7 +74,8 @@ test('game over dims the board with a Game over label and Restart still works', 
   act(() => vi.advanceTimersByTime(200 * 30))
 
   // then
-  expect(label()).toBe('Game over')
+  expect(label()).toBe('Game over: you hit the wall')
+  expect(screen.getByRole('alert').textContent).toContain('Game over: you hit the wall')
   fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
   expect(overlay()).toBeNull()
 })

@@ -35,6 +35,7 @@ import {
   keyToDir,
   newGame,
   overlayEdge,
+  crashReason,
   panelCoversFood,
   pauseIfRunning,
   restart,
@@ -730,7 +731,7 @@ export default function App() {
           >
             <div
               className="overlay-panel"
-              data-label={over ? "Game over" : paused ? "Paused" : "Snake"}
+              data-label={over ? `Game over: ${crashReason(game)}` : paused ? "Paused" : "Snake"}
             >
               {ready && (
                 <>
@@ -842,7 +843,7 @@ export default function App() {
         )}
         {over && (
           <div role="alert">
-            <p className="sr-only">Game over</p>
+            <p className="sr-only">Game over<span>: {crashReason(game)}</span></p>
             <p className="sr-only">Final score: {game.score}</p>
             {game.streaks > 0 && (
               <p className="sr-only">Streak meals: {game.streaks}</p>

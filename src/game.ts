@@ -178,6 +178,13 @@ export function nearWall(s: Pick<GameState, 'status' | 'wrap' | 'snake' | 'dir'>
   return !inside(x) || !inside(y)
 }
 
+// Why the run ended, from the over state: the snake did not move, so the cell it entered is head + dir.
+export function crashReason(s: Pick<GameState, 'snake' | 'dir' | 'wrap' | 'rocks'>): string {
+  const next = { x: s.snake[0].x + DELTA[s.dir].x, y: s.snake[0].y + DELTA[s.dir].y }
+  if (!s.wrap && outside(next)) return 'you hit the wall'
+  return s.rocks.some((c) => same(c, wrapCell(next))) ? 'you hit a rock' : 'you bit yourself'
+}
+
 // R starts a new game in the same wall mode; it does nothing before the first key.
 export const restart = (state: GameState, rand: Rand): GameState =>
   state.status === 'ready' ? state : newGame(rand, state.wrap)
