@@ -473,8 +473,8 @@ button:focus-visible {
   grid-auto-flow: column;
   grid-template-rows: auto auto;
   /* Equal columns, so the gap between neighbouring labels is even. */
-  grid-auto-columns: 1fr;
-  justify-content: start;
+  grid-auto-columns: minmax(0, 1fr);
+  justify-content: stretch;
   align-content: end;
   gap: 0 16px;
   height: 4.5rem;
@@ -521,9 +521,9 @@ h1,
 /* Desktop: stats share the axis too. Values get 3 digits of room, so a growing score moves no stat. */
 @media (min-width: 600px) {
   .stats {
-    grid-auto-columns: auto;
-    justify-content: space-between;
-    column-gap: 8px;
+    grid-auto-columns: minmax(0, 1fr);
+    justify-content: stretch;
+    column-gap: 4px;
   }
 
   .stat-label {
@@ -554,9 +554,9 @@ h1,
 /* Phone: labels stay on one line, columns fit their content and the row spans the board. */
 @media (max-width: 600px) {
   .stats {
-    grid-auto-columns: auto;
-    justify-content: space-between;
-    column-gap: 8px;
+    grid-auto-columns: minmax(0, 1fr);
+    justify-content: stretch;
+    column-gap: 4px;
   }
 
   .stat-label {
