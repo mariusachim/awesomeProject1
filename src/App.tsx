@@ -612,7 +612,7 @@ export default function App() {
           onClick={cycleStart}
           onKeyDown={ownKeys(cycleStart)}
         >
-          Start: {start}
+          Start speed: {start}
         </button>
       </div>
       <div
@@ -766,6 +766,10 @@ export default function App() {
                   <span
                     className="overlay-line overlay-hint"
                     data-text={wallsHint(game.wrap)}
+                  />
+                  <span
+                    className="overlay-line overlay-hint"
+                    data-text={`Start speed: ${start}`}
                   />
                 </>
               )}

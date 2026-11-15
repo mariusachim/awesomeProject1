@@ -8,9 +8,9 @@ afterEach(() => {
   localStorage.clear()
 })
 
-const btn = (label: string) => screen.getByRole('button', { name: `Start: ${label}` })
+const btn = (label: string) => screen.getByRole('button', { name: `Start speed: ${label}` })
 
-test('a first visit reads Start: normal and the button cycles', () => {
+test('a first visit reads Start speed: normal and the button cycles', () => {
   // given
   render(<App />)
 
@@ -58,4 +58,17 @@ test('fast shows a higher speed level once the game runs, and the button is disa
   // then
   expect(screen.getByText('Speed 6')).toBeTruthy()
   expect((btn('fast') as HTMLButtonElement).disabled).toBe(true)
+})
+
+test('the overlay line follows the button', () => {
+  // given
+  render(<App />)
+  const line = () => Array.from(screen.getByTestId('board-overlay').querySelectorAll('[data-text]')).map((e) => e.getAttribute('data-text'))
+  expect(line()).toContain('Start speed: normal')
+
+  // when
+  fireEvent.click(btn('normal'))
+
+  // then
+  expect(line()).toContain('Start speed: fast')
 })
