@@ -297,6 +297,22 @@ button:disabled kbd {
   font-size: 2rem;
 }
 
+/* Desktop only: room around the game over lines. Phones keep the tight panel so the food stays visible. */
+@media (min-width: 601px) {
+  .board-overlay:not(.board-overlay-under).board-overlay-top {
+    padding-top: 0.75rem;
+  }
+
+  .board-overlay:not(.board-overlay-under).board-overlay-bottom {
+    padding-bottom: 0.75rem;
+  }
+
+  .board-overlay:not(.board-overlay-under) .overlay-panel {
+    padding-block: 0.4rem;
+    line-height: 1.25;
+  }
+}
+
 .overlay-panel {
   display: flex;
   align-items: center;
