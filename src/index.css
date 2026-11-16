@@ -648,9 +648,9 @@ h1,
   }
 }
 
-/* Game over, panel on the food row: the food stays under the panel, so it never covers text; the panel is see-through (below). */
+/* Game over, panel on the food row: the food paints above the panel at full brightness; the panel is narrowed in App.tsx so no text sits under it. */
 .food-over-panel {
-  z-index: auto;
+  z-index: 1;
 }
 
 /* Game over, food under the panel: the panel is one cell narrower and hugs the side away from the food. */
