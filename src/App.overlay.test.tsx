@@ -156,6 +156,22 @@ test('game over shows the final score and a restart hint on the board', () => {
   expect(lines()).toEqual(['Final score: 0', 'Time 0:01 · Apples 0 · Longest 1', 'Press Enter or R to restart', 'Tap Restart'])
 })
 
+test('Paused explains the special foods, and the legend is gone while running', () => {
+  // given
+  render(<App />)
+  key('ArrowRight')
+
+  // when
+  key('p')
+
+  // then
+  const legend = screen.getByTestId('food-legend')
+  expect(legend.textContent).toBe('slows the snakeshortens the snakeworth x3')
+  expect(screen.getByText(/Diamond slows the snake/).className).toContain('sr-only')
+  key('p')
+  expect(screen.queryByTestId('food-legend')).toBeNull()
+})
+
 const hHint = () => screen.getByTestId('board-overlay').querySelector('[data-text="H resets the high score"]')
 
 test('the H hint on Paused is key-only, so touch screens hide it', () => {

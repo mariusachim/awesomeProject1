@@ -127,6 +127,12 @@ const SHRINK_LOOK: CSSProperties = {
   clipPath: "polygon(50% 5%, 95% 95%, 5% 95%)",
 };
 
+const LEGEND: [CSSProperties, string][] = [
+  [BONUS_LOOK, "slows the snake"],
+  [SHRINK_LOOK, "shortens the snake"],
+  [GOLDEN_LOOK, "worth x3"],
+];
+
 // A sibling of the pickup, because its clip-path would cut the number.
 const count = (
   testId: string,
@@ -822,6 +828,14 @@ export default function App() {
                     className="overlay-line overlay-hint hint-touch"
                     data-text="Tap Resume"
                   />
+                  <ul className="legend" data-testid="food-legend">
+                    {LEGEND.map(([look, text]) => (
+                      <li key={text}>
+                        <span className="legend-swatch" style={look} />
+                        {text}
+                      </li>
+                    ))}
+                  </ul>
                   {highScore > 0 && (
                     <span
                       className="overlay-line overlay-hint hint-keys"
@@ -858,6 +872,11 @@ export default function App() {
         {paused && (
           <p role="status" className="sr-only">
             Paused
+          </p>
+        )}
+        {paused && (
+          <p className="sr-only">
+            Diamond slows the snake, triangle shortens the snake, golden apple is worth x3
           </p>
         )}
         {game.score > 0 && !over && (

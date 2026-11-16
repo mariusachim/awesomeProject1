@@ -671,3 +671,24 @@ h1,
 .board-overlay .panel-right {
   align-self: flex-end;
 }
+
+/* Paused legend: what each special food does. Static, so reduced motion needs nothing. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.2rem 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #fff;
+  font-size: 0.875rem;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-right: 0.3rem;
+  vertical-align: -0.1rem;
+}
