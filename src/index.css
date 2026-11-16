@@ -717,7 +717,7 @@ h1,
   padding: 0;
   list-style: none;
   color: #fff;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 /* Phone: one food per row, so the swatches line up and "worth x3" is not left alone. */
@@ -730,8 +730,8 @@ h1,
 
 .legend-swatch {
   display: inline-block;
-  width: 0.9rem;
-  height: 0.9rem;
+  width: 1rem;
+  height: 1rem;
   margin-right: 0.3rem;
   vertical-align: -0.1rem;
 }
