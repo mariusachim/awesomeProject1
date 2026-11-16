@@ -83,3 +83,14 @@ test('the button shows a short label that fits one line, and its name stays Star
   // then
   expect(button.textContent).toBe('Speed: normal')
 })
+
+test('Walls and Speed keep their full text and put the value in its own element', () => {
+  // given
+  render(<App />)
+  // when
+  const walls = screen.getByRole('button', { name: 'Walls: solid' })
+  // then
+  expect(walls.textContent).toContain('Walls: solid')
+  expect(walls.querySelector('.mode-value')?.textContent).toBe('solid')
+  expect(screen.getByRole('button', { name: 'Start speed: normal' }).querySelector('.mode-value')?.textContent).toBe('normal')
+})

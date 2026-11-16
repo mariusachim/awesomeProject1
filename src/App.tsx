@@ -583,8 +583,12 @@ export default function App() {
           onClick={toggleWalls}
           onKeyDown={ownKeys(toggleWalls)}
           aria-keyshortcuts="B"
+          aria-label={`Walls: ${game.wrap ? "wrap" : "solid"}`}
         >
-          Walls: {game.wrap ? "wrap" : "solid"}
+          <span className="mode-name">
+            Walls<span className="mode-colon">: </span>
+          </span>
+          <span className="mode-value">{game.wrap ? "wrap" : "solid"}</span>
           <kbd aria-hidden="true">B</kbd>
         </button>
         <button
@@ -619,7 +623,10 @@ export default function App() {
           onClick={cycleStart}
           onKeyDown={ownKeys(cycleStart)}
         >
-          Speed: {start}
+          <span className="mode-name">
+            Speed<span className="mode-colon">: </span>
+          </span>
+          <span className="mode-value">{start}</span>
         </button>
       </div>
       <div

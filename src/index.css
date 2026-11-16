@@ -140,6 +140,25 @@ button:disabled kbd {
     font-size: 0.875rem;
   }
 
+  /* Name over value: the name small and muted, the value at full colour, no colon at a line end. */
+  .mode-name,
+  .mode-value {
+    display: block;
+  }
+
+  .mode-name {
+    font-size: 0.75rem;
+    color: #b0b0b0;
+  }
+
+  button:disabled .mode-name {
+    color: #a0a0a0;
+  }
+
+  .mode-colon {
+    display: none;
+  }
+
   .help,
   .messages {
     order: 2;
