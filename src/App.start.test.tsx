@@ -94,3 +94,17 @@ test('Walls and Speed keep their full text and put the value in its own element'
   expect(walls.querySelector('.mode-value')?.textContent).toBe('solid')
   expect(screen.getByRole('button', { name: 'Start speed: normal' }).querySelector('.mode-value')?.textContent).toBe('normal')
 })
+
+test('a locked speed button says why, and the reason is gone on the start screen', () => {
+  // given
+  render(<App />)
+  const reason = 'Pick the start speed on the start screen, before the first move'
+
+  // when / then
+  expect(btn('normal').getAttribute('title')).toBeNull()
+  expect(btn('normal').getAttribute('aria-describedby')).toBeNull()
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+  expect(btn('normal').getAttribute('title')).toBe(reason)
+  expect(btn('normal')).toHaveProperty('disabled', true)
+  expect(screen.getByRole('button', { name: 'Start speed: normal', description: reason })).toBeTruthy()
+})
