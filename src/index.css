@@ -620,6 +620,12 @@ h1,
   .stat-value {
     min-width: 3ch;
   }
+
+  /* The big Score value is wider than its label. It stops sizing the column and spills into the gap, so the label gaps stay even. */
+  .stat:first-child .stat-value {
+    contain: inline-size;
+    min-width: 0;
+  }
 }
 
 /* Phone: labels stay on one line, columns fit their content and the row spans the board. */
