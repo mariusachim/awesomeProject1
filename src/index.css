@@ -351,6 +351,15 @@ button:disabled kbd {
   font-size: 1.125rem;
 }
 
+/* Start screen: the action line is the boldest line of the panel. */
+.start-hint {
+  margin-top: 0.4rem;
+}
+
+.start-hint::after {
+  font-weight: bold;
+}
+
 /* Game over: score, then soft details, then the bold restart hint set apart. */
 .overlay-detail::after {
   color: #c8c8c8;
