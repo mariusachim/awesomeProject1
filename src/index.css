@@ -704,6 +704,14 @@ h1,
   font-size: 0.875rem;
 }
 
+/* Phone: one food per row, so the swatches line up and "worth x3" is not left alone. */
+@media (max-width: 600px) {
+  .legend {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .legend-swatch {
   display: inline-block;
   width: 0.9rem;
