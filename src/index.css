@@ -543,10 +543,12 @@ button:focus-visible {
 /* Out of the grid flow, so the pop moves no stat. */
 .pop {
   position: absolute;
-  top: 0;
-  right: 0;
+  bottom: 0.2em;
+  left: 100%;
+  margin-left: 8px;
   font-size: 0.875rem;
   font-weight: bold;
+  white-space: nowrap;
   color: #f5c04a;
 }
 
