@@ -1158,6 +1158,21 @@ test('game over with the food under the panel keeps the food visible under a see
   expect(screen.getByTestId('board-overlay').querySelector('.overlay-panel')?.className).toMatch(/panel-(left|right)/)
 })
 
+test('game over with the food under the panel leaves the food columns free of panel text', () => {
+  // given
+  vi.spyOn(Math, 'random').mockReturnValue(0.99)
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+
+  // when
+  tick(10)
+
+  // then
+  const [fx] = screen.getByTestId('food').getAttribute('data-pos')!.split(',').map(Number)
+  const free = fx >= 15 / 2 ? 15 - fx : fx + 1
+  expect((screen.getByTestId('board-overlay').querySelector('.overlay-panel') as HTMLElement).style.maxWidth).toBe(`calc(100% - ${free} * var(--cell))`)
+})
+
 test('start screen puts the panel on the edge away from a food in row 9', () => {
   // given
   vi.spyOn(Math, 'random').mockReturnValue(0.6)
