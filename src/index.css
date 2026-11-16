@@ -556,6 +556,11 @@ h1,
     gap: 8px;
   }
 
+  /* Pause, Resume and Restart share one width, so the swap cannot move Walls or Mute. */
+  .controls .pause {
+    flex: 0 0 104px;
+  }
+
   .controls .walls {
     flex-grow: 1.45;
   }
