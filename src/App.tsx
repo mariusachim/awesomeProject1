@@ -234,6 +234,8 @@ function Stat({
   );
 }
 
+const LOCKED = "Pick the start speed on the start screen, before the first move";
+
 export default function App() {
   const [game, setGame] = useState(() =>
     newGame(Math.random, loadWrap(), "ready"),
@@ -620,6 +622,8 @@ export default function App() {
           className="start-speed"
           aria-label={`Start speed: ${start}`}
           disabled={!ready}
+          title={ready ? undefined : LOCKED}
+          aria-describedby={ready ? undefined : "start-speed-why"}
           onClick={cycleStart}
           onKeyDown={ownKeys(cycleStart)}
         >
@@ -628,6 +632,11 @@ export default function App() {
           </span>
           <span className="mode-value">{start}</span>
         </button>
+        {!ready && (
+          <span id="start-speed-why" className="sr-only">
+            {LOCKED}
+          </span>
+        )}
       </div>
       <div
         className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}${speeding ? " board-speed" : ""}${nearWall(game) ? " board-wall" : ""}`}
