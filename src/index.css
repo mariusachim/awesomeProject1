@@ -801,3 +801,16 @@ h1,
   margin-right: 0.3rem;
   vertical-align: -0.1rem;
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .countdown-digit {
+    animation: countdown-pop 180ms ease-out;
+  }
+
+  @keyframes countdown-pop {
+    from {
+      transform: scale(1.4);
+      opacity: 0.4;
+    }
+  }
+}

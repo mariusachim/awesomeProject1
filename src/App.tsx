@@ -757,7 +757,9 @@ export default function App() {
               pointerEvents: "none",
             }}
           >
-            {game.count}
+            <span key={game.count} className="countdown-digit">
+              {game.count}
+            </span>
           </div>
         )}
         {(ready || paused || over) && (
