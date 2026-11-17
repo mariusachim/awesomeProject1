@@ -361,8 +361,10 @@ button:disabled kbd {
   font-weight: bold;
 }
 
+/* Balance wrapped lines so no word is left alone on the last line. */
 .overlay-line {
   text-align: center;
+  text-wrap: balance;
 }
 
 .overlay-line::after {
