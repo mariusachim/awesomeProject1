@@ -4,8 +4,8 @@ export const SIZE = 15
 export const cellShade = (x: number, y: number): string => ((x + y) % 2 === 0 ? '#1c1c1c' : '#2c2c2c')
 
 type Edge = 'top' | 'bottom'
-// Panel height in rows on a small phone (24 px cells): ready covers 6 (four text lines), paused 5; game over is tighter and covers 4.
-const PANEL_ROWS = { over: 4, paused: 5, ready: 6 }
+// Panel height in rows on a small phone (24 px cells): ready covers 6 (four text lines), paused 7 (title, resume line, three legend rows); game over is tighter and covers 4.
+const PANEL_ROWS = { over: 4, paused: 7, ready: 6 }
 const panelRows = (status: string) => (status === 'over' ? PANEL_ROWS.over : status === 'ready' ? PANEL_ROWS.ready : PANEL_ROWS.paused)
 const covers = (edge: Edge, rows: number, y: number) => (edge === 'top' ? y < rows : y >= SIZE - rows)
 
@@ -13,9 +13,8 @@ const covers = (edge: Edge, rows: number, y: number) => (edge === 'top' ? y < ro
 export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'; snake: { y: number }[]; food: { y: number } }): Edge {
   const away: Edge = s.status === 'ready' || s.snake[0].y < SIZE / 2 ? 'bottom' : 'top'
   const rows = panelRows(s.status)
-  // The cost of an edge: the food under the panel counts most, then the head, then each body cell.
-  // At game over the crash head counts most: the player must see what they hit.
-  const [foodW, headW] = s.status === 'over' ? [1, 2] : [2, 1]
+  // The cost of an edge: the head under the panel counts most (the player must see where it points), then the food, then each body cell.
+  const [foodW, headW] = [1, 2]
   const cost = (e: Edge) =>
     SIZE * SIZE * foodW * +covers(e, rows, s.food.y) +
     SIZE * SIZE * headW * +covers(e, rows, s.snake[0].y) +
