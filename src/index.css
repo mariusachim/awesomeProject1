@@ -344,6 +344,10 @@ button:disabled kbd {
   font-weight: bold;
 }
 
+.overlay-line {
+  text-align: center;
+}
+
 .overlay-line::after {
   content: attr(data-text);
   color: #fff;
@@ -357,7 +361,6 @@ button:disabled kbd {
 }
 
 .overlay-hint::after {
-  text-align: center;
   font-size: 1.125rem;
 }
 
