@@ -524,6 +524,10 @@ button:disabled kbd {
     }
   }
 
+  .pop-big.bump {
+    animation-duration: 320ms;
+  }
+
   @keyframes bump {
     50% {
       transform: scale(1.25);
@@ -580,6 +584,11 @@ button:focus-visible {
   font-weight: bold;
   white-space: nowrap;
   color: #f5c04a;
+}
+
+/* Bigger gain, bigger pop; font size only, so the pop stays out of the flow. */
+.pop-big {
+  font-size: 1.1rem;
 }
 
 .stat-label {
