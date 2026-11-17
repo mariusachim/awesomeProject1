@@ -76,19 +76,20 @@ button:disabled {
   display: none;
 }
 
-/* Desktop: line-height 1 and 12px over 14px leave 8px above and below inside the 44px box. */
+/* Desktop: line-height 1 and 14px over 14px leave 8px above and below inside the 44px box. */
 @media (min-width: 601px) {
   .start-speed {
     padding-block: 1px;
   }
 
   .start-speed .mode-name {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     line-height: 1;
   }
 
   .start-speed .mode-value {
     font-size: 0.875rem;
+    font-weight: bold;
     line-height: 1;
   }
 }
