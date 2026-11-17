@@ -337,7 +337,7 @@ button:disabled kbd {
   background: rgba(0, 0, 0, 0.8);
 }
 
-.overlay-panel::before {
+.overlay-panel[data-label]::before {
   content: attr(data-label);
   color: #fff;
   font-size: 2rem;
