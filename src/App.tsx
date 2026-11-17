@@ -225,7 +225,7 @@ function Stat({
       </span>
       {gain > 0 && (
         // Keyed by value, so the pop replays on each meal.
-        <span aria-hidden="true" className="pop bump" key={`pop${value}`}>
+        <span aria-hidden="true" className={`pop bump${gain >= 3 ? " pop-big" : ""}`} key={`pop${value}`}>
           +{gain}
         </span>
       )}

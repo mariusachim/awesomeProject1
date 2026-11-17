@@ -1112,6 +1112,38 @@ test('the score pop shows +1 for the first meal and +2 for a quick second one', 
   expect(pop()).toBe('+2')
 })
 
+test('the score pop of a +3 golden apple is big', () => {
+  // given: the first food is golden, the second is normal
+  const rand = vi.spyOn(Math, 'random')
+  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0.95)
+  renderReady(<App />)
+  startKey()
+  const pop = () => screen.queryByText(/^\+\d$/)
+
+  // when
+  for (let i = 0; i < 12 && !pop(); i++) tick()
+
+  // then
+  expect(pop()?.textContent).toBe('+3')
+  expect(pop()?.classList.contains('pop-big')).toBe(true)
+})
+
+test('the score pop of a +1 apple is not big', () => {
+  // given
+  const rand = vi.spyOn(Math, 'random')
+  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0)
+  renderReady(<App />)
+  startKey()
+  const pop = () => screen.queryByText(/^\+\d$/)
+
+  // when
+  for (let i = 0; i < 12 && !pop(); i++) tick()
+
+  // then
+  expect(pop()?.textContent).toBe('+1')
+  expect(pop()?.classList.contains('pop-big')).toBe(false)
+})
+
 test('arrow keys do not scroll the page, but a modified arrow keeps its default', () => {
   // given
   renderReady(<App />)
