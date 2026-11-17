@@ -174,7 +174,9 @@ button:disabled kbd {
   }
 
   .mode-name {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.1;
+    white-space: nowrap;
     color: #b0b0b0;
   }
 
@@ -653,7 +655,7 @@ h1,
   }
 
   .controls .start-speed {
-    flex-grow: 1.35;
+    flex-grow: 1.7;
   }
 
   .controls kbd {
