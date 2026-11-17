@@ -184,6 +184,11 @@ button:disabled kbd {
     color: #a0a0a0;
   }
 
+  /* Bold value on every name-over-value button; the locked one stays dim by colour, not weight. */
+  .mode-value {
+    font-weight: bold;
+  }
+
   .mode-colon {
     display: none;
   }
