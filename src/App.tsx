@@ -628,7 +628,7 @@ export default function App() {
           onKeyDown={ownKeys(cycleStart)}
         >
           <span className="mode-name">
-            Speed<span className="mode-colon">: </span>
+            Start speed<span className="mode-colon">: </span>
           </span>
           <span className="mode-value">{start}</span>
         </button>

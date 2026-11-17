@@ -73,7 +73,7 @@ test('the overlay line follows the button', () => {
   expect(line()).toContain('Start speed: fast')
 })
 
-test('the button shows a short label that fits one line, and its name stays Start speed', () => {
+test('the button label reads Start speed over the value, and its name stays Start speed: normal', () => {
   // given
   render(<App />)
 
@@ -81,7 +81,7 @@ test('the button shows a short label that fits one line, and its name stays Star
   const button = btn('normal')
 
   // then
-  expect(button.textContent).toBe('Speed: normal')
+  expect(button.textContent).toBe('Start speed: normal')
 })
 
 test('Walls and Speed keep their full text and put the value in its own element', () => {

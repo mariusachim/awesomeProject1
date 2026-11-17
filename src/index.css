@@ -66,6 +66,16 @@ button:disabled {
   min-width: 9rem;
 }
 
+/* Name over value at every width, so "Start speed" fits the row and the button stays 44px. */
+.start-speed .mode-name,
+.start-speed .mode-value {
+  display: block;
+}
+
+.start-speed .mode-colon {
+  display: none;
+}
+
 /* Muted: a slashed speaker, a solid amber border (#e0a030 on #1e1e1e is about 7:1) and a dimmer label. The 2px border stays, so nothing moves. */
 .mute.muted {
   color: #c8c8c8;
