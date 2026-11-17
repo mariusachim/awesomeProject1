@@ -51,3 +51,17 @@ test('a reload forgets the last score', () => {
   expect(screen.getByText('–')).toBeTruthy()
   expect(screen.getByText('Last game: none')).toBeTruthy()
 })
+
+test('the Last game value bumps when a run ends, not before', () => {
+  // given
+  const { container } = render(<App />)
+  const value = () => container.querySelectorAll('.stat-value')[4]
+  expect(value().classList.contains('bump')).toBe(false)
+
+  // when
+  crash()
+
+  // then
+  expect(value().textContent).toBe('0')
+  expect(value().classList.contains('bump')).toBe(true)
+})

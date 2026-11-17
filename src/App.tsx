@@ -567,6 +567,7 @@ export default function App() {
           value={last ?? "–"}
           spoken={`Last game: ${last ?? "none"}`}
           muted={last === null}
+          pulse={last !== null}
         />
       </div>
       <div className="controls">
