@@ -24,7 +24,7 @@ test('a new game in the ready state shows the start hint on the dimmed board, hi
   render(<App />)
 
   // then
-  expect(label()).toBe('Snake')
+  expect(label()).toBeNull()
   expect(overlay()?.getAttribute('aria-hidden')).toBe('true')
   expect(screen.getByTestId('board').contains(overlay())).toBe(true)
   expect(lines()).toEqual(['Press an arrow key or WASD to start', 'Swipe on the board to start', 'Walls: the edge ends the run', 'Start speed: normal'])

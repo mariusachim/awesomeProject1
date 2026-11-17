@@ -775,7 +775,7 @@ export default function App() {
             <div
               className={`overlay-panel ${panelShift(game) ? `panel-${panelShift(game)}` : ""}`}
               style={panelShift(game) ? { maxWidth: `calc(100% - ${panelShift(game) === "left" ? SIZE - game.food.x : game.food.x + 1} * var(--cell))` } : undefined}
-              data-label={over ? `Game over: ${crashReason(game)}` : paused ? "Paused" : "Snake"}
+              data-label={over ? `Game over: ${crashReason(game)}` : paused ? "Paused" : undefined}
             >
               {ready && (
                 <>
