@@ -649,9 +649,9 @@ test('start screen with the food in the bottom rows puts the panel at the top', 
   expect(edge({ status: 'ready', snake: [{ x: 7, y: 7 }], food: { x: 3, y: SIZE - 1 } })).toBe('top')
 })
 
-test('paused with the head on top and the food in the bottom rows puts the panel at the top', () => {
+test('paused with the head on top and the food in the bottom rows still puts the panel at the bottom', () => {
   // given / when / then
-  expect(edge({ status: 'paused', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 2 } })).toBe('top')
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 2 } })).toBe('bottom')
 })
 
 test('head and food in the same half put the panel at the other edge', () => {
@@ -669,10 +669,10 @@ test('game over puts the panel at the edge that covers the head, and the food on
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 1 } })).toBe('top')
 })
 
-test('paused panel covers 5 rows: food in the 5th row from the bottom sends it to the top', () => {
+test('paused panel covers 7 rows: a head in the middle row and food under the panel send it to the top', () => {
   // given / when / then
-  expect(edge({ status: 'paused', snake: [{ x: 7, y: 6 }], food: { x: 3, y: SIZE - 5 } })).toBe('top')
-  expect(edge({ status: 'paused', snake: [{ x: 7, y: 9 }], food: { x: 3, y: 3 } })).toBe('bottom')
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 7 }], food: { x: 3, y: SIZE - 7 } })).toBe('top')
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 3 } })).toBe('bottom')
 })
 
 test('with both edges free the panel stays away from the head', () => {
@@ -685,7 +685,7 @@ test('with both edges free the panel stays away from the head', () => {
 test('the panel counts its full height: food 5 rows from the bottom edge is covered', () => {
   // given / when / then
   expect(edge({ status: 'ready', snake: [{ x: 7, y: 7 }], food: { x: 3, y: SIZE - 5 } })).toBe('top')
-  expect(edge({ status: 'paused', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 4 } })).toBe('top')
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 1 }], food: { x: 3, y: SIZE - 4 } })).toBe('bottom')
 })
 
 test('game over keeps the old rule', () => {
@@ -1059,4 +1059,10 @@ test('the panel shifts away from the food side only while it covers the food', (
   expect(panelShift(over({ x: SIZE - 1, y: SIZE - 1 }))).toBe('left')
   expect(panelShift(over({ x: 0, y: SIZE - 1 }))).toBe('right')
   expect(panelShift(over({ x: SIZE - 1, y: 5 }))).toBeNull()
+})
+
+test('paused: the panel keeps off the head even when that covers the food', () => {
+  // given / when / then
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 4 }], food: { x: 3, y: 12 } })).toBe('bottom')
+  expect(edge({ status: 'paused', snake: [{ x: 7, y: 10 }], food: { x: 3, y: 2 } })).toBe('top')
 })
