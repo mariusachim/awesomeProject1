@@ -76,6 +76,23 @@ button:disabled {
   display: none;
 }
 
+/* Desktop: line-height 1 and 12px over 14px leave 8px above and below inside the 44px box. */
+@media (min-width: 601px) {
+  .start-speed {
+    padding-block: 1px;
+  }
+
+  .start-speed .mode-name {
+    font-size: 0.75rem;
+    line-height: 1;
+  }
+
+  .start-speed .mode-value {
+    font-size: 0.875rem;
+    line-height: 1;
+  }
+}
+
 /* Muted: a slashed speaker, a solid amber border (#e0a030 on #1e1e1e is about 7:1) and a dimmer label. The 2px border stays, so nothing moves. */
 .mute.muted {
   color: #c8c8c8;
