@@ -166,7 +166,9 @@ test('Paused explains the special foods, and the legend is gone while running', 
 
   // then
   const legend = screen.getByTestId('food-legend')
-  expect(legend.textContent).toBe('slows the snakeshortens the snakeworth x3')
+  expect(legend.textContent).toBe('grows the snakeslows the snakeshortens the snakeworth x3')
+  expect(legend.querySelectorAll('li')).toHaveLength(4)
+  expect(legend.querySelectorAll('.legend-swatch[aria-hidden="true"]')).toHaveLength(4)
   expect(screen.getByText(/Diamond slows the snake/).className).toContain('sr-only')
   key('p')
   expect(screen.queryByTestId('food-legend')).toBeNull()
