@@ -16,7 +16,7 @@ test('Pause, Walls and Mute show their keys, announced once through aria-keyshor
   const keys = [
     ['Pause', 'P'],
     ['Walls: solid', 'B'],
-    ['Mute', 'M'],
+    ['Mute sound', 'M'],
   ]
   for (const [name, key] of keys) {
     const button = screen.getByRole('button', { name })
