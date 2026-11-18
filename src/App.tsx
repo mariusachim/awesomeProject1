@@ -340,6 +340,16 @@ export default function App() {
     setRing(meal ? { ...seen.food, score: game.score } : null);
   }
 
+  // The turn the head just made: its count keys the head so the nudge replays; its cell ends the nudge on the next move.
+  const [turned, setTurned] = useState({ n: 0, x: -1, y: -1 });
+  const lastDir = useRef(game.dir);
+  useEffect(() => {
+    const was = lastDir.current;
+    lastDir.current = game.dir;
+    if (game.dir !== was && game.status === "running")
+      setTurned((t) => ({ n: t.n + 1, ...game.snake[0] }));
+  }, [game.dir, game.status, game.snake]);
+
   const [chimed, setChimed] = useState(0);
   const [sped, setSped] = useState(0);
   const prev = useRef({ score: game.score, over, apples: game.apples });
@@ -525,7 +535,7 @@ export default function App() {
       // The head is keyed by score, not position: it remounts on each meal so the flash replays.
       key={
         id === "head" || id === "eat-ring"
-          ? `${id}${game.score}`
+          ? `${id}${game.score}${id === "head" ? `-${turned.n}` : ""}`
           : `${id}${x},${y}`
       }
       data-testid={id}
@@ -717,7 +727,11 @@ export default function App() {
                     ? "flash"
                     : game.status === "paused" && panelCoversRow(game, c.y)
                       ? "snake-over-panel"
-                      : undefined,
+                      : game.status === "running" &&
+                          turned.x === c.x &&
+                          turned.y === c.y
+                        ? "head-turn"
+                        : undefined,
                 undefined,
                 EYES[game.dir].map(eye(game.status === "ready")),
               )

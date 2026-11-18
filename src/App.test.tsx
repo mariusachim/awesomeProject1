@@ -1215,3 +1215,29 @@ test('start screen puts the panel on the edge away from a food in row 9', () => 
   // then
   expect(screen.getByTestId('board-overlay').className).toContain('board-overlay-top')
 })
+
+test('the head nudges on a turn, and not on a straight move, at ready or at game over', () => {
+  // given
+  render(<App />)
+  const nudged = () => screen.getByTestId('head').classList.contains('head-turn')
+  expect(nudged()).toBe(false)
+
+  // when
+  fireEvent.keyDown(window, { key: 'ArrowDown' })
+  tick()
+
+  // then
+  expect(nudged()).toBe(true)
+
+  // when
+  tick()
+
+  // then
+  expect(nudged()).toBe(false)
+
+  // when
+  tick(30)
+
+  // then
+  expect(nudged()).toBe(false)
+})

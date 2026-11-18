@@ -545,6 +545,17 @@ button:disabled kbd {
     }
   }
 
+  /* A short nudge on the head cell the snake turned into. */
+  .head-turn {
+    animation: head-turn 120ms ease-out;
+  }
+
+  @keyframes head-turn {
+    50% {
+      transform: scale(1.12);
+    }
+  }
+
   @keyframes flash {
     50% {
       transform: scale(1.25);
