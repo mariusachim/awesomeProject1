@@ -38,6 +38,7 @@ import {
   overlayEdge,
   crashReason,
   panelCoversFood,
+  panelCoversRow,
   panelShift,
   pauseIfRunning,
   restart,
@@ -718,7 +719,15 @@ export default function App() {
                 undefined,
                 EYES[game.dir].map(eye(game.status === "ready")),
               )
-            : cell(c.x, c.y, "snake", bodyLook(skin, i, game.snake.length)),
+            : cell(
+                c.x,
+                c.y,
+                "snake",
+                bodyLook(skin, i, game.snake.length),
+                game.status === "paused" && panelCoversRow(game, c.y)
+                  ? "snake-over-panel"
+                  : undefined,
+              ),
         )}
         {game.rocks.map((r) => cell(r.x, r.y, "rock", ROCK_LOOK))}
         {cell(

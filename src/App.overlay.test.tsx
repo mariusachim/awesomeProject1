@@ -393,3 +393,24 @@ test('only the start hints carry the pulse class, and none remains after the sta
   // then
   expect(document.querySelector('.start-hint')).toBeNull()
 })
+
+test('paused with no snake cell under the panel leaves every cell unmarked', () => {
+  // given
+  render(<App />)
+  key('ArrowDown')
+  act(() => vi.advanceTimersByTime(1000 * 4))
+
+  // when
+  key('p')
+
+  // then
+  expect(document.querySelector('.snake-over-panel')).toBeNull()
+})
+
+test('running or ready never marks a snake cell as over the panel', () => {
+  // given / when
+  render(<App />)
+
+  // then
+  expect(document.querySelector('.snake-over-panel')).toBeNull()
+})

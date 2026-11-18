@@ -23,10 +23,12 @@ export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'
   return cost(other) < cost(away) ? other : away
 }
 
-// When the panel has to cover the food row, the food stays visible beside it.
-export function panelCoversFood(s: Parameters<typeof overlayEdge>[0]): boolean {
-  return s.status !== 'running' && covers(overlayEdge(s), panelRows(s.status), s.food.y)
+export function panelCoversRow(s: Parameters<typeof overlayEdge>[0], y: number): boolean {
+  return s.status !== 'running' && covers(overlayEdge(s), panelRows(s.status), y)
 }
+
+// When the panel has to cover the food row, the food stays visible beside it.
+export const panelCoversFood = (s: Parameters<typeof overlayEdge>[0]): boolean => panelCoversRow(s, s.food.y)
 
 // A food in a side column under the panel: the panel hugs the other side, so its text stays off the food.
 export function panelShift(s: Parameters<typeof overlayEdge>[0] & { food: { x: number } }): 'left' | 'right' | null {
