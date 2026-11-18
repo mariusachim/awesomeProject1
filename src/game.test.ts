@@ -669,7 +669,7 @@ test('game over puts the panel at the edge that covers the head, and the food on
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: 1 } })).toBe('top')
 })
 
-test('paused panel covers 7 rows: a head in the middle row and food under the panel send it to the top', () => {
+test('paused panel covers 8 rows: a head in the middle row and food under the panel send it to the top', () => {
   // given / when / then
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 7 }], food: { x: 3, y: SIZE - 7 } })).toBe('top')
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 3 } })).toBe('bottom')
@@ -1020,7 +1020,9 @@ test('panelCoversRow: only a paused panel covers a row, and only the rows under 
 
   // when / then
   expect(panelCoversRow(paused, SIZE - 1)).toBe(true)
-  expect(panelCoversRow(paused, 7)).toBe(false)
+  expect(panelCoversRow(paused, 6)).toBe(false)
+  // the phone panel is about 7.5 rows tall: the first row it covers in part counts as covered
+  expect(panelCoversRow({ ...paused, snake: [{ x: 7, y: 1 }] as never }, SIZE - 8)).toBe(true)
   expect(panelCoversRow({ ...paused, status: 'running' }, SIZE - 1)).toBe(false)
 })
 
