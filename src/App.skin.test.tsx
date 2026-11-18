@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, expect, test } from 'vitest'
+import { act } from 'react'
+import { afterEach, expect, test, vi } from 'vitest'
 import App from './App.tsx'
 import { KEY, SKINS, type Skin } from './skin.ts'
 
@@ -97,4 +98,50 @@ test('the C hint shows the key as a badge', () => {
   const badge = container.querySelector('.help kbd')
   expect(badge?.textContent).toBe('C')
   expect(badge?.closest('[aria-hidden="true"]')).toBeTruthy()
+})
+
+const DEFAULT = 'C changes the snake colour'
+const visible = (c: HTMLElement) => c.querySelector('.help [aria-hidden="true"]')?.textContent
+
+test('C names the new colour in the hint and the status region, then the hint returns', () => {
+  // given
+  vi.useFakeTimers()
+  const { container } = render(<App />)
+
+  // when
+  press()
+
+  // then
+  expect(visible(container)).toBe('Snake colour: blue')
+  expect(screen.getByText('Snake colour: blue', { selector: '[role="status"]' })).toBeTruthy()
+
+  // when
+  act(() => void vi.advanceTimersByTime(1500))
+
+  // then
+  expect(visible(container)).toBe('C' + DEFAULT.slice(1))
+  vi.useRealTimers()
+})
+
+test('quick presses show the latest name until 1.5 s after the last press', () => {
+  // given
+  vi.useFakeTimers()
+  const { container } = render(<App />)
+
+  // when
+  press()
+  act(() => void vi.advanceTimersByTime(1000))
+  press()
+  press()
+  act(() => void vi.advanceTimersByTime(1499))
+
+  // then
+  expect(visible(container)).toBe('Snake colour: orange')
+
+  // when
+  act(() => void vi.advanceTimersByTime(1))
+
+  // then
+  expect(visible(container)).toBe('C' + DEFAULT.slice(1))
+  vi.useRealTimers()
 })
