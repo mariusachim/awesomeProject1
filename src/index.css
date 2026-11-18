@@ -484,6 +484,23 @@ button:disabled kbd {
     }
   }
 
+  /* Closed for 150 ms of each 3 s; transform only, so the head does not move. */
+  .eye-blink {
+    animation: blink 3s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    95% {
+      transform: translate(-50%, -50%);
+    }
+
+    95.01%,
+    100% {
+      transform: translate(-50%, -50%) scaleY(0);
+    }
+  }
+
   .pulse {
     animation: pulse 150ms ease-out;
   }
