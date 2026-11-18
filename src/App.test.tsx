@@ -1241,3 +1241,14 @@ test('the head nudges on a turn, and not on a straight move, at ready or at game
   // then
   expect(nudged()).toBe(false)
 })
+
+test('the eyes are 26% of the head cell', () => {
+  // given
+  renderReady(<App />)
+
+  // when
+  const found = screen.getAllByTestId('eye')
+
+  // then
+  found.forEach((e) => expect([e.style.width, e.style.height]).toEqual(['26%', '26%']))
+})
