@@ -168,6 +168,16 @@ button:disabled kbd {
     font-size: 0.875rem;
   }
 
+  /* Unequal shares of the row: "Start speed" is about 76px wide and needs 96px or more to keep 4px from each border at 360px. */
+  .controls .pause,
+  .controls .mute {
+    flex-grow: 0.9;
+  }
+
+  .controls .start-speed {
+    flex-grow: 1.2;
+  }
+
   /* Name over value: the name small and muted, the value at full colour, no colon at a line end. */
   .mode-name,
   .mode-value {
