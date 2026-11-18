@@ -285,6 +285,7 @@ button:disabled kbd {
 /* Ready and paused: the dim moves to .board-dim, under the pieces, so this layer only holds the panel. */
 .board-overlay-under {
   background: none;
+  padding-inline: 0.75rem; /* the panel keeps a margin to the board border, also when it hugs a side */
 }
 
 .board-dim {
