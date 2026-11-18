@@ -393,9 +393,21 @@ export default function App() {
 
   useEffect(() => saveSkin(skin), [skin]);
 
+  // Counts the C presses; each one names the colour in the hint until 1.5 s pass without another.
+  const [skinPressed, setSkinPressed] = useState(0);
+  const [skinShown, setSkinShown] = useState(0);
+  const naming = skinPressed > skinShown;
+  useEffect(() => {
+    if (!naming) return;
+    const id = setTimeout(() => setSkinShown(skinPressed), 1500);
+    return () => clearTimeout(id);
+  }, [naming, skinPressed]);
+
   useEffect(() => {
     const onSkin = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === "c") setSkin(nextSkin);
+      if (e.key.toLowerCase() !== "c") return;
+      setSkin(nextSkin);
+      setSkinPressed((n) => n + 1);
     };
     window.addEventListener("keydown", onSkin);
     return () => window.removeEventListener("keydown", onSkin);
@@ -872,10 +884,21 @@ export default function App() {
       </div>
       <p className="help hint-keys">
         <span className="sr-only">C changes the snake colour</span>
-        <span aria-hidden="true">
-          <kbd>C</kbd> changes the snake colour
-        </span>
+        {naming ? (
+          <span aria-hidden="true" style={{ color: SKINS[skin].head }}>
+            Snake colour: {skin}
+          </span>
+        ) : (
+          <span aria-hidden="true">
+            <kbd>C</kbd> changes the snake colour
+          </span>
+        )}
       </p>
+      {naming && (
+        <p role="status" className="sr-only">
+          Snake colour: {skin}
+        </p>
+      )}
       <div className="messages">
         {ready && (
           <p role="status" className="sr-only">
