@@ -129,6 +129,7 @@ const SHRINK_LOOK: CSSProperties = {
 };
 
 const LEGEND: [CSSProperties, string][] = [
+  [FOOD_LOOK, "grows the snake"],
   [BONUS_LOOK, "slows the snake"],
   [SHRINK_LOOK, "shortens the snake"],
   [GOLDEN_LOOK, "worth x3"],
@@ -865,7 +866,7 @@ export default function App() {
                   <ul className="legend" data-testid="food-legend">
                     {LEGEND.map(([look, text]) => (
                       <li key={text}>
-                        <span className="legend-swatch" style={look} />
+                        <span className="legend-swatch" style={look} aria-hidden="true" />
                         {text}
                       </li>
                     ))}
