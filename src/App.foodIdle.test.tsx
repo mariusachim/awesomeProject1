@@ -31,3 +31,15 @@ test('the food idles only while the game runs, and keeps the spawn pulse', () =>
   // then
   expect(food().className).not.toContain('food-idle')
 })
+
+test('the head eyes blink only on the start screen', () => {
+  // given
+  render(<App />)
+
+  // when / then
+  expect(screen.getAllByTestId('eye')[0].className).toContain('eye-blink')
+  key('ArrowRight')
+  expect(screen.getAllByTestId('eye')[0].className).not.toContain('eye-blink')
+  key('p')
+  expect(screen.getAllByTestId('eye')[0].className).not.toContain('eye-blink')
+})

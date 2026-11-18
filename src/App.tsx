@@ -81,9 +81,10 @@ const EYES: Record<Dir, [number, number][]> = {
     [72, 70],
   ],
 };
-const eye = ([x, y]: [number, number]) => (
+const eye = (blink: boolean) => ([x, y]: [number, number]) => (
   <span
     key={`${x},${y}`}
+    className={blink ? "eye-blink" : undefined}
     data-testid="eye"
     aria-hidden="true"
     style={{
@@ -701,7 +702,7 @@ export default function App() {
                     ? "flash"
                     : undefined,
                 undefined,
-                EYES[game.dir].map(eye),
+                EYES[game.dir].map(eye(game.status === "ready")),
               )
             : cell(c.x, c.y, "snake", bodyLook(skin, i, game.snake.length)),
         )}
