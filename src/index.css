@@ -677,8 +677,10 @@ h1,
     flex-grow: 1.45;
   }
 
+  /* 8px each side: the nowrap "Start speed" name sizes the button, so it must not touch the border. */
   .controls .start-speed {
     flex-grow: 1.7;
+    padding-inline: 8px;
   }
 
   .controls kbd {
