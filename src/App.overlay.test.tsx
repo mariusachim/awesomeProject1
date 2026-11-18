@@ -414,3 +414,15 @@ test('running or ready never marks a snake cell as over the panel', () => {
   // then
   expect(document.querySelector('.snake-over-panel')).toBeNull()
 })
+
+test('paused with the head in a row the panel covers draws the head above the panel', () => {
+  // given
+  render(<App />)
+  key('ArrowRight')
+
+  // when
+  key('p')
+
+  // then
+  expect(screen.getByTestId('head').classList.contains('snake-over-panel')).toBe(true)
+})
