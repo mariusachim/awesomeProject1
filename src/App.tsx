@@ -715,7 +715,9 @@ export default function App() {
                   ? "head-crash"
                   : game.score > 0 && game.status === "running"
                     ? "flash"
-                    : undefined,
+                    : game.status === "paused" && panelCoversRow(game, c.y)
+                      ? "snake-over-panel"
+                      : undefined,
                 undefined,
                 EYES[game.dir].map(eye(game.status === "ready")),
               )
