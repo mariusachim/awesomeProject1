@@ -811,17 +811,17 @@ test('Space and Enter on the focused Mute button toggle the sound once after gam
   tick(10)
 
   // when
-  pressSpaceOn(screen.getByRole('button', { name: 'Mute' }))
+  pressSpaceOn(screen.getByRole('button', { name: 'Mute sound' }))
 
   // then
-  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
 
   // when
-  const enter = fireEvent.keyDown(screen.getByRole('button', { name: 'Unmute' }), { key: 'Enter' })
-  if (enter) fireEvent.click(screen.getByRole('button', { name: 'Unmute' }))
+  const enter = fireEvent.keyDown(screen.getByRole('button', { name: 'Mute sound' }), { key: 'Enter' })
+  if (enter) fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
   expect(screen.getByText('Game over')).toBeTruthy()
 })
 
@@ -830,11 +830,11 @@ test('Space on the focused Mute button does not pause a running game', () => {
   render(<App />)
 
   // when
-  pressSpaceOn(screen.getByRole('button', { name: 'Mute' }))
+  pressSpaceOn(screen.getByRole('button', { name: 'Mute sound' }))
 
   // then
   expect(screen.queryByText('Paused')).toBeNull()
-  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
 })
 
 test('the speed level shows before the first key and follows the score', () => {

@@ -44,7 +44,7 @@ test('shows a Mute button at first', () => {
   render(<App />)
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
 })
 
 test('eating plays one high beep', () => {
@@ -78,26 +78,26 @@ test('a muted game makes no sound and Unmute brings the beep back', () => {
   render(<App />)
 
   // when
-  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
   eatFood()
 
   // then
-  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
   expect(freqs.length).toBe(0)
 
   // when
-  fireEvent.click(screen.getByRole('button', { name: 'Unmute' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
   tick(30)
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
   expect(freqs.length).toBe(1)
 })
 
 test('muted game over makes no sound', () => {
   // given
   render(<App />)
-  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
 
   // when
   tick(30)
@@ -109,14 +109,14 @@ test('muted game over makes no sound', () => {
 test('the mute choice survives a reload', () => {
   // given
   const first = render(<App />)
-  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
   first.unmount()
 
   // when
   render(<App />)
 
   // then
-  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
 })
 
 test('without audio support eating keeps the game running', () => {
@@ -139,13 +139,13 @@ test('the M key mutes and unmutes', () => {
   fireEvent.keyDown(window, { key: 'M' })
 
   // then
-  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
 
   // when
   fireEvent.keyDown(window, { key: 'm' })
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
 })
 
 test('Cmd+M does not mute', () => {
@@ -156,13 +156,13 @@ test('Cmd+M does not mute', () => {
   fireEvent.keyDown(window, { key: 'm', metaKey: true })
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
 })
 
 test('the muted button shows a sound-off mark and is pressed; the sound-on button shows neither', () => {
   // given
   render(<App />)
-  const mute = screen.getByRole('button', { name: 'Mute' })
+  const mute = screen.getByRole('button', { name: 'Mute sound' })
 
   // then
   expect(mute.getAttribute('aria-pressed')).toBe('false')
@@ -172,9 +172,10 @@ test('the muted button shows a sound-off mark and is pressed; the sound-on butto
   fireEvent.keyDown(window, { key: 'm' })
 
   // then
-  const unmute = screen.getByRole('button', { name: 'Unmute' })
+  const unmute = screen.getByRole('button', { name: 'Mute sound' })
   expect(unmute.getAttribute('aria-pressed')).toBe('true')
   expect(unmute.querySelector('[data-testid="sound-off"]')).toBeTruthy()
+  expect(unmute.textContent).toContain('Unmute')
 
   // when
   fireEvent.keyDown(window, { key: 'm' })

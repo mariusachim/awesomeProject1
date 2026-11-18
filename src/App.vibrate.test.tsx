@@ -51,7 +51,7 @@ test('a second loss vibrates again', () => {
 test('a muted game does not vibrate', () => {
   // given
   render(<App />)
-  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
 
   // when
   crash()
