@@ -857,3 +857,30 @@ h1,
     }
   }
 }
+
+/* Start screen: a faint cue in the cell ahead of the head; it is gone once the run starts. */
+.chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--cell) * 0.9);
+  font-weight: bold;
+  line-height: 1;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chevron {
+    animation: chevron-pulse 1.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes chevron-pulse {
+    from {
+      opacity: 0.25;
+    }
+    to {
+      opacity: 0.4;
+    }
+  }
+}

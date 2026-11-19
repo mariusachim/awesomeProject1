@@ -540,7 +540,7 @@ export default function App() {
           : `${id}${x},${y}`
       }
       data-testid={id}
-      aria-hidden={id === "eat-ring" || undefined}
+      aria-hidden={id === "eat-ring" || id === "chevron" || undefined}
       role={label ? "img" : undefined}
       aria-label={label}
       data-pos={`${x},${y}`}
@@ -747,6 +747,10 @@ export default function App() {
               ),
         )}
         {game.rocks.map((r) => cell(r.x, r.y, "rock", ROCK_LOOK))}
+        {ready &&
+          // The ready head faces right with a free cell ahead; the food may sit there, so skip it then.
+          !(game.food.x === game.snake[0].x + 1 && game.food.y === game.snake[0].y) &&
+          cell(game.snake[0].x + 1, game.snake[0].y, "chevron", { color: SKINS[skin].head }, "chevron", undefined, "›")}
         {cell(
           game.food.x,
           game.food.y,
