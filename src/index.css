@@ -288,6 +288,10 @@ button:disabled kbd {
 }
 
 /* Ready and paused: light dim keeps the snake and food visible; the panel keeps the text above 4.5:1 (#fff on 0.8 black). */
+.board-overlay-leaving {
+  pointer-events: none;
+}
+
 .board-overlay-light {
   background: rgba(0, 0, 0, 0.3);
 }
@@ -470,6 +474,16 @@ button:disabled kbd {
 
   @keyframes fade-in {
     from {
+      opacity: 0;
+    }
+  }
+
+  .board-overlay-leaving {
+    animation: fade-out 150ms ease-out forwards;
+  }
+
+  @keyframes fade-out {
+    to {
       opacity: 0;
     }
   }

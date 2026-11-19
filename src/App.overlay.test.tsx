@@ -4,12 +4,14 @@ import App from './App.tsx'
 
 beforeEach(() => {
   vi.useFakeTimers()
+  vi.stubGlobal('matchMedia', () => ({ matches: true })) // the start fade-out has its own tests
   vi.spyOn(Math, 'random').mockReturnValue(0)
 })
 afterEach(() => {
   localStorage.clear()
   vi.useRealTimers()
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
 
 const countdown = () => {

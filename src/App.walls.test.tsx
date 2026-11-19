@@ -1,9 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import App from './App.tsx'
 import { KEY } from './wallsMode.ts'
 
+beforeEach(() => {
+  vi.stubGlobal('matchMedia', () => ({ matches: true })) // the start fade-out has its own tests
+})
 afterEach(() => {
+  vi.unstubAllGlobals()
   vi.restoreAllMocks()
   localStorage.clear()
 })
