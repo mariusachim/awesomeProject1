@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, overlayEdge, panelCoversFood, panelCoversRow, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -642,7 +642,7 @@ test('both shades are dark and keep 3:1 contrast against the game pieces', () =>
   }
 })
 
-const edge = (over: Partial<GameState>) => overlayEdge(state(over))
+const edge = (over: Partial<GameState> | GameState) => overlayEdge(state(over))
 
 test('start screen with the food in the bottom rows puts the panel at the top', () => {
   // given / when / then
@@ -1077,4 +1077,22 @@ test('paused: the panel keeps off the head even when that covers the food', () =
   // given / when / then
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 4 }], food: { x: 3, y: 12 } })).toBe('bottom')
   expect(edge({ status: 'paused', snake: [{ x: 7, y: 10 }], food: { x: 3, y: 2 } })).toBe('top')
+})
+
+test('paused: the panel avoids the edge where a body cell sits on the title rows', () => {
+  // given: head in the middle row (both edges cover it), tail on the bottom title rows
+  const s = state({ status: 'paused', snake: [{ x: 7, y: 7 }, { x: 7, y: SIZE - 7 }], food: { x: 1, y: 7 } })
+
+  // when / then
+  expect(edge(s)).toBe('top')
+})
+
+test('paused: with both edges covered, a body cell on the title rows stays under the panel', () => {
+  // given: the head in row 7, a body cell on the title rows of each edge
+  const s = state({ status: 'paused', snake: [{ x: 7, y: 7 }, { x: 7, y: 0 }, { x: 7, y: SIZE - 8 }], food: { x: 1, y: 7 } })
+  const y = overlayEdge(s) === 'top' ? 0 : SIZE - 8
+
+  // when / then
+  expect(snakeAbovePanel(s, y, false)).toBe(false)
+  expect(snakeAbovePanel(s, y, true)).toBe(true)
 })

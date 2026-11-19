@@ -8,6 +8,9 @@ type Edge = 'top' | 'bottom'
 const PANEL_ROWS = { over: 4, paused: 8, ready: 6 }
 const panelRows = (status: string) => (status === 'over' ? PANEL_ROWS.over : status === 'ready' ? PANEL_ROWS.ready : PANEL_ROWS.paused)
 const covers = (edge: Edge, rows: number, y: number) => (edge === 'top' ? y < rows : y >= SIZE - rows)
+// The two rows at the panel's far end hold the paused title; a body cell there would cut the text.
+const TITLE_ROWS = 2
+const onTitle = (edge: Edge, rows: number, y: number) => covers(edge, rows, y) && (edge === 'top' ? y < TITLE_ROWS : y < SIZE - rows + TITLE_ROWS)
 
 // The overlay panel goes to the edge away from the head; it also keeps off the food and the body.
 export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'; snake: { y: number }[]; food: { y: number } }): Edge {
@@ -18,7 +21,8 @@ export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'
   const cost = (e: Edge) =>
     SIZE * SIZE * foodW * +covers(e, rows, s.food.y) +
     SIZE * SIZE * headW * +covers(e, rows, s.snake[0].y) +
-    s.snake.filter((c) => covers(e, rows, c.y)).length
+    s.snake.filter((c) => covers(e, rows, c.y)).length +
+    (s.status === 'paused' ? 10 * s.snake.slice(1).filter((c) => onTitle(e, rows, c.y)).length : 0)
   const other: Edge = away === 'top' ? 'bottom' : 'top'
   return cost(other) < cost(away) ? other : away
 }
@@ -26,6 +30,10 @@ export function overlayEdge(s: { status: 'ready' | 'running' | 'paused' | 'over'
 export function panelCoversRow(s: Parameters<typeof overlayEdge>[0], y: number): boolean {
   return s.status !== 'running' && covers(overlayEdge(s), panelRows(s.status), y)
 }
+
+// A body cell paints above the panel, except on the title rows (the head always does).
+export const snakeAbovePanel = (s: Parameters<typeof overlayEdge>[0], y: number, head: boolean): boolean =>
+  panelCoversRow(s, y) && (head || !onTitle(overlayEdge(s), panelRows(s.status), y))
 
 // When the panel has to cover the food row, the food stays visible beside it.
 export const panelCoversFood = (s: Parameters<typeof overlayEdge>[0]): boolean => panelCoversRow(s, s.food.y)
