@@ -39,6 +39,7 @@ import {
   crashReason,
   panelCoversFood,
   panelCoversRow,
+  snakeAbovePanel,
   panelShift,
   pauseIfRunning,
   restart,
@@ -740,7 +741,7 @@ export default function App() {
                 c.y,
                 "snake",
                 bodyLook(skin, i, game.snake.length),
-                game.status === "paused" && panelCoversRow(game, c.y)
+                game.status === "paused" && snakeAbovePanel(game, c.y, false)
                   ? "snake-over-panel"
                   : undefined,
               ),
