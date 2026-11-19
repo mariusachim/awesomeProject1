@@ -262,6 +262,24 @@ export default function App() {
   // The record counts the snake of a finished game; a missing or bad saved value loads as 0.
   if (over && length > longest) setLongest(length);
   const ready = game.status === "ready";
+  // Keeps the start panel mounted for 150 ms after the first key, so it fades out.
+  const [wasReady, setWasReady] = useState(ready);
+  const [fading, setFading] = useState(false);
+  if (wasReady !== ready) {
+    setWasReady(ready);
+    if (
+      wasReady &&
+      game.status === "running" &&
+      !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    )
+      setFading(true);
+  }
+  const leaving = fading && game.status === "running";
+  useEffect(() => {
+    if (!fading) return;
+    const t = setTimeout(() => setFading(false), 150);
+    return () => clearTimeout(t);
+  }, [fading]);
   // The cells the tail left, for the fading glow. Only a running game keeps a trail.
   const [trail, setTrail] = useState<{ snake: Cell[]; cells: Cell[] }>({
     snake: game.snake,
@@ -807,13 +825,13 @@ export default function App() {
             </span>
           </div>
         )}
-        {(ready || paused || over) && (
+        {(ready || paused || over || leaving) && (
           // The label is drawn by CSS from data-label, so the sr-only status below the board is the only spoken copy.
           <div
             data-testid="board-overlay"
             className={`board-overlay board-overlay-light ${
               over ? "" : "board-overlay-under"
-            } ${
+            } ${leaving ? "board-overlay-leaving" : ""} ${
               overlayEdge(game) === "top"
                 ? "board-overlay-top"
                 : "board-overlay-bottom"
@@ -825,7 +843,7 @@ export default function App() {
               style={panelShift(game) ? { maxWidth: `calc(100% - ${panelShift(game) === "left" ? SIZE - game.food.x : game.food.x + 1} * var(--cell))` } : undefined}
               data-label={over ? `Game over: ${crashReason(game)}` : paused ? "Paused" : undefined}
             >
-              {ready && (
+              {(ready || leaving) && (
                 <>
                   <span
                     className="overlay-line overlay-hint hint-keys start-hint"
