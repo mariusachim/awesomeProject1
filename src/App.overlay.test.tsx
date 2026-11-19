@@ -304,7 +304,7 @@ test('the head is red on game over, green while running, and the game over panel
   crash()
 
   // then
-  expect(screen.getByTestId('head').style.background).toBe('rgb(238, 68, 68)')
+  expect(screen.getByTestId('head').style.background).toBe('rgb(102, 0, 0)')
   expect(overlay()?.classList.contains('board-overlay-bottom')).toBe(true)
 })
 
@@ -425,4 +425,22 @@ test('paused with the head in a row the panel covers draws the head above the pa
 
   // then
   expect(screen.getByTestId('head').classList.contains('snake-over-panel')).toBe(true)
+})
+
+const lum = (hex: string) => {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+const hex = (rgb: string) => '#' + (rgb.match(/\d+/g) ?? []).map((n) => Number(n).toString(16).padStart(2, '0')).join('')
+
+test('the crashed head fill has at least 3:1 contrast with the food fill', () => {
+  // given
+  render(<App />)
+
+  // when
+  crash()
+
+  // then
+  const [a, b] = [screen.getByTestId('head'), screen.getByTestId('food')].map((e) => lum(hex(e.style.background)))
+  expect((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toBeGreaterThanOrEqual(3)
 })
