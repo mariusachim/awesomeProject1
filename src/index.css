@@ -185,6 +185,12 @@ button:disabled kbd {
     flex-grow: 1.2;
   }
 
+  /* Bigger than the 14px label, so "muted" reads without the words; the row height is fixed, so the button does not move. */
+  .controls .sound-off {
+    width: 1.4em;
+    height: 1.4em;
+  }
+
   /* Name over value: the name small and muted, the value at full colour, no colon at a line end. */
   .mode-name,
   .mode-value {
