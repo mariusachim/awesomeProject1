@@ -130,11 +130,12 @@ const SHRINK_LOOK: CSSProperties = {
   clipPath: "polygon(50% 5%, 95% 95%, 5% 95%)",
 };
 
-const LEGEND: [CSSProperties, string][] = [
-  [FOOD_LOOK, "grows the snake"],
-  [BONUS_LOOK, "slows the snake"],
-  [SHRINK_LOOK, "shortens the snake"],
-  [GOLDEN_LOOK, "worth x3"],
+// The tail is dropped on a phone (CSS), so a label never outgrows the panel.
+const LEGEND: [CSSProperties, string, string][] = [
+  [FOOD_LOOK, "grows", " the snake"],
+  [BONUS_LOOK, "slows", " the snake"],
+  [SHRINK_LOOK, "shortens", " the snake"],
+  [GOLDEN_LOOK, "worth x3", ""],
 ];
 
 // A sibling of the pickup, because its clip-path would cut the number.
@@ -912,10 +913,11 @@ export default function App() {
                     data-text="Tap Resume"
                   />
                   <ul className="legend" data-testid="food-legend">
-                    {LEGEND.map(([look, text]) => (
+                    {LEGEND.map(([look, text, more]) => (
                       <li key={text}>
                         <span className="legend-swatch" style={look} aria-hidden="true" />
                         {text}
+                        {more && <span className="legend-more">{more}</span>}
                       </li>
                     ))}
                   </ul>
