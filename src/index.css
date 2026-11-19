@@ -155,9 +155,16 @@ button:disabled kbd {
 
   .controls {
     order: 1;
-    margin: 12px 0 0;
+    /* A swipe near the board edge must not land on a button; short phones keep 12px so they do not scroll more. */
+    margin: 28px 0 0;
     width: 100%;
     gap: 8px;
+  }
+
+  @media (max-height: 740px) {
+    .controls {
+      margin-top: 12px;
+    }
   }
 
   /* Equal shares of the row: fits from 320px and the label swaps cannot move a button. */
