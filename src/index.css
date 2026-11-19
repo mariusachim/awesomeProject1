@@ -847,10 +847,15 @@ h1,
 @media (max-width: 600px) {
   .legend {
     display: grid;
-    grid-template-columns: minmax(0, auto) minmax(0, auto);
+    grid-template-columns: auto auto;
     justify-content: center;
-    column-gap: 0.5rem;
+    column-gap: 0.4rem;
     max-width: 100%;
+    white-space: nowrap;
+  }
+
+  .legend-swatch {
+    margin-right: 0.2rem;
   }
 }
 
