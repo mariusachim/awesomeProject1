@@ -847,9 +847,10 @@ h1,
 @media (max-width: 600px) {
   .legend {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: minmax(0, auto) minmax(0, auto);
     justify-content: center;
-    white-space: nowrap;
+    column-gap: 0.5rem;
+    max-width: 100%;
   }
 }
 
