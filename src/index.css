@@ -656,6 +656,7 @@ button:focus-visible {
 
 .stat-label {
   font-size: 0.875rem;
+  color: #b0b0b0;
 }
 
 .stat-value {
