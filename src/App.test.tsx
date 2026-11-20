@@ -1252,3 +1252,22 @@ test('the eyes are 26% of the head cell', () => {
   // then
   found.forEach((e) => expect([e.style.width, e.style.height]).toEqual(['26%', '26%']))
 })
+
+test('the body cells carry snake-dead only at game over and the head and food do not', () => {
+  // given
+  render(<App />)
+  expect(screen.getAllByTestId('snake').some((c) => c.classList.contains('snake-dead'))).toBe(false)
+
+  // when
+  tick(30)
+
+  // then
+  expect(screen.getAllByTestId('snake').every((c) => c.classList.contains('snake-dead'))).toBe(true)
+  expect(screen.getByTestId('head').classList.contains('snake-dead')).toBe(false)
+
+  // when
+  fireEvent.keyDown(window, { key: 'r' })
+
+  // then
+  expect(screen.getAllByTestId('snake').some((c) => c.classList.contains('snake-dead'))).toBe(false)
+})

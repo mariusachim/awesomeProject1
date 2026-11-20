@@ -257,6 +257,11 @@ button:disabled kbd {
   border-color: #e44;
 }
 
+/* Game over: the body goes grey (filter keeps the stored skin); brightness 1.5 keeps 3:1 on #2c2c2c for the darkest skin. */
+.snake-dead {
+  filter: grayscale(1) brightness(1.5);
+}
+
 .board-wall {
   box-shadow: 0 0 12px #e44;
 }
@@ -549,6 +554,10 @@ button:disabled kbd {
 
   .board-over {
     animation: crash 300ms ease-out;
+  }
+
+  .snake-dead {
+    transition: filter 300ms;
   }
 
   /* Transform does not change the layout, so nothing else on the page moves. */
