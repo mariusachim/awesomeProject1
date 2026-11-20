@@ -754,7 +754,7 @@ h1,
     /* Columns fit their labels (14px, 75px wide at most) and the spare room becomes the gaps, so labels never touch. */
     grid-auto-columns: auto;
     justify-content: space-between;
-    column-gap: 8px;
+    column-gap: 16px;
   }
 
   .stat-label {
