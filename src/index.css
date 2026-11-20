@@ -439,6 +439,28 @@ button:disabled kbd {
   }
 }
 
+/* Game over: the lines fade in one by one (cause, score, stats, restart hint), done by 340 ms. */
+@media (prefers-reduced-motion: no-preference) {
+  .board-overlay:not(.board-overlay-under) .overlay-panel::before,
+  .board-overlay:not(.board-overlay-under) .overlay-score,
+  .board-overlay:not(.board-overlay-under) .overlay-detail,
+  .board-overlay:not(.board-overlay-under) .overlay-restart {
+    animation: fade-in 100ms ease-out both;
+  }
+
+  .board-overlay:not(.board-overlay-under) .overlay-score {
+    animation-delay: 80ms;
+  }
+
+  .board-overlay:not(.board-overlay-under) .overlay-detail {
+    animation-delay: 160ms;
+  }
+
+  .board-overlay:not(.board-overlay-under) .overlay-restart {
+    animation-delay: 240ms;
+  }
+}
+
 .overlay-hint::after {
   font-size: 1.125rem;
 }
