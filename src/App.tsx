@@ -263,6 +263,7 @@ export default function App() {
   // The record counts the snake of a finished game; a missing or bad saved value loads as 0.
   if (over && length > longest) setLongest(length);
   const ready = game.status === "ready";
+  const speedName = ready ? "Start speed" : "Started at";
   // Keeps the start panel mounted for 150 ms after the first key, so it fades out.
   const [wasReady, setWasReady] = useState(ready);
   const [fading, setFading] = useState(false);
@@ -670,7 +671,7 @@ export default function App() {
         </button>
         <button
           className="start-speed"
-          aria-label={`Start speed: ${start}`}
+          aria-label={`${speedName}: ${start}`}
           disabled={!ready}
           title={ready ? undefined : LOCKED}
           aria-describedby={ready ? undefined : "start-speed-why"}
@@ -678,7 +679,7 @@ export default function App() {
           onKeyDown={ownKeys(cycleStart)}
         >
           <span className="mode-name">
-            Start speed<span className="mode-colon">: </span>
+            {speedName}<span className="mode-colon">: </span>
           </span>
           <span className="mode-value">{start}</span>
         </button>
