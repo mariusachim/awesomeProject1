@@ -348,7 +348,7 @@ button:disabled kbd {
 
 .board-overlay:not(.board-overlay-under) .overlay-panel {
   gap: 0;
-  padding: 0.1rem 0.8rem;
+  padding: 0.3rem 0.8rem;
   line-height: 1.1;
 }
 
