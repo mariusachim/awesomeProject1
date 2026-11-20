@@ -91,7 +91,7 @@ test('a muted game makes no sound and Unmute brings the beep back', () => {
 
   // then
   expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
-  expect(freqs.length).toBe(1)
+  expect(freqs).toEqual([660, 990]) // the muted meal made a record
 })
 
 test('muted game over makes no sound', () => {
@@ -193,4 +193,52 @@ test('a reload with sound off shows the mark at once', () => {
 
   // then
   expect(screen.getByTestId('sound-off')).toBeTruthy()
+})
+
+// Eat once, then crash into the right wall: score 1 beats the high score 0.
+const crashWithRecord = () => {
+  eatFood()
+  freqs.length = 0
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+  tick(30)
+}
+
+test('a new high score ends with a rising two-note jingle, not the low tone', () => {
+  // given
+  render(<App />)
+
+  // when
+  crashWithRecord()
+
+  // then
+  expect(screen.getByText('Game over')).toBeTruthy()
+  expect(freqs).toEqual([660, 990])
+})
+
+test('a game over at or below the high score keeps the low tone', () => {
+  // given
+  localStorage.setItem('snake.highScore', '5')
+  render(<App />)
+  eatFood()
+  freqs.length = 0
+
+  // when
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+  tick(30)
+
+  // then
+  expect(freqs.length).toBe(1)
+  expect(freqs[0]).toBeLessThan(300)
+})
+
+test('a muted new high score makes no sound', () => {
+  // given
+  render(<App />)
+  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
+
+  // when
+  crashWithRecord()
+
+  // then
+  expect(freqs.length).toBe(0)
 })

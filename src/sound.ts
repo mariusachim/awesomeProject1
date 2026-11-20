@@ -41,18 +41,27 @@ export function vibrate(): void {
 let ctx: AudioContext | undefined
 
 export function play(sound: Sound, hzOverride?: number): void {
+  const { seconds } = TONES[sound]
+  tone(hzOverride ?? TONES[sound].hz, seconds)
+}
+
+// A new high score: a rising pair, 660 Hz then 990 Hz.
+export function playRecord(): void {
+  tone(660, 0.12)
+  tone(990, 0.12, 0.12)
+}
+
+function tone(hz: number, seconds: number, delay = 0): void {
   try {
     ctx ??= new AudioContext()
-    const { seconds } = TONES[sound]
-    const hz = hzOverride ?? TONES[sound].hz
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.frequency.value = hz
     gain.gain.value = 0.1
     osc.connect(gain)
     gain.connect(ctx.destination)
-    osc.start()
-    osc.stop(ctx.currentTime + seconds)
+    osc.start(ctx.currentTime + delay)
+    osc.stop(ctx.currentTime + delay + seconds)
   } catch {
     // no audio support, or the browser blocks audio: the game stays silent
   }
