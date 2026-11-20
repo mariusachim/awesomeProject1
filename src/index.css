@@ -787,12 +787,19 @@ h1,
     flex: 0 0 104px;
   }
 
+  /* A fixed basis per button (at least the widest label): the grow shares then split the same space for every label. */
   .controls .walls {
+    flex-basis: 125px;
     flex-grow: 1.45;
+  }
+
+  .controls .mute {
+    flex-basis: 80px;
   }
 
   /* 8px each side: the nowrap "Start speed" name sizes the button, so it must not touch the border. */
   .controls .start-speed {
+    flex-basis: 118px;
     flex-grow: 1.7;
     padding-inline: 8px;
   }
