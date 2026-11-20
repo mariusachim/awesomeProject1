@@ -1002,10 +1002,10 @@ test('the score bumps when the snake eats, not at 0 or after a restart', () => {
   expect(scoreValue().classList.contains('bump')).toBe(false)
 })
 
-test('the head flashes when the snake eats, not at 0, when paused or when over', () => {
+test('the head gulps when the snake eats, not at 0, when paused or when over', () => {
   // given
   render(<App />)
-  const flashing = () => screen.getByTestId('head').classList.contains('flash')
+  const flashing = () => screen.getByTestId('head').classList.contains('head-eat')
 
   // then
   expect(flashing()).toBe(false)

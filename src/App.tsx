@@ -352,7 +352,10 @@ export default function App() {
     y: number;
     score: number;
   } | null>(null);
+  // The head cell of the meal tick: the gulp ends on the next move, when the head leaves this cell.
+  const [ate, setAte] = useState<{ x: number; y: number } | null>(null);
   if (game.score !== seen.score || game.food !== seen.food) {
+    setAte(game.score > seen.score ? game.snake[0] : null);
     // The golden apple keeps its own feedback, so it gets no red ring.
     const meal =
       game.score > seen.score && game.food !== seen.food && !seen.golden;
@@ -743,8 +746,8 @@ export default function App() {
                 headLook(skin, over),
                 over
                   ? "head-crash"
-                  : game.score > 0 && game.status === "running"
-                    ? "flash"
+                  : game.status === "running" && ate?.x === c.x && ate.y === c.y
+                    ? "head-eat"
                     : game.status === "paused" && panelCoversRow(game, c.y)
                       ? "snake-over-panel"
                       : game.status === "running" &&

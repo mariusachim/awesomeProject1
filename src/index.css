@@ -562,8 +562,9 @@ button:disabled kbd {
     animation: bump 200ms ease-out;
   }
 
-  .flash {
-    animation: flash 180ms ease-out;
+  /* Once, on the head cell of a meal: scale and a light glow that fade; transform and shadow keep the layout still. */
+  .head-eat {
+    animation: head-eat 180ms ease-out;
   }
 
   /* Once, on the red crash head: scale and a white glow that fades; transform and shadow keep the layout still. */
@@ -593,10 +594,10 @@ button:disabled kbd {
     }
   }
 
-  @keyframes flash {
+  @keyframes head-eat {
     50% {
       transform: scale(1.25);
-      background: #2f5a2f;
+      box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.7);
     }
   }
 
