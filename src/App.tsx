@@ -23,7 +23,7 @@ import {
 } from "./skin.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
 import { levelOf, loadStart, nextStart, paced, saveStart } from "./startSpeed.ts";
-import { loadMuted, play, saveMuted, vibrate } from "./sound.ts";
+import { eatHz, loadMuted, play, saveMuted, vibrate } from "./sound.ts";
 import {
   type Cell,
   type Dir,
@@ -396,7 +396,7 @@ export default function App() {
       play("over");
       vibrate();
     } else if (milestone) play("chime");
-    else if (game.score > was.score) play("eat");
+    else if (game.score > was.score) play("eat", eatHz(game.score - was.score));
   }, [game.score, game.apples, over, muted]);
 
   // Counts the milestones; each one flashes the board border for half a second.

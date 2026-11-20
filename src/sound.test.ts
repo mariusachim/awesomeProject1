@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest'
-import { KEY, loadMuted, parseMuted, play, saveMuted } from './sound.ts'
+import { KEY, eatHz, loadMuted, parseMuted, play, saveMuted } from './sound.ts'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -69,4 +69,18 @@ test('eat is a higher tone than game over', () => {
   expect(eat).toBeGreaterThan(osc.frequency.value)
   expect(osc.start).toHaveBeenCalledTimes(2)
   expect(osc.stop).toHaveBeenCalledTimes(2)
+  // the audio context is cached, so the same oscillator takes the override
+  play('eat', 1100)
+  expect(osc.frequency.value).toBe(1100)
+})
+
+test.each([
+  [1, 880],
+  [2, 1100],
+  [3, 1320],
+  [5, 1320],
+  [0, 880],
+])('eat of %i points beeps at %i Hz', (points, hz) => {
+  // when / then
+  expect(eatHz(points)).toBe(hz)
 })

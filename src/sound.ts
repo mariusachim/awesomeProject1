@@ -8,6 +8,11 @@ const TONES: Record<Sound, { hz: number; seconds: number }> = {
   over: { hz: 160, seconds: 0.3 },
 }
 
+// 880 Hz for +1, 1100 Hz for +2, 1320 Hz for +3 or more
+export function eatHz(points: number): number {
+  return [880, 880, 1100, 1320][Math.min(Math.max(points, 1), 3)]
+}
+
 export function parseMuted(raw: string | null): boolean {
   return raw === '1'
 }
@@ -35,10 +40,11 @@ export function vibrate(): void {
 
 let ctx: AudioContext | undefined
 
-export function play(sound: Sound): void {
+export function play(sound: Sound, hzOverride?: number): void {
   try {
     ctx ??= new AudioContext()
-    const { hz, seconds } = TONES[sound]
+    const { seconds } = TONES[sound]
+    const hz = hzOverride ?? TONES[sound].hz
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.frequency.value = hz
