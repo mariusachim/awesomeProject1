@@ -57,7 +57,7 @@ test('fast shows a higher speed level once the game runs, and the button is disa
 
   // then
   expect(screen.getByText('Speed 6')).toBeTruthy()
-  expect((btn('fast') as HTMLButtonElement).disabled).toBe(true)
+  expect((screen.getByRole('button', { name: 'Started at: fast' }) as HTMLButtonElement).disabled).toBe(true)
 })
 
 test('the overlay line follows the button', () => {
@@ -104,7 +104,20 @@ test('a locked speed button says why, and the reason is gone on the start screen
   expect(btn('normal').getAttribute('title')).toBeNull()
   expect(btn('normal').getAttribute('aria-describedby')).toBeNull()
   fireEvent.keyDown(window, { key: 'ArrowRight' })
-  expect(btn('normal').getAttribute('title')).toBe(reason)
-  expect(btn('normal')).toHaveProperty('disabled', true)
-  expect(screen.getByRole('button', { name: 'Start speed: normal', description: reason })).toBeTruthy()
+  const locked = screen.getByRole('button', { name: 'Started at: normal' })
+  expect(locked.getAttribute('title')).toBe(reason)
+  expect(locked).toHaveProperty('disabled', true)
+  expect(screen.getByRole('button', { name: 'Started at: normal', description: reason })).toBeTruthy()
+})
+
+test('the button reads Start speed on the start screen and Started at once locked', () => {
+  // given
+  render(<App />)
+
+  // when / then
+  expect(btn('normal').textContent).toBe('Start speed: normal')
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+  expect(screen.getByRole('button', { name: 'Started at: normal' }).textContent).toBe('Started at: normal')
+  fireEvent.keyDown(window, { key: 'p' })
+  expect(screen.getByRole('button', { name: 'Started at: normal' })).toBeTruthy()
 })
