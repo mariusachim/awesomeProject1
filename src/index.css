@@ -516,6 +516,14 @@ button:disabled kbd {
     animation: eat-ring 300ms ease-out forwards;
   }
 
+  .eat-ring-bonus {
+    border-color: #fc3; /* BONUS_LOOK in App.tsx */
+  }
+
+  .eat-ring-shrink {
+    border-color: #39f; /* SHRINK_LOOK in App.tsx */
+  }
+
   @keyframes eat-ring {
     to {
       transform: scale(2);

@@ -352,6 +352,7 @@ export default function App() {
     x: number;
     y: number;
     score: number;
+    kind?: "bonus" | "shrink";
   } | null>(null);
   // The head cell of the meal tick: the gulp ends on the next move, when the head leaves this cell.
   const [ate, setAte] = useState<{ x: number; y: number } | null>(null);
@@ -362,6 +363,16 @@ export default function App() {
       game.score > seen.score && game.food !== seen.food && !seen.golden;
     setSeen({ score: game.score, food: game.food, golden: game.golden });
     setRing(meal ? { ...seen.food, score: game.score } : null);
+  }
+  // A special food that left the board under the head was eaten (an expired one is gone elsewhere); it rings in its own colour.
+  const [special, setSpecial] = useState({ bonus: game.bonus?.cell, shrink: game.shrink?.cell });
+  if (game.bonus?.cell !== special.bonus || game.shrink?.cell !== special.shrink) {
+    const head = game.snake[0];
+    const eaten = ([["bonus", special.bonus, game.bonus?.cell], ["shrink", special.shrink, game.shrink?.cell]] as const).find(
+      ([, was, now]) => was && was !== now && was.x === head.x && was.y === head.y,
+    );
+    setSpecial({ bonus: game.bonus?.cell, shrink: game.shrink?.cell });
+    if (eaten) setRing({ ...eaten[1]!, score: game.score, kind: eaten[0] });
   }
 
   // The turn the head just made: its count keys the head so the nudge replays; its cell ends the nudge on the next move.
@@ -560,7 +571,7 @@ export default function App() {
       // The head is keyed by score, not position: it remounts on each meal so the flash replays.
       key={
         id === "head" || id === "eat-ring"
-          ? `${id}${game.score}${id === "head" ? `-${turned.n}` : ""}`
+          ? `${id}${game.score}${id === "head" ? `-${turned.n}` : `${x},${y}`}`
           : `${id}${x},${y}`
       }
       data-testid={id}
@@ -728,7 +739,7 @@ export default function App() {
         )}
         {ring &&
           // Keyed by score so it remounts and replays on each meal; CSS hides it under reduced motion.
-          cell(ring.x, ring.y, "eat-ring", {}, "eat-ring")}
+          cell(ring.x, ring.y, "eat-ring", {}, `eat-ring${ring.kind ? ` eat-ring-${ring.kind}` : ""}`)}
         {trail.cells.map((c, i) =>
           // Under the snake and food (drawn later); --ghost is the glow strength, fainter the older the cell.
           cell(
