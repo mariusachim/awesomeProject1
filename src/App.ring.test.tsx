@@ -44,3 +44,24 @@ test('a ring appears on the eaten cell, under the snake, and is keyed by the sco
   expect(screen.getAllByTestId('eat-ring')).toHaveLength(1)
   expect(ring.compareDocumentPosition(screen.getByTestId('head')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
 })
+
+const eatShrinkAhead = () => {
+  // given: the first food is one cell ahead; the shrink fruit lands on the cell after it
+  vi.spyOn(Math, 'random').mockReset()
+  vi.spyOn(Math, 'random').mockReturnValueOnce(110.5 / 222).mockReturnValueOnce(0).mockReturnValueOnce(0).mockReturnValueOnce(0.99).mockReturnValueOnce(109.5 / 220).mockReturnValue(0.5)
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+  run(200)
+  expect(screen.getByTestId('shrink').getAttribute('data-pos')).toBe('9,7')
+  run(200)
+}
+
+test('eating the shrink triangle bursts a blue ring where it was', () => {
+  // when
+  eatShrinkAhead()
+
+  // then
+  const ring = screen.getByTestId('eat-ring')
+  expect(ring.getAttribute('data-pos')).toBe('9,7')
+  expect(ring.className).toContain('eat-ring-shrink')
+})
