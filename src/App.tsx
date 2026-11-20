@@ -764,9 +764,11 @@ export default function App() {
                 c.y,
                 "snake",
                 bodyLook(skin, i, game.snake.length),
-                game.status === "paused" && snakeAbovePanel(game, c.y, false)
-                  ? "snake-over-panel"
-                  : undefined,
+                over
+                  ? "snake-dead"
+                  : game.status === "paused" && snakeAbovePanel(game, c.y, false)
+                    ? "snake-over-panel"
+                    : undefined,
               ),
         )}
         {game.rocks.map((r) => cell(r.x, r.y, "rock", ROCK_LOOK))}
