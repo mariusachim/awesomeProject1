@@ -885,7 +885,7 @@ export default function App() {
                   />
                   {newBest && (
                     <span
-                      className="overlay-line"
+                      className="overlay-line overlay-record"
                       data-text="New high score!"
                     />
                   )}

@@ -85,3 +85,32 @@ test('a score above the high score is marked until the game ends, and not after 
   expect(screen.getByText('Score: 0')).toBeTruthy()
   expect(record()).toBeNull()
 })
+
+test('the game over panel marks the new high score line, and only then', () => {
+  // given
+  localStorage.setItem('snake.highScore', '0')
+  render(<App />)
+
+  // when
+  eat()
+  key('ArrowUp')
+  tick(10)
+
+  // then
+  expect(document.querySelectorAll('.overlay-record[data-text="New high score!"]')).toHaveLength(1)
+})
+
+test('a run that does not beat the high score has no record line', () => {
+  // given
+  localStorage.setItem('snake.highScore', '5')
+  render(<App />)
+
+  // when
+  eat()
+  key('ArrowUp')
+  tick(10)
+
+  // then
+  expect(screen.getByText('Final score: 1')).toBeTruthy()
+  expect(document.querySelector('.overlay-record')).toBeNull()
+})

@@ -415,6 +415,30 @@ button:disabled kbd {
   font-weight: bold;
 }
 
+/* Game over: the record is gold (about 10:1 on the dark panel); the text stays, so colour is not the only signal. */
+.overlay-record::after {
+  color: #f5c04a;
+  font-weight: bold;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .overlay-record {
+    animation: record-pop 300ms ease-out;
+  }
+
+  @keyframes record-pop {
+    from {
+      transform: scale(0.9);
+    }
+    60% {
+      transform: scale(1.08);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+}
+
 .overlay-hint::after {
   font-size: 1.125rem;
 }
