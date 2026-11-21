@@ -267,22 +267,22 @@ export default function App() {
   if (over && length > longest) setLongest(length);
   const ready = game.status === "ready";
   const speedName = ready ? "Start speed" : "Started at";
-  // Keeps the start panel mounted for 150 ms after the first key, so it fades out.
-  const [wasReady, setWasReady] = useState(ready);
-  const [fading, setFading] = useState(false);
-  if (wasReady !== ready) {
-    setWasReady(ready);
+  // Keeps the start or paused panel mounted for 150 ms after the game runs, so it fades out.
+  const [was, setWas] = useState(game.status);
+  const [fading, setFading] = useState<"ready" | "paused" | null>(null);
+  if (was !== game.status) {
+    setWas(game.status);
     if (
-      wasReady &&
+      (was === "ready" || was === "paused") &&
       game.status === "running" &&
       !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
     )
-      setFading(true);
+      setFading(was);
   }
-  const leaving = fading && game.status === "running";
+  const leaving = fading !== null && game.status === "running";
   useEffect(() => {
     if (!fading) return;
-    const t = setTimeout(() => setFading(false), 150);
+    const t = setTimeout(() => setFading(null), 150);
     return () => clearTimeout(t);
   }, [fading]);
   // The cells the tail left, for the fading glow. Only a running game keeps a trail.
@@ -878,9 +878,9 @@ export default function App() {
             <div
               className={`overlay-panel ${panelShift(game) ? `panel-${panelShift(game)}` : ""}`}
               style={panelShift(game) ? { maxWidth: `calc(100% - ${panelShift(game) === "left" ? SIZE - game.food.x : game.food.x + 1} * var(--cell))` } : undefined}
-              data-label={over ? `Game over: ${crashReason(game)}` : paused ? "Paused" : undefined}
+              data-label={over ? `Game over: ${crashReason(game)}` : paused || (leaving && fading === "paused") ? "Paused" : undefined}
             >
-              {(ready || leaving) && (
+              {(ready || (leaving && fading === "ready")) && (
                 <>
                   <span
                     className="overlay-line overlay-hint hint-keys start-hint"
@@ -938,7 +938,7 @@ export default function App() {
                   )}
                 </>
               )}
-              {paused && (
+              {(paused || (leaving && fading === "paused")) && (
                 <>
                   <span
                     className="overlay-line overlay-hint hint-keys"

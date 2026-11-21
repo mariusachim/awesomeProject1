@@ -47,3 +47,40 @@ test('pausing while the panel fades does not leave a leaving panel', () => {
   // then
   expect(screen.getByTestId('board-overlay').className).not.toContain('board-overlay-leaving')
 })
+
+test('the paused panel fades out for 150 ms on resume, keeps its text, then leaves', () => {
+  // given
+  vi.useFakeTimers()
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+  act(() => {
+    vi.advanceTimersByTime(150)
+  })
+  fireEvent.keyDown(window, { key: 'p' })
+
+  // when
+  fireEvent.keyDown(window, { key: 'p' })
+
+  // then
+  const panel = screen.getByTestId('board-overlay')
+  expect(panel.className).toContain('board-overlay-leaving')
+  expect(screen.getByTestId('food-legend')).toBeTruthy()
+  act(() => {
+    vi.advanceTimersByTime(150)
+  })
+  expect(screen.queryByTestId('board-overlay')).toBeNull()
+})
+
+test('the paused panel leaves at once on resume with reduced motion', () => {
+  // given
+  vi.stubGlobal('matchMedia', () => ({ matches: true }))
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+  fireEvent.keyDown(window, { key: 'p' })
+
+  // when
+  fireEvent.keyDown(window, { key: 'p' })
+
+  // then
+  expect(screen.queryByTestId('board-overlay')).toBeNull()
+})
