@@ -114,3 +114,38 @@ test('a run that does not beat the high score has no record line', () => {
   expect(screen.getByText('Final score: 1')).toBeTruthy()
   expect(document.querySelector('.overlay-record')).toBeNull()
 })
+
+const GAP = '.overlay-detail[data-text$="the high score"]'
+
+test('game over says how far a run was from the high score, and the restart clears it', () => {
+  // given
+  localStorage.setItem('snake.highScore', '5')
+  render(<App />)
+
+  // when
+  eat()
+  key('ArrowUp')
+  tick(10)
+
+  // then
+  expect(document.querySelector(GAP)!.getAttribute('data-text')).toBe('4 short of the high score')
+  expect(screen.getByText('4 short of the high score')).toBeTruthy()
+
+  // when
+  key('Enter')
+
+  // then
+  expect(document.querySelector(GAP)).toBeNull()
+})
+
+test('game over shows no gap line on a first run', () => {
+  // given
+  render(<App />)
+
+  // when
+  key('ArrowUp')
+  tick(10)
+
+  // then
+  expect(document.querySelector(GAP)).toBeNull()
+})

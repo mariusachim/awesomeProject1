@@ -10,6 +10,7 @@ import {
 import {
   LONGEST_KEY,
   isNewHighScore,
+  shortOfHighScore,
   loadHighScore,
   saveHighScore,
 } from "./highScore.ts";
@@ -345,6 +346,7 @@ export default function App() {
   const [record, setRecord] = useState(best);
   if (game.score === 0 && record !== highScore) setRecord(highScore);
   const newBest = over && isNewHighScore(record, game.score);
+  const gap = over ? shortOfHighScore(record, game.score) : null;
 
   // The ring marks the cell where the food was eaten; the food moves on a meal, so the old cell is the previous food.
   const [seen, setSeen] = useState({
@@ -916,6 +918,9 @@ export default function App() {
                     className="overlay-line overlay-score"
                     data-text={`Final score: ${game.score}`}
                   />
+                  {gap && (
+                    <span className="overlay-line overlay-detail" data-text={gap} />
+                  )}
                   {game.streaks > 0 && (
                     <span
                       className="overlay-line overlay-detail"
@@ -1039,6 +1044,7 @@ export default function App() {
             <p className="sr-only">Time {formatTime(game.ms)}</p>
             <p className="sr-only">Apples: {game.apples}</p>
             <p className="sr-only">Longest: {longest}</p>
+            {gap && <p className="sr-only">{gap}</p>}
             {newBest && <p className="sr-only">New high score!</p>}
           </div>
         )}
