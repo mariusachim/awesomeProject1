@@ -448,6 +448,14 @@ export default function App() {
   const [skinPressed, setSkinPressed] = useState(0);
   const [skinShown, setSkinShown] = useState(0);
   const naming = skinPressed > skinShown;
+  const swatch = (
+    <span
+      className="skin-swatch"
+      data-testid="skin-swatch"
+      aria-hidden="true"
+      style={{ background: SKINS[skin].head }}
+    />
+  );
   useEffect(() => {
     if (!naming) return;
     const id = setTimeout(() => setSkinShown(skinPressed), 1500);
@@ -973,10 +981,12 @@ export default function App() {
         <span className="sr-only">C changes the snake colour</span>
         {naming ? (
           <span aria-hidden="true" style={{ color: SKINS[skin].head }}>
+            {swatch}
             Snake colour: {skin}
           </span>
         ) : (
           <span aria-hidden="true">
+            {swatch}
             <kbd>C</kbd> changes the snake colour
           </span>
         )}

@@ -1000,3 +1000,19 @@ h1,
     }
   }
 }
+
+.skin-swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.4em;
+  vertical-align: -0.05em;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skin-swatch {
+    transition: background-color 150ms ease-out;
+  }
+}
