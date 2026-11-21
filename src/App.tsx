@@ -922,7 +922,7 @@ export default function App() {
                   )}
                   <span
                     className="overlay-line overlay-detail"
-                    data-text={`Time ${formatTime(game.ms)} · Apples ${game.apples} · Longest ${longest}`}
+                    data-text={`Time\u00a0${formatTime(game.ms)} · Apples\u00a0${game.apples} · Longest\u00a0${longest}`}
                   />
                   {newBest && (
                     <span
