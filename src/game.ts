@@ -217,6 +217,16 @@ export function turn(state: GameState, dir: Dir): GameState {
   return { ...state, queue: [...state.queue, dir] }
 }
 
+// The cell the head enters on the next tick (a buffered turn counts); null when it holds food, a rock, the snake or is off the board.
+export function aheadCell(s: GameState): { cell: Cell; dir: Dir } | null {
+  const dir = s.queue[0] ?? s.dir
+  const raw = { x: s.snake[0].x + DELTA[dir].x, y: s.snake[0].y + DELTA[dir].y }
+  if (!s.wrap && outside(raw)) return null
+  const cell = wrapCell(raw)
+  const taken = [s.food, ...s.rocks, ...s.snake].some((c) => same(c, cell))
+  return taken ? null : { cell, dir }
+}
+
 export function togglePause(state: GameState): GameState {
   if (state.status === 'over' || state.status === 'ready') return state
   return state.status === 'running' ? { ...state, status: 'paused', count: 0 } : { ...state, status: 'running', count: 3 }

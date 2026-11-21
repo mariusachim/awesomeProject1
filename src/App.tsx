@@ -25,6 +25,7 @@ import { loadWrap, saveWrap } from "./wallsMode.ts";
 import { levelOf, loadStart, nextStart, paced, saveStart } from "./startSpeed.ts";
 import { eatHz, loadMuted, play, playRecord, saveMuted, vibrate } from "./sound.ts";
 import {
+  aheadCell,
   type Cell,
   type Dir,
   isMilestone,
@@ -53,6 +54,8 @@ import {
   turn,
   nearWall,
 } from "./game.ts";
+
+const CHEVRON_TURN = { right: 0, down: 90, left: 180, up: 270 };
 
 // The cell size is the CSS variable --cell (index.css): one value sizes the board and every cell.
 const px = (n: number) => `calc(var(--cell) * ${n})`;
@@ -791,6 +794,14 @@ export default function App() {
               ),
         )}
         {game.rocks.map((r) => cell(r.x, r.y, "rock", ROCK_LOOK))}
+        {paused &&
+          (() => {
+            const a = aheadCell(game);
+            return (
+              a &&
+              cell(a.cell.x, a.cell.y, "chevron", { color: SKINS[skin].head, rotate: `${CHEVRON_TURN[a.dir]}deg` }, "chevron", undefined, "›")
+            );
+          })()}
         {ready &&
           // The ready head faces right with a free cell ahead; the food may sit there, so skip it then.
           !(game.food.x === game.snake[0].x + 1 && game.food.y === game.snake[0].y) &&
