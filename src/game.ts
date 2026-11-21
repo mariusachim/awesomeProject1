@@ -201,6 +201,10 @@ export function crashReason(s: Pick<GameState, 'snake' | 'dir' | 'wrap' | 'rocks
   return s.rocks.some((c) => same(c, wrapCell(next))) ? 'you hit a rock' : 'you bit yourself'
 }
 
+// The edge the head ran into, for the board to mark; undefined for a body or rock crash.
+export const hitWall = (s: Pick<GameState, 'snake' | 'dir' | 'wrap' | 'rocks'>): Dir | undefined =>
+  crashReason(s) === 'you hit the wall' ? s.dir : undefined
+
 // R starts a new game in the same wall mode; it does nothing before the first key.
 export const restart = (state: GameState, rand: Rand): GameState =>
   state.status === 'ready' ? state : newGame(rand, state.wrap)

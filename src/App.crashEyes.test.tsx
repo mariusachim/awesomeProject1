@@ -34,3 +34,22 @@ test('the head eyes are white on the crashed head and dark again after a restart
   // then
   expect(eyeColor()).not.toBe('rgb(255, 255, 255)')
 })
+
+test('the board names the wall the snake hit, and drops it on restart', () => {
+  // given
+  render(<App />)
+  key('ArrowUp')
+  expect(screen.getByTestId('board').dataset.hitWall).toBeUndefined()
+
+  // when
+  act(() => vi.advanceTimersByTime(200 * 40))
+
+  // then
+  expect(screen.getByTestId('board').dataset.hitWall).toBe('up')
+
+  // when
+  key('Enter')
+
+  // then
+  expect(screen.getByTestId('board').dataset.hitWall).toBeUndefined()
+})
