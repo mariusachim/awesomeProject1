@@ -210,7 +210,7 @@ function Stat({
   value: number | string;
   spoken: string;
   big?: boolean;
-  muted?: boolean; // no value yet: a dash in a dimmer colour
+  muted?: boolean; // no value yet: the word none in a dimmer colour
   pulse?: boolean;
 }) {
   return (
@@ -625,7 +625,7 @@ export default function App() {
         />
         <Stat
           label="Last game"
-          value={last ?? "–"}
+          value={last ?? "none"}
           spoken={`Last game: ${last ?? "none"}`}
           muted={last === null}
           pulse={last !== null}
