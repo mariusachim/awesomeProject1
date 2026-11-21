@@ -58,8 +58,8 @@ import {
 const px = (n: number) => `calc(var(--cell) * ${n})`;
 // Shape and outline tell the cells apart without colour: round food, outlined head, inset body.
 const headLook = (skin: Skin, crashed: boolean): CSSProperties => ({
-  // On game over the head turns dark red (3:1 against the #e44 food) to mark the crash cell; the outline keeps the shape.
-  background: crashed ? "#600" : SKINS[skin].head,
+  // On game over the head turns clear red (3:1 against both board shades) to mark the crash cell; the outline keeps the shape.
+  background: crashed ? "#f33" : SKINS[skin].head,
   outline: `2px solid ${SKINS[skin].outline}`,
   outlineOffset: -2,
   boxSizing: "border-box",
