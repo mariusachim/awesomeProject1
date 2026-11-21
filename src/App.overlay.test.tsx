@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import App from './App.tsx'
+import { cellShade } from './game.ts'
 
 beforeEach(() => {
   vi.useFakeTimers()
@@ -307,7 +308,7 @@ test('the head is red on game over, green while running, and the game over panel
   crash()
 
   // then
-  expect(screen.getByTestId('head').style.background).toBe('rgb(102, 0, 0)')
+  expect(screen.getByTestId('head').style.background).toBe('rgb(255, 51, 51)')
   expect(overlay()?.classList.contains('board-overlay-bottom')).toBe(true)
 })
 
@@ -436,7 +437,7 @@ const lum = (hex: string) => {
 }
 const hex = (rgb: string) => '#' + (rgb.match(/\d+/g) ?? []).map((n) => Number(n).toString(16).padStart(2, '0')).join('')
 
-test('the crashed head fill has at least 3:1 contrast with the food fill', () => {
+test('the crashed head fill is a clear red with at least 3:1 contrast with both board cell colours', () => {
   // given
   render(<App />)
 
@@ -444,6 +445,9 @@ test('the crashed head fill has at least 3:1 contrast with the food fill', () =>
   crash()
 
   // then
-  const [a, b] = [screen.getByTestId('head'), screen.getByTestId('food')].map((e) => lum(hex(e.style.background)))
-  expect((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toBeGreaterThanOrEqual(3)
+  const head = lum(hex(screen.getByTestId('head').style.background))
+  for (const shade of [cellShade(0, 0), cellShade(1, 0)]) {
+    const cell = lum(shade)
+    expect((head + 0.05) / (cell + 0.05)).toBeGreaterThanOrEqual(3)
+  }
 })
