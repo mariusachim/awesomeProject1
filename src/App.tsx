@@ -391,6 +391,26 @@ export default function App() {
       setTurned((t) => ({ n: t.n + 1, ...game.snake[0] }));
   }, [game.dir, game.status, game.snake]);
 
+  // The edge the head just entered in wrap mode; the object is new on each wrap, so the flash replays.
+  const [wrapped, setWrapped] = useState<{ side: "up" | "down" | "left" | "right" } | null>(null);
+  const lastHead = useRef(game.snake[0]);
+  useEffect(() => {
+    const was = lastHead.current;
+    const now = game.snake[0];
+    lastHead.current = now;
+    const dx = now.x - was.x;
+    const dy = now.y - was.y;
+    if (game.status !== "running" || !game.wrap) return setWrapped(null);
+    // A jump of more than one cell is a wrap: the head enters on the side it came towards.
+    const side = dx < -1 ? "left" : dx > 1 ? "right" : dy < -1 ? "up" : dy > 1 ? "down" : null;
+    if (side) setWrapped({ side });
+  }, [game.snake, game.status, game.wrap]);
+  useEffect(() => {
+    if (!wrapped) return;
+    const id = setTimeout(() => setWrapped(null), 250);
+    return () => clearTimeout(id);
+  }, [wrapped]);
+
   const [chimed, setChimed] = useState(0);
   const [sped, setSped] = useState(0);
   const prev = useRef({ score: game.score, over, apples: game.apples });
@@ -726,12 +746,14 @@ export default function App() {
         className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}${speeding ? " board-speed" : ""}${nearWall(game) ? " board-wall" : ""}`}
         data-testid="board"
         data-hit-wall={over ? hitWall(game) : undefined}
+        data-wrap-side={wrapped?.side}
         style={{
           position: "relative",
           width: px(SIZE),
           height: px(SIZE),
           background: "#1c1c1c",
           touchAction: "none",
+          ...({ "--wrap-glow": SKINS[skin].head } as CSSProperties),
         }}
         onTouchStart={onSwipeStart}
         onTouchEnd={onSwipeEnd}
