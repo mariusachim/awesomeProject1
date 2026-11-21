@@ -257,6 +257,24 @@ button:disabled kbd {
   border-color: #e44;
 }
 
+/* The wall that ended the run: a 4px red band inside the border (inset, so nothing moves), fading in like the other game-over effects. */
+.board[data-hit-wall="right"] { box-shadow: inset -4px 0 0 #e44; }
+.board[data-hit-wall="left"] { box-shadow: inset 4px 0 0 #e44; }
+.board[data-hit-wall="up"] { box-shadow: inset 0 4px 0 #e44; }
+.board[data-hit-wall="down"] { box-shadow: inset 0 -4px 0 #e44; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .board[data-hit-wall] {
+    animation: hit-wall-in 300ms ease-out;
+  }
+
+  @keyframes hit-wall-in {
+    from {
+      box-shadow: none;
+    }
+  }
+}
+
 /* Game over: the body goes grey (filter keeps the stored skin); brightness 1.5 keeps 3:1 on #2c2c2c for the darkest skin. */
 .snake-dead {
   filter: grayscale(1) brightness(1.5);

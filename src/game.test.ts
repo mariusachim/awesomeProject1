@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type Dir, type GameState, aheadCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, aheadCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, hitWall, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -1128,4 +1128,24 @@ test('aheadCell wraps to the opposite side in wrap mode', () => {
 
   // then
   expect(a?.cell).toEqual({ x: 0, y: 5 })
+})
+
+test('hitWall: names the edge the head ran into', () => {
+  // given
+  const hit = (snake: GameState['snake'], dir: Dir) => hitWall(crashOf({ snake, dir }))
+
+  // when / then
+  expect(hit([{ x: 14, y: 5 }, { x: 13, y: 5 }], 'right')).toBe('right')
+  expect(hit([{ x: 0, y: 5 }, { x: 1, y: 5 }], 'left')).toBe('left')
+  expect(hit([{ x: 5, y: 0 }, { x: 5, y: 1 }], 'up')).toBe('up')
+  expect(hit([{ x: 5, y: 14 }, { x: 5, y: 13 }], 'down')).toBe('down')
+})
+
+test('hitWall: no edge for the body or with wrap-around walls', () => {
+  // given
+  const snake = [{ x: 5, y: 5 }, { x: 5, y: 4 }, { x: 6, y: 4 }, { x: 6, y: 5 }, { x: 6, y: 6 }]
+
+  // when / then
+  expect(hitWall(crashOf({ snake, dir: 'down', queue: ['right'] }))).toBeUndefined()
+  expect(hitWall(crashOf({ snake: [{ x: 14, y: 5 }, { x: 13, y: 5 }], wrap: true }))).toBeUndefined()
 })
