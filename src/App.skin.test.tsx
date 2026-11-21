@@ -145,3 +145,18 @@ test('quick presses show the latest name until 1.5 s after the last press', () =
   expect(visible(container)).toBe('C' + DEFAULT.slice(1))
   vi.useRealTimers()
 })
+
+test('the footer swatch shows the head colour, hidden from screen readers', () => {
+  // given
+  render(<App />)
+  const swatch = () => screen.getByTestId('skin-swatch')
+  const first = swatch().style.background
+
+  // when
+  press()
+
+  // then
+  expect(first).toBe(head('green'))
+  expect(swatch().style.background).toBe(head('blue'))
+  expect(swatch().getAttribute('aria-hidden')).toBe('true')
+})
