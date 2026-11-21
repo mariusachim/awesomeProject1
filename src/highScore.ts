@@ -9,6 +9,12 @@ export function isNewHighScore(previous: number, score: number): boolean {
   return score > previous
 }
 
+// The line that relates a run that is no record to the high score; null when there is none to show.
+export function shortOfHighScore(previous: number, score: number): string | null {
+  if (previous === 0 || score > previous) return null
+  return score === previous ? 'Tied the high score' : `${previous - score} short of the high score`
+}
+
 export function loadHighScore(key = KEY): number {
   try {
     return parseHighScore(localStorage.getItem(key))

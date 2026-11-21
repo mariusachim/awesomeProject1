@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest'
-import { KEY, isNewHighScore, loadHighScore, parseHighScore, saveHighScore } from './highScore.ts'
+import { KEY, isNewHighScore, shortOfHighScore, loadHighScore, parseHighScore, saveHighScore } from './highScore.ts'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -51,4 +51,13 @@ test.each([
 ])('with a record of %i, a score of %i is a new high score: %s', (previous, score, expected) => {
   // when / then
   expect(isNewHighScore(previous, score)).toBe(expected)
+})
+
+test('the gap line says how far a run was from the high score', () => {
+  // when / then
+  expect(shortOfHighScore(12, 5)).toBe('7 short of the high score')
+  expect(shortOfHighScore(12, 11)).toBe('1 short of the high score')
+  expect(shortOfHighScore(12, 12)).toBe('Tied the high score')
+  expect(shortOfHighScore(12, 13)).toBeNull()
+  expect(shortOfHighScore(0, 0)).toBeNull()
 })
