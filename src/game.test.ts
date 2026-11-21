@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type Dir, type GameState, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, aheadCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -1095,4 +1095,37 @@ test('paused: with both edges covered, a body cell on the title rows stays under
   // when / then
   expect(snakeAbovePanel(s, y, false)).toBe(false)
   expect(snakeAbovePanel(s, y, true)).toBe(true)
+})
+
+test('aheadCell gives the cell ahead of the head, following a buffered turn', () => {
+  // given
+  const s = state({ dir: 'right', queue: ['up'] })
+
+  // when
+  const a = aheadCell(s)
+
+  // then
+  expect(a).toEqual({ cell: { x: 5, y: 4 }, dir: 'up' })
+})
+
+test('aheadCell is null for food, a rock, the snake and the wall', () => {
+  // given
+  const at = (x: number, y: number, over: Partial<GameState> = {}) => state({ snake: [{ x, y }, { x: x - 1, y }], dir: 'right', ...over })
+
+  // when / then
+  expect(aheadCell(at(5, 5, { food: { x: 6, y: 5 } }))).toBeNull()
+  expect(aheadCell(at(5, 5, { rocks: [{ x: 6, y: 5 }] }))).toBeNull()
+  expect(aheadCell(state({ snake: [{ x: 5, y: 5 }, { x: 5, y: 4 }], dir: 'up' }))).toBeNull()
+  expect(aheadCell(at(SIZE - 1, 5))).toBeNull()
+})
+
+test('aheadCell wraps to the opposite side in wrap mode', () => {
+  // given
+  const s = state({ snake: [{ x: SIZE - 1, y: 5 }, { x: SIZE - 2, y: 5 }], wrap: true })
+
+  // when
+  const a = aheadCell(s)
+
+  // then
+  expect(a?.cell).toEqual({ x: 0, y: 5 })
 })

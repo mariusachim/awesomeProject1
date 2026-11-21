@@ -26,3 +26,20 @@ test('the chevron is gone once the run starts', () => {
   // then
   expect(screen.queryByTestId('chevron')).toBeNull()
 })
+
+test('a paused run shows the chevron ahead of the head, turned to the heading, and drops it on resume', () => {
+  // given
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+
+  // when
+  fireEvent.keyDown(window, { key: 'p' })
+
+  // then
+  const chevron = screen.getByTestId('chevron')
+  const [hx, hy] = screen.getByTestId('head').getAttribute('data-pos')!.split(',').map(Number)
+  expect(chevron.getAttribute('data-pos')).toBe(`${hx},${hy - 1}`)
+  expect(chevron.getAttribute('aria-hidden')).toBe('true')
+  fireEvent.keyDown(window, { key: 'p' })
+  expect(screen.queryByTestId('chevron')).toBeNull()
+})
