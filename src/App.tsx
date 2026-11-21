@@ -525,6 +525,12 @@ export default function App() {
         action();
       }
     };
+  const restartBtn = useRef<HTMLButtonElement>(null);
+  // Enter and Space act on the focused button, so game over must not leave focus on Walls or Mute.
+  useEffect(() => {
+    const a = document.activeElement;
+    if (over && (a === document.body || a?.closest(".controls"))) restartBtn.current?.focus();
+  }, [over]);
   const toggleMute = () => setMuted((m) => !m);
   const cycleStart = () => {
     const next = nextStart(start);
@@ -633,6 +639,7 @@ export default function App() {
       </div>
       <div className="controls">
         <button
+          ref={restartBtn}
           className={paused || over ? "pause primary" : "pause"}
           disabled={ready}
           onClick={over ? again : () => setGame(togglePause)}

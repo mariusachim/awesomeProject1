@@ -39,3 +39,21 @@ test('R does nothing while the game waits for the first key', () => {
   // then
   expect(screen.getByRole('status').textContent).toContain('to start')
 })
+
+test('game over moves focus from Walls to Restart, so Space restarts and keeps the wall mode', () => {
+  // given
+  render(<App />)
+  const walls = screen.getByRole('button', { name: /^Walls/ })
+  walls.focus()
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+
+  // when
+  act(() => vi.advanceTimersByTime(5000))
+
+  // then
+  const restart = screen.getByRole('button', { name: /^Restart/ })
+  expect(document.activeElement).toBe(restart)
+  fireEvent.keyDown(restart, { key: ' ' })
+  expect(head()).toBe('7,7')
+  expect(screen.getByRole('button', { name: 'Walls: solid' })).toBeTruthy()
+})
