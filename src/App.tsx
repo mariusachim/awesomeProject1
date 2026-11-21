@@ -83,7 +83,7 @@ const EYES: Record<Dir, [number, number][]> = {
     [72, 70],
   ],
 };
-const eye = (blink: boolean) => ([x, y]: [number, number]) => (
+const eye = (blink: boolean, crashed: boolean) => ([x, y]: [number, number]) => (
   <span
     key={`${x},${y}`}
     className={blink ? "eye-blink" : undefined}
@@ -97,7 +97,7 @@ const eye = (blink: boolean) => ([x, y]: [number, number]) => (
       height: "26%",
       transform: "translate(-50%, -50%)",
       borderRadius: "50%",
-      background: "#111",
+      background: crashed ? "#fff" : "#111",
     }}
   />
 );
@@ -769,7 +769,7 @@ export default function App() {
                         ? "head-turn"
                         : undefined,
                 undefined,
-                EYES[game.dir].map(eye(game.status === "ready")),
+                EYES[game.dir].map(eye(game.status === "ready", over)),
               )
             : cell(
                 c.x,
