@@ -400,6 +400,7 @@ button:disabled kbd {
   color: #fff;
   font-size: 2rem;
   font-weight: bold;
+  text-wrap: balance;
 }
 
 /* Balance wrapped lines so no word is left alone on the last line. */
