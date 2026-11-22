@@ -708,8 +708,6 @@ export default function App() {
         </button>
         <button
           className={`mute${muted ? " muted" : ""}`}
-          aria-label="Mute sound"
-          aria-pressed={muted}
           onClick={toggleMute}
           onKeyDown={ownKeys(toggleMute)}
           aria-keyshortcuts="M"

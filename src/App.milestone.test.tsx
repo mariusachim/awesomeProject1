@@ -63,7 +63,7 @@ test('a milestone apple plays the higher chime and flashes the board for half a 
 test('a muted milestone flashes without sound', () => {
   // given
   render(<App />)
-  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
 
   // when
   eatFood()

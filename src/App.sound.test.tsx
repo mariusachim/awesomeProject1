@@ -44,7 +44,7 @@ test('shows a Mute button at first', () => {
   render(<App />)
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
 })
 
 test('eating plays one high beep', () => {
@@ -78,26 +78,26 @@ test('a muted game makes no sound and Unmute brings the beep back', () => {
   render(<App />)
 
   // when
-  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
   eatFood()
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
   expect(freqs.length).toBe(0)
 
   // when
-  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Unmute' }))
   tick(30)
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
   expect(freqs).toEqual([660, 990]) // the muted meal made a record
 })
 
 test('muted game over makes no sound', () => {
   // given
   render(<App />)
-  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
 
   // when
   tick(30)
@@ -109,14 +109,14 @@ test('muted game over makes no sound', () => {
 test('the mute choice survives a reload', () => {
   // given
   const first = render(<App />)
-  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
   first.unmount()
 
   // when
   render(<App />)
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
 })
 
 test('without audio support eating keeps the game running', () => {
@@ -139,13 +139,13 @@ test('the M key mutes and unmutes', () => {
   fireEvent.keyDown(window, { key: 'M' })
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Unmute' })).toBeTruthy()
 
   // when
   fireEvent.keyDown(window, { key: 'm' })
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
 })
 
 test('Cmd+M does not mute', () => {
@@ -156,24 +156,24 @@ test('Cmd+M does not mute', () => {
   fireEvent.keyDown(window, { key: 'm', metaKey: true })
 
   // then
-  expect(screen.getByRole('button', { name: 'Mute sound' })).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
 })
 
-test('the muted button shows a sound-off mark and is pressed; the sound-on button shows neither', () => {
+test('the muted button shows a sound-off mark and is named Unmute; the sound-on button shows neither', () => {
   // given
   render(<App />)
-  const mute = screen.getByRole('button', { name: 'Mute sound' })
+  const mute = screen.getByRole('button', { name: 'Mute' })
 
   // then
-  expect(mute.getAttribute('aria-pressed')).toBe('false')
+  expect(mute.getAttribute('aria-pressed')).toBeNull()
   expect(screen.queryByTestId('sound-off')).toBeNull()
 
   // when
   fireEvent.keyDown(window, { key: 'm' })
 
   // then
-  const unmute = screen.getByRole('button', { name: 'Mute sound' })
-  expect(unmute.getAttribute('aria-pressed')).toBe('true')
+  const unmute = screen.getByRole('button', { name: 'Unmute' })
+  expect(unmute.getAttribute('aria-pressed')).toBeNull()
   expect(unmute.querySelector('[data-testid="sound-off"]')).toBeTruthy()
   expect(unmute.textContent).toContain('Unmute')
 
@@ -234,7 +234,7 @@ test('a game over at or below the high score keeps the low tone', () => {
 test('a muted new high score makes no sound', () => {
   // given
   render(<App />)
-  fireEvent.click(screen.getByRole('button', { name: 'Mute sound' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
 
   // when
   crashWithRecord()
