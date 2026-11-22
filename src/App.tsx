@@ -57,6 +57,8 @@ import {
   nearWall,
 } from "./game.ts";
 
+const PAUSE_WHY = "Pause works after the game starts";
+
 const CHEVRON_TURN = { right: 0, down: 90, left: 180, up: 270 };
 
 // The cell size is the CSS variable --cell (index.css): one value sizes the board and every cell.
@@ -680,10 +682,17 @@ export default function App() {
           onClick={over ? again : () => setGame(togglePause)}
           onKeyDown={over ? ownKeys(again) : undefined}
           aria-keyshortcuts={over ? "R" : "P"}
+          aria-describedby={ready ? "pause-why" : undefined}
+          title={ready ? PAUSE_WHY : undefined}
         >
           {over ? "Restart" : paused ? "Resume" : "Pause"}
           <kbd aria-hidden="true">{over ? "R" : "P"}</kbd>
         </button>
+        {ready && (
+          <span id="pause-why" className="sr-only">
+            {PAUSE_WHY}
+          </span>
+        )}
         <button
           className="walls"
           onClick={toggleWalls}
