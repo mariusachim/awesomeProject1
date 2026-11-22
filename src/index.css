@@ -910,7 +910,7 @@ h1,
 }
 
 /* Paused, panel on the body: the body cells paint above the panel too (a cell wide, so no text is hidden by more than one cell). */
-/* Game over, panel on the food row: the food paints above the panel at full brightness; the panel is narrowed in App.tsx so no text sits under it. */
+/* Game over: the food paints above the dim layer and the panel at full brightness; the panel is narrowed in App.tsx so no text sits under it. */
 .food-over-panel,
 .snake-over-panel {
   z-index: 1;

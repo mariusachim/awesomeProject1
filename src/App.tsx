@@ -41,7 +41,6 @@ import {
   countdownCell,
   crashReason,
   hitWall,
-  panelCoversFood,
   panelCoversRow,
   snakeAbovePanel,
   panelShift,
@@ -849,7 +848,7 @@ export default function App() {
           game.golden ? GOLDEN_LOOK : FOOD_LOOK,
           game.status === "running"
             ? "pulse food-idle"
-            : panelCoversFood(game)
+            : over
               ? "pulse food-over-panel"
               : "pulse",
           game.golden ? "Golden apple" : undefined,
@@ -925,7 +924,7 @@ export default function App() {
           >
             <div
               className={`overlay-panel ${panelShift(game) ? `panel-${panelShift(game)}` : ""}`}
-              style={panelShift(game) ? { maxWidth: `calc(100% - ${panelShift(game) === "left" ? SIZE - game.food.x : game.food.x + 1} * var(--cell))` } : undefined}
+              style={panelShift(game) ? { maxWidth: `calc(100% - ${panelShift(game) === "left" ? SIZE - game.food.x : game.food.x + 1} * var(--cell) - 4px)` } : undefined}
               data-label={over ? `Game over: ${crashReason(game)}` : paused || (leaving && fading === "paused") ? "Paused" : undefined}
             >
               {(ready || (leaving && fading === "ready")) && (
