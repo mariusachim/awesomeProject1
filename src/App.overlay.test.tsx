@@ -156,7 +156,7 @@ test('game over shows the final score and a restart hint on the board', () => {
   crash()
 
   // then
-  expect(lines()).toEqual(['Final score: 0', 'Time\u00a00:01 · Apples\u00a00 · Longest\u00a01', 'Press Enter or R to restart', 'Tap Restart'])
+  expect(lines()).toEqual(['Final score: 0', 'Time\u00a00:01', 'Apples\u00a00', 'Longest\u00a01', 'Press Enter or R to restart', 'Tap Restart'])
 })
 
 test('Paused explains the special foods, and the legend is gone while running', () => {
@@ -219,10 +219,11 @@ test('the time survived leaves out the pause and the countdown, and a new game s
   act(() => vi.advanceTimersByTime(200 * 30))
 
   // then
-  expect(lines()[1]).toMatch(/^Time\u00a00:0\d · Apples\u00a00 · Longest\u00a01$/)
+  expect(lines()[1]).toMatch(/^Time\u00a00:0\d$/)
+  expect(lines().slice(2, 4)).toEqual(['Apples\u00a00', 'Longest\u00a01'])
   key('Enter')
   crash()
-  expect(lines()[1]).toBe('Time\u00a00:01 · Apples\u00a00 · Longest\u00a01')
+  expect(lines().slice(1, 4)).toEqual(['Time\u00a00:01', 'Apples\u00a00', 'Longest\u00a01'])
 })
 
 test('game over speaks the result once and adds nothing visible below the board', () => {
