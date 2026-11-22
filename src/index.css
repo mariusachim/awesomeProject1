@@ -1064,3 +1064,42 @@ h1,
     }
   }
 }
+
+/* The meal gain at the head. Reduced motion: it stays put and the timer removes it. */
+.gain-label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 0.875rem;
+  color: #f5c04a;
+  text-shadow: 0 0 3px #000;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gain-label {
+    animation: gain-up 600ms ease-out forwards;
+  }
+
+  .gain-down {
+    animation-name: gain-down;
+  }
+
+  @keyframes gain-up {
+    to {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes gain-down {
+    to {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+}
