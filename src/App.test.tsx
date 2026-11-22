@@ -133,7 +133,7 @@ test('the food is a circle, the body cells are rounded and the head is square', 
   expect(food.style.borderRadius).toBe('50%')
   expect(screen.getByTestId('head').style.borderRadius).not.toBe('50%')
   expect(screen.getByTestId('head').style.borderRadius).toBe('')
-  screen.getAllByTestId('snake').forEach((c) => expect(c.style.borderRadius).toBe('30%'))
+  screen.getAllByTestId('snake').slice(0, -1).forEach((c) => expect(c.style.borderRadius).toBe('30%'))
 })
 
 const eyes = () => screen.getAllByTestId('eye').map((e) => ({ x: parseFloat(e.style.left), y: parseFloat(e.style.top) }))
