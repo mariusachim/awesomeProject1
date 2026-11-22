@@ -768,7 +768,7 @@ button:focus-visible {
 .stat-value {
   font-size: 1.5rem;
   font-weight: bold;
-  font-variant-numeric: tabular-nums;
+  /* Proportional digits: a tabular "1" sits in a wide cell, 8px right of the label edge. min-width keeps the column fixed. */
 }
 
 /* Heading and hint share the board's axis at every width. */
