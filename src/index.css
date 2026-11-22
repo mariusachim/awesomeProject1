@@ -418,6 +418,7 @@ button:disabled kbd {
   color: #fff;
   font-size: 2rem;
   font-weight: bold;
+  text-align: center;
   text-wrap: balance;
 }
 
@@ -499,8 +500,17 @@ button:disabled kbd {
 }
 
 /* Game over: score, then soft details, then the bold restart hint set apart. */
-.overlay-detail::after {
+.overlay-detail::after,
+.overlay-stats .overlay-line::after {
   color: #c8c8c8;
+}
+
+/* Time, Apples and Longest wrap as whole items, so no line starts with a stray separator. */
+.overlay-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 1.2rem;
 }
 
 .overlay-restart {
