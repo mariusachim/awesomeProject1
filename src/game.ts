@@ -63,6 +63,7 @@ export type GameState = {
   streaks: number // meals eaten within STREAK_MOVES moves of the previous one, in this game
   rocks: Cell[] // blocks that end the game when the head enters
   ms: number // time the snake has run in this game; pauses and the countdown do not count
+  hold: boolean // the beat after a restart: the snake waits, with the arrow ahead of the head
   count: number // resume countdown: 3, 2, 1 while the snake waits; 0 when none
   shrink: Bonus | null // the shrink fruit on the board, if any
   golden: boolean // the normal food is a golden apple worth triple points
@@ -182,7 +183,7 @@ export function placeRock(s: Pick<GameState, 'snake' | 'food' | 'bonus' | 'rocks
 export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 'running'): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), golden: isGolden(rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, apples: 0, streaks: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, ms: 0, count: 0 }
+  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), golden: isGolden(rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, apples: 0, streaks: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, ms: 0, hold: false, count: 0 }
 }
 
 // With solid walls, a running head on the edge and heading out dies on its next move.
@@ -207,9 +208,12 @@ export const hitWall = (s: Pick<GameState, 'snake' | 'dir' | 'wrap' | 'rocks'>):
 
 // R starts a new game in the same wall mode; it does nothing before the first key.
 export const restart = (state: GameState, rand: Rand): GameState =>
-  state.status === 'ready' ? state : newGame(rand, state.wrap)
+  state.status === 'ready' ? state : { ...newGame(rand, state.wrap), hold: true }
+
+export const HOLD_MS = 600
 
 export function turn(state: GameState, dir: Dir): GameState {
+  if (state.hold) return turn({ ...state, hold: false }, dir)
   if (state.status === 'ready') {
     // The first key starts the game; a key against the heading only starts it.
     const queue = dir === state.dir || dir === OPPOSITE[state.dir] ? [] : [dir]
@@ -233,7 +237,7 @@ export function aheadCell(s: GameState): { cell: Cell; dir: Dir } | null {
 
 export function togglePause(state: GameState): GameState {
   if (state.status === 'over' || state.status === 'ready') return state
-  return state.status === 'running' ? { ...state, status: 'paused', count: 0 } : { ...state, status: 'running', count: 3 }
+  return state.status === 'running' ? { ...state, status: 'paused', hold: false, count: 0 } : { ...state, status: 'running', count: 3 }
 }
 
 export const COUNT_MS = 1000
@@ -241,14 +245,14 @@ export const COUNT_MS = 1000
 export const tickCount = (state: GameState): GameState => (state.count > 0 ? { ...state, count: state.count - 1 } : state)
 
 export function pauseIfRunning(state: GameState): GameState {
-  return state.status === 'running' ? { ...state, status: 'paused', count: 0 } : state
+  return state.status === 'running' ? { ...state, status: 'paused', hold: false, count: 0 } : state
 }
 
 // Whole seconds as m:ss: minutes have no padding.
 export const formatTime = (ms: number) => `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}`
 
 export function step(state: GameState, rand: Rand): GameState {
-  if (state.status !== 'running' || state.count > 0) return state
+  if (state.status !== 'running' || state.count > 0 || state.hold) return state
   const ms = state.ms + tickMs(state.score)
   const [first, ...queue] = state.queue
   const dir = first ?? state.dir

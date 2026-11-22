@@ -20,6 +20,7 @@ const state = (over: Partial<GameState>): GameState => ({
   sinceFood: null,
   gain: 0,
   ms: 0,
+  hold: false,
   count: 0,
   ...over,
 })
