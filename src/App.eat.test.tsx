@@ -53,3 +53,34 @@ test('the head does not gulp on the turn after a meal', () => {
   expect(cls().contains('head-eat')).toBe(false)
   expect(cls().contains('head-turn')).toBe(true)
 })
+
+test('a +1 label shows on the head cell on a meal and is gone after 600 ms', () => {
+  // given
+  render(<App />)
+  approach()
+  expect(screen.queryByTestId('gain-label')).toBeNull()
+
+  // when
+  tick()
+
+  // then
+  const label = screen.getByTestId('gain-label')
+  expect(label.textContent).toBe('+1')
+  expect(label.getAttribute('aria-hidden')).toBe('true')
+  expect(label.classList.contains('gain-down')).toBe(true) // food at the top row: floats down
+  act(() => vi.advanceTimersByTime(600))
+  expect(screen.queryByTestId('gain-label')).toBeNull()
+})
+
+test('no label is left on the board when the game is paused', () => {
+  // given
+  render(<App />)
+  approach()
+  tick()
+
+  // when
+  fireEvent.keyDown(window, { key: ' ' })
+
+  // then
+  expect(screen.queryByTestId('gain-label')).toBeNull()
+})

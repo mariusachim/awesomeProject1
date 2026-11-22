@@ -1097,7 +1097,7 @@ test('the score pop shows +1 for the first meal and +2 for a quick second one', 
   rand.mockReturnValueOnce(111.5 / 221)
   renderReady(<App />)
   startKey()
-  const pop = () => screen.queryByText(/^\+\d$/)?.textContent
+  const pop = () => screen.queryAllByText(/^\+\d$/).find((e) => e.classList.contains("pop"))?.textContent
 
   // when
   for (let i = 0; i < 12 && !pop(); i++) tick()
@@ -1118,7 +1118,7 @@ test('the score pop of a +3 golden apple is big', () => {
   rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0.95)
   renderReady(<App />)
   startKey()
-  const pop = () => screen.queryByText(/^\+\d$/)
+  const pop = () => screen.queryAllByText(/^\+\d$/).find((e) => e.classList.contains("pop"))
 
   // when
   for (let i = 0; i < 12 && !pop(); i++) tick()
@@ -1134,7 +1134,7 @@ test('the score pop of a +1 apple is not big', () => {
   rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0)
   renderReady(<App />)
   startKey()
-  const pop = () => screen.queryByText(/^\+\d$/)
+  const pop = () => screen.queryAllByText(/^\+\d$/).find((e) => e.classList.contains("pop"))
 
   // when
   for (let i = 0; i < 12 && !pop(); i++) tick()

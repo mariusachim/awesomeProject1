@@ -365,7 +365,15 @@ export default function App() {
   } | null>(null);
   // The head cell of the meal tick: the gulp ends on the next move, when the head leaves this cell.
   const [ate, setAte] = useState<{ x: number; y: number } | null>(null);
+  // The "+N" that floats up from the head on a meal; a timer clears it.
+  const [gainAt, setGainAt] = useState<{ x: number; y: number; gain: number; score: number } | null>(null);
+  useEffect(() => {
+    if (!gainAt) return;
+    const t = setTimeout(() => setGainAt(null), 600);
+    return () => clearTimeout(t);
+  }, [gainAt]);
   if (game.score !== seen.score || game.food !== seen.food) {
+    if (game.score > seen.score) setGainAt({ ...game.snake[0], gain: game.gain, score: game.score });
     setAte(game.score > seen.score ? game.snake[0] : null);
     // The golden apple keeps its own feedback, so it gets no red ring.
     const meal =
@@ -788,6 +796,18 @@ export default function App() {
             aria-hidden="true"
             className="board-dim"
           />
+        )}
+        {gainAt && game.status === "running" && (
+          // Clamped one cell in from the side edges; the top row floats down instead of up.
+          <div
+            key={gainAt.score}
+            data-testid="gain-label"
+            aria-hidden="true"
+            className={`gain-label${gainAt.gain >= 3 ? " pop-big" : ""}${gainAt.y === 0 ? " gain-down" : ""}`}
+            style={{ left: px(Math.min(Math.max(gainAt.x, 1), SIZE - 2)), top: px(gainAt.y), width: px(1), height: px(1) }}
+          >
+            +{gainAt.gain}
+          </div>
         )}
         {ring &&
           // Keyed by score so it remounts and replays on each meal; CSS hides it under reduced motion.
