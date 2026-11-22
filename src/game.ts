@@ -316,3 +316,17 @@ export function trailAfter(trail: Cell[], before: Cell[], after: Cell[]): Cell[]
   const left = before.filter((c) => !after.some((a) => same(a, c)))
   return [...left.reverse(), ...trail].slice(0, TRAIL)
 }
+
+// The resume countdown digit sits in the nearest free cell ahead of the head (up to 3 away), then beside it; null means no spot.
+export function countdownCell(s: Pick<GameState, 'snake' | 'dir' | 'food' | 'bonus' | 'shrink' | 'rocks'>): Cell | null {
+  const [h] = s.snake
+  const d = DELTA[s.dir]
+  const side = { x: d.y, y: d.x }
+  const at = (k: number, m: number): Cell => ({ x: h.x + d.x * k + side.x * m, y: h.y + d.y * k + side.y * m })
+  const taken = [...s.snake, s.food, ...s.rocks, ...[s.bonus?.cell, s.shrink?.cell].filter((c): c is Cell => !!c)]
+  return (
+    [at(1, 0), at(2, 0), at(3, 0), at(1, 1), at(1, -1)].find(
+      (c) => !outside(c) && !taken.some((t) => t.x === c.x && t.y === c.y),
+    ) ?? null
+  )
+}

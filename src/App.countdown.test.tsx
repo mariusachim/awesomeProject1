@@ -100,7 +100,7 @@ test('the number is announced in a polite live region', () => {
   expect(screen.getByRole('status').textContent).toBe('3')
 })
 
-test('the digit sits at the board edge, not in the centre over the snake', () => {
+test('the digit sits next to the head, not on it', () => {
   // given
   resumed()
 
@@ -108,5 +108,6 @@ test('the digit sits at the board edge, not in the centre over the snake', () =>
   const style = screen.getByTestId('countdown').style
 
   // then
-  expect(style.alignItems).toBe('flex-end')
+  expect(style.left).toContain('var(--cell) * 8')
+  expect(style.top).toContain('var(--cell) * 7')
 })

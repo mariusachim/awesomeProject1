@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type Dir, type GameState, aheadCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, hitWall, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, aheadCell, countdownCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, hitWall, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -1148,4 +1148,28 @@ test('hitWall: no edge for the body or with wrap-around walls', () => {
   // when / then
   expect(hitWall(crashOf({ snake, dir: 'down', queue: ['right'] }))).toBeUndefined()
   expect(hitWall(crashOf({ snake: [{ x: 14, y: 5 }, { x: 13, y: 5 }], wrap: true }))).toBeUndefined()
+})
+
+const free = { food: { x: 0, y: 0 }, bonus: null, shrink: null, rocks: [] }
+const headAt = (x: number, y: number, dir: Dir) => ({ ...free, dir, snake: [{ x, y }, { x: x - 1, y }] })
+
+test('countdownCell: the cell just ahead of the head', () => {
+  // when / then
+  expect(countdownCell(headAt(5, 5, 'right'))).toEqual({ x: 6, y: 5 })
+})
+
+test('countdownCell: skips the food and stays inside the board', () => {
+  // given
+  const nearWallState = { ...headAt(13, 5, 'right'), food: { x: 14, y: 5 } }
+
+  // when / then
+  expect(countdownCell(nearWallState)).toEqual({ x: 14, y: 6 })
+})
+
+test('countdownCell: null when nothing is free', () => {
+  // given
+  const boxed = { ...headAt(14, 0, 'right'), food: { x: 14, y: 1 }, rocks: [{ x: 13, y: 1 }] }
+
+  // when / then
+  expect(countdownCell({ ...boxed, snake: [{ x: 14, y: 0 }, { x: 13, y: 0 }] })).toBeNull()
 })
