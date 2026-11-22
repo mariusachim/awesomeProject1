@@ -38,6 +38,7 @@ import {
   keyToDir,
   newGame,
   overlayEdge,
+  countdownCell,
   crashReason,
   hitWall,
   panelCoversFood,
@@ -262,6 +263,7 @@ export default function App() {
   const highScore = Math.max(best, game.score > cleared ? game.score : 0);
   const over = game.status === "over";
   const paused = game.status === "paused";
+  const spot = game.count > 0 ? countdownCell(game) : null;
   if (over && last !== game.score) setLast(game.score);
   // The spec counts the length from 1, but the snake starts with 3 cells.
   const length = game.snake.length - 2;
@@ -877,14 +879,26 @@ export default function App() {
             data-testid="countdown"
             aria-hidden="true"
             style={{
-              position: "absolute",
-              inset: 0,
+              ...(spot
+                ? {
+                    position: "absolute",
+                    left: px(spot.x),
+                    top: px(spot.y),
+                    width: px(1),
+                    height: px(1),
+                    alignItems: "center",
+                    fontSize: "calc(var(--cell) * 0.9)",
+                  }
+                : {
+                    position: "absolute",
+                    inset: 0,
+                    alignItems:
+                      overlayEdge(game) === "top" ? "flex-start" : "flex-end",
+                    padding: "1rem 0",
+                    fontSize: "4em",
+                  }),
               display: "flex",
-              alignItems:
-                overlayEdge(game) === "top" ? "flex-start" : "flex-end",
               justifyContent: "center",
-              padding: "1rem 0",
-              fontSize: "4em",
               fontWeight: 700,
               color: "#fff",
               textShadow: "0 0 6px #000, 0 0 2px #000",
