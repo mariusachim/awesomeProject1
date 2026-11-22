@@ -51,6 +51,7 @@ import {
   tickCount,
   boostMs,
   COUNT_MS,
+  HOLD_MS,
   formatTime,
   togglePause,
   turn,
@@ -197,8 +198,7 @@ function onKeyPress(g: GameState, key: string): GameState {
   if (key === " " || key.toLowerCase() === "p") return togglePause(g);
   if (key === "Escape") return pauseIfRunning(g);
   if (key.toLowerCase() === "r") return restart(g, Math.random);
-  if (key === "Enter" && g.status === "over")
-    return newGame(Math.random, g.wrap);
+  if (key === "Enter" && g.status === "over") return restart(g, Math.random);
   return g;
 }
 
@@ -469,6 +469,12 @@ export default function App() {
   }, [speeding, sped]);
 
   useEffect(() => {
+    if (!game.hold) return;
+    const id = setTimeout(() => setGame((g) => ({ ...g, hold: false })), HOLD_MS);
+    return () => clearTimeout(id);
+  }, [game.hold]);
+
+  useEffect(() => {
     if (game.count === 0) return;
     const id = setTimeout(() => setGame(tickCount), COUNT_MS);
     return () => clearTimeout(id);
@@ -558,7 +564,7 @@ export default function App() {
     };
   }, []);
 
-  const again = () => setGame(newGame(Math.random, game.wrap));
+  const again = () => setGame((g) => restart(g, Math.random));
   const toggleWalls = () =>
     setGame((g) => newGame(Math.random, !g.wrap, "ready"));
   // Space and Enter belong to a focused button: keep the window handler from pausing or restarting.
@@ -858,7 +864,7 @@ export default function App() {
               ),
         )}
         {game.rocks.map((r) => cell(r.x, r.y, "rock", ROCK_LOOK))}
-        {paused &&
+        {(paused || game.hold) &&
           (() => {
             const a = aheadCell(game);
             return (

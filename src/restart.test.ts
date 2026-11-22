@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest'
 import { type GameState, newGame, restart } from './game.ts'
 
-test.each(['running', 'paused', 'over'] as const)('restart from %s starts a fresh game and keeps the wall mode', (status) => {
+test.each(['running', 'paused', 'over'] as const)('restart from %s starts a fresh game on hold and keeps the wall mode', (status) => {
   // given
   const old: GameState = { ...newGame(() => 0, true), status, score: 7 }
 
@@ -9,7 +9,7 @@ test.each(['running', 'paused', 'over'] as const)('restart from %s starts a fres
   const next = restart(old, () => 0)
 
   // then
-  expect(next).toEqual(newGame(() => 0, true))
+  expect(next).toEqual({ ...newGame(() => 0, true), hold: true })
 })
 
 test('restart does nothing while the game waits for the first key', () => {

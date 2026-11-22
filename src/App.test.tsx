@@ -431,6 +431,7 @@ test('a new game after pausing and game over is running', () => {
   render(<App />)
   tick(10)
   fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
 
   // when
   tick()
@@ -562,6 +563,7 @@ test('a restart after eating goes back to 200 ms', () => {
   eatFood()
   gameOver()
   fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
 
   // when
   advance(199)
