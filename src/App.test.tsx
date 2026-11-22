@@ -1190,6 +1190,20 @@ test('game over with the food under the panel keeps the food visible under a see
   expect(screen.getByTestId('board-overlay').querySelector('.overlay-panel')?.className).toMatch(/panel-(left|right)/)
 })
 
+test('game over paints the food above the dim layer also when the panel is not on its row', () => {
+  // given
+  vi.spyOn(Math, 'random').mockReturnValue(0.5)
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+
+  // when
+  tick(20)
+
+  // then
+  expect(screen.getByText('Game over')).toBeTruthy()
+  expect(screen.getByTestId('food').className).toContain('food-over-panel')
+})
+
 test('game over with the food under the panel leaves the food columns free of panel text', () => {
   // given
   vi.spyOn(Math, 'random').mockReturnValue(0.99)
@@ -1202,7 +1216,7 @@ test('game over with the food under the panel leaves the food columns free of pa
   // then
   const [fx] = screen.getByTestId('food').getAttribute('data-pos')!.split(',').map(Number)
   const free = fx >= 15 / 2 ? 15 - fx : fx + 1
-  expect((screen.getByTestId('board-overlay').querySelector('.overlay-panel') as HTMLElement).style.maxWidth).toBe(`calc(100% - ${free} * var(--cell))`)
+  expect((screen.getByTestId('board-overlay').querySelector('.overlay-panel') as HTMLElement).style.maxWidth).toBe(`calc(100% - ${free} * var(--cell) - 4px)`)
 })
 
 test('start screen puts the panel on the edge away from a food in row 9', () => {
