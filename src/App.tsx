@@ -409,9 +409,11 @@ export default function App() {
   useEffect(() => {
     const was = lastDir.current;
     lastDir.current = game.dir;
-    if (game.dir !== was && game.status === "running")
+    if (game.dir !== was && game.status === "running") {
       setTurned((t) => ({ n: t.n + 1, ...game.snake[0] }));
-  }, [game.dir, game.status, game.snake]);
+      if (!muted) play("turn");
+    }
+  }, [game.dir, game.status, game.snake, muted]);
 
   // The edge the head just entered in wrap mode; the object is new on each wrap, so the flash replays.
   const [wrapped, setWrapped] = useState<{ side: "up" | "down" | "left" | "right" } | null>(null);

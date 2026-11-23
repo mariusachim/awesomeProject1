@@ -84,3 +84,27 @@ test.each([
   // when / then
   expect(eatHz(points)).toBe(hz)
 })
+
+test('the turn tick is short and quieter than the eat sound', () => {
+  // given
+  const osc = stubAudio()
+  const gain = { gain: { value: 0 }, connect: vi.fn() }
+  vi.stubGlobal(
+    'AudioContext',
+    class {
+      currentTime = 0
+      destination = {}
+      createOscillator = () => osc
+      createGain = () => gain
+    },
+  )
+
+  // when
+  play('eat')
+  const eatVolume = gain.gain.value
+  play('turn')
+
+  // then
+  expect(gain.gain.value).toBeLessThan(eatVolume)
+  expect(osc.stop.mock.calls.at(-1)![0]).toBeLessThanOrEqual(0.03)
+})
