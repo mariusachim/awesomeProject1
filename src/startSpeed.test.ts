@@ -1,6 +1,6 @@
 import { afterEach, expect, test, vi } from 'vitest'
 import { tickMs } from './game.ts'
-import { KEY, levelOf, loadStart, nextStart, paced, parseStart, saveStart } from './startSpeed.ts'
+import { KEY, levelOf, loadStart, nextStart, paced, parseStart, speedFill, saveStart } from './startSpeed.ts'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -45,4 +45,17 @@ test('a blocked storage reads normal and does not throw', () => {
   // when / then
   expect(loadStart()).toBe('normal')
   expect(() => saveStart('slow')).not.toThrow()
+})
+
+test('speedFill is mostly empty at level 1, grows with the level and is full at MAX', () => {
+  // given
+  const levels = [1, 2, 'MAX' as const]
+
+  // when
+  const [first, second, max] = levels.map(speedFill)
+
+  // then
+  expect(first).toBeLessThan(0.2)
+  expect(second).toBeGreaterThan(first)
+  expect(max).toBe(1)
 })

@@ -1,4 +1,4 @@
-import { speedLevel } from './game.ts'
+import { speedLevel, TOP_LEVEL } from './game.ts'
 
 export const KEY = 'snake.start'
 
@@ -35,3 +35,6 @@ export function saveStart(start: StartSpeed): void {
     // storage is unavailable: the speed lasts only for this page
   }
 }
+
+// How far the speed can still rise: 0..1, and 1 at MAX.
+export const speedFill = (level: number | 'MAX'): number => (level === 'MAX' ? 1 : level / TOP_LEVEL)
