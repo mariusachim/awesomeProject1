@@ -1066,7 +1066,7 @@ export default function App() {
           </div>
         )}
       </div>
-      <p className="help hint-keys">
+      <p className="help">
         <span className="sr-only">C changes the snake colour</span>
         {naming ? (
           <span aria-hidden="true" style={{ color: SKINS[skin].head }}>
@@ -1074,7 +1074,7 @@ export default function App() {
             Snake colour: {skin}
           </span>
         ) : (
-          <span aria-hidden="true">
+          <span aria-hidden="true" className="hint-keys">
             {swatch}
             <kbd>C</kbd> changes the snake colour
           </span>
