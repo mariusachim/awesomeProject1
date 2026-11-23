@@ -947,6 +947,7 @@ h1,
 .board-overlay .panel-left,
 .board-overlay .panel-right {
   max-width: calc(100% - var(--cell));
+  box-sizing: border-box; /* the padding counts in the max-width set in App.tsx, so the panel stops before the food */
 }
 
 .board-overlay-light .panel-left,
