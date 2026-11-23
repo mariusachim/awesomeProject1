@@ -664,7 +664,7 @@ export default function App() {
   return (
     <main>
       <h1>Snake</h1>
-      <div className="stats" role="group" aria-label="Game stats">
+      <div className={paused ? "stats stats-paused" : "stats"} role="group" aria-label="Game stats">
         <Stat
           label="Score"
           value={game.score}

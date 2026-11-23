@@ -739,6 +739,17 @@ button:focus-visible {
   overflow: hidden;
 }
 
+/* 55% of #f0f0f0 on #161616 is about 5.6:1, above AA for the values. */
+.stats-paused {
+  opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stats {
+    transition: opacity 150ms;
+  }
+}
+
 .stat {
   /* Subgrid: all labels share row 1 and all values row 2, baseline-aligned. */
   display: grid;
