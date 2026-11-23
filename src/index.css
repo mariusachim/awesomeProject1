@@ -1109,3 +1109,24 @@ h1,
     }
   }
 }
+
+/* Out of the grid flow under the value, so the stat column and the row height stay as they were. */
+.stat-meter {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 3ch;
+  height: 3px;
+  background: #444;
+}
+
+.stat-meter > span {
+  display: block;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stat-meter > span {
+    transition: width 200ms ease-out;
+  }
+}

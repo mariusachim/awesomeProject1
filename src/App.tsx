@@ -23,7 +23,7 @@ import {
   saveSkin,
 } from "./skin.ts";
 import { loadWrap, saveWrap } from "./wallsMode.ts";
-import { levelOf, loadStart, nextStart, paced, saveStart } from "./startSpeed.ts";
+import { levelOf, loadStart, nextStart, paced, saveStart, speedFill } from "./startSpeed.ts";
 import { eatHz, loadMuted, play, playRecord, saveMuted, vibrate } from "./sound.ts";
 import {
   aheadCell,
@@ -212,7 +212,11 @@ function Stat({
   pulse = big && value !== 0,
   gain = 0,
   beats,
+  fill,
+  accent,
 }: {
+  accent?: string; // the meter colour: the head colour of the skin
+  fill?: number; // 0..1: a thin meter under the value, hidden from screen readers
   beats?: boolean; // the score passes the saved high score: dark gold, and data-record for who misses colour
   gain?: number; // points of the last move: shown as a "+N" pop beside the value
   label: string;
@@ -237,6 +241,11 @@ function Stat({
       >
         {value}
       </span>
+      {fill !== undefined && (
+        <span aria-hidden="true" className="stat-meter">
+          <span style={{ width: `${fill * 100}%`, background: accent }} />
+        </span>
+      )}
       {gain > 0 && (
         // Keyed by value, so the pop replays on each meal.
         <span aria-hidden="true" className={`pop bump${gain >= 3 ? " pop-big" : ""}`} key={`pop${value}`}>
@@ -669,6 +678,8 @@ export default function App() {
           value={levelOf(game.score, start)}
           spoken={`Speed ${levelOf(game.score, start)}`}
           pulse={levelOf(game.score, start) !== 1}
+          fill={speedFill(levelOf(game.score, start))}
+          accent={SKINS[skin].head}
         />
         <Stat
           label="Length"

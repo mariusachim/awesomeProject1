@@ -78,3 +78,21 @@ test('reduced motion does not flash', () => {
   // then
   expect(flashing()).toBe(false)
 })
+
+const meter = () => screen.getByText('Speed', { selector: '.stat-label' }).parentElement!.querySelector('.stat-meter')!
+
+test('the speed meter starts mostly empty, is hidden from screen readers and grows with the level', () => {
+  // given
+  render(<App />)
+  const width = () => parseFloat((meter().firstElementChild as HTMLElement).style.width)
+  const before = width()
+
+  // when
+  eatFood()
+
+  // then
+  expect(before).toBeLessThan(20)
+  expect(width()).toBeGreaterThan(before)
+  expect(meter().getAttribute('aria-hidden')).toBe('true')
+  expect(screen.getByText('Speed 2')).toBeTruthy()
+})
