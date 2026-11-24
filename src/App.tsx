@@ -40,6 +40,7 @@ import {
   overlayEdge,
   countdownCell,
   crashReason,
+  crashTip,
   hitWall,
   panelCoversRow,
   snakeAbovePanel,
@@ -374,6 +375,7 @@ export default function App() {
   if (game.score === 0 && record !== highScore) setRecord(highScore);
   const newBest = over && isNewHighScore(record, game.score);
   const gap = over ? shortOfHighScore(record, game.score) : null;
+  const tip = over ? crashTip(game) : undefined;
 
   // The ring marks the cell where the food was eaten; the food moves on a meal, so the old cell is the previous food.
   const [seen, setSeen] = useState({
@@ -1033,6 +1035,7 @@ export default function App() {
                       data-text="New high score!"
                     />
                   )}
+                  {tip && <span className="overlay-line overlay-detail" data-text={tip} />}
                   <span
                     className="overlay-line overlay-hint overlay-restart hint-keys"
                     data-text="Press Enter or R to restart"
@@ -1133,6 +1136,7 @@ export default function App() {
             <p className="sr-only">Apples: {game.apples}</p>
             <p className="sr-only">Longest: {longest}</p>
             {gap && <p className="sr-only">{gap}</p>}
+            {tip && <p className="sr-only">{tip}</p>}
             {newBest && <p className="sr-only">New high score!</p>}
           </div>
         )}

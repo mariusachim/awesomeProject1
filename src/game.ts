@@ -205,6 +205,13 @@ export function crashReason(s: Pick<GameState, 'snake' | 'dir' | 'wrap' | 'rocks
   return s.rocks.some((c) => same(c, wrapCell(next))) ? 'you hit a rock' : 'you bit yourself'
 }
 
+// One line of advice for the next run; a rock crash has none.
+export const crashTip = (s: Pick<GameState, 'snake' | 'dir' | 'wrap' | 'rocks'>): string | undefined =>
+  ({
+    'you hit the wall': 'Turn before the edge, or switch Walls to wrap.',
+    'you bit yourself': 'Leave room: keep the tail path clear before you turn.',
+  })[crashReason(s)]
+
 // The edge the head ran into, for the board to mark; undefined for a body or rock crash.
 export const hitWall = (s: Pick<GameState, 'snake' | 'dir' | 'wrap' | 'rocks'>): Dir | undefined =>
   crashReason(s) === 'you hit the wall' ? s.dir : undefined
