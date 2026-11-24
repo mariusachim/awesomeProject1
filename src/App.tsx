@@ -757,21 +757,20 @@ export default function App() {
           onKeyDown={ownKeys(toggleMute)}
           aria-keyshortcuts="M"
         >
-          {muted && (
-            <svg
-              className="sound-off"
-              data-testid="sound-off"
-              viewBox="0 0 16 16"
-              aria-hidden="true"
-            >
-              <path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor" />
-              <path
-                d="M11 5l4 6M15 5l-4 6"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-            </svg>
-          )}
+          <svg
+            className="sound-icon"
+            data-testid={muted ? "sound-off" : "sound-on"}
+            viewBox="0 0 16 16"
+            aria-hidden="true"
+          >
+            <path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor" />
+            <path
+              d={muted ? "M11 5l4 6M15 5l-4 6" : "M11 5.5q2 2.5 0 5M13 3.5q4 4.5 0 9"}
+              stroke="currentColor"
+              strokeWidth="1.5"
+              fill="none"
+            />
+          </svg>
           {muted ? "Unmute" : "Mute"}
           <kbd aria-hidden="true">M</kbd>
         </button>
