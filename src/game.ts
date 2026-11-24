@@ -344,3 +344,15 @@ export function countdownCell(s: Pick<GameState, 'snake' | 'dir' | 'food' | 'bon
     ) ?? null
   )
 }
+
+// The tail keeps square corners on the side facing the body and rounds the free end, narrowed across the travel axis.
+export function tailShape(prev: Cell, tail: Cell): { borderRadius: string; transform: string } {
+  const step = (d: number) => (Math.abs(d) > 1 ? -Math.sign(d) : Math.sign(d)) // a wrap jump flips the sign
+  const dx = step(tail.x - prev.x)
+  const dy = step(tail.y - prev.y)
+  const [tl, tr, br, bl] = dx > 0 ? [0, 1, 1, 0] : dx < 0 ? [1, 0, 0, 1] : dy > 0 ? [0, 0, 1, 1] : [1, 1, 0, 0]
+  return {
+    borderRadius: [tl, tr, br, bl].map((r) => (r ? '50%' : '0')).join(' '),
+    transform: dx ? 'scaleY(0.72)' : 'scaleX(0.72)',
+  }
+}

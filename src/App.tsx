@@ -27,6 +27,7 @@ import { levelOf, loadStart, nextStart, paced, saveStart, speedFill } from "./st
 import { eatHz, loadMuted, play, playRecord, saveMuted, vibrate } from "./sound.ts";
 import {
   aheadCell,
+  tailShape,
   type Cell,
   type Dir,
   isMilestone,
@@ -115,12 +116,14 @@ const bodyLook = (
   skin: Skin,
   index: number,
   length: number,
+  prev: Cell,
+  self: Cell,
 ): CSSProperties => ({
   background: bodyShade(SKINS[skin].body, index, length),
   boxSizing: "border-box",
   border: "2px solid #222",
   ...(length >= 3 && index === length - 1
-    ? { borderRadius: "50%", transform: "scale(0.72)" }
+    ? tailShape(prev, self)
     : { borderRadius: "30%" }),
 });
 const FOOD_LOOK: CSSProperties = { background: "#e44", borderRadius: "50%" };
@@ -881,7 +884,7 @@ export default function App() {
                 c.x,
                 c.y,
                 "snake",
-                bodyLook(skin, i, game.snake.length),
+                bodyLook(skin, i, game.snake.length, game.snake[i - 1], c),
                 over
                   ? "snake-dead"
                   : game.status === "paused" && snakeAbovePanel(game, c.y, false)
