@@ -164,6 +164,9 @@ button:disabled kbd {
     margin: 28px 0 0;
     width: 100%;
     gap: 8px;
+    /* Fixed shares: the label text never sets a width, so no button moves when a label swaps. */
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 0.9fr) minmax(0, 1.2fr);
   }
 
   @media (max-height: 740px) {
@@ -172,9 +175,7 @@ button:disabled kbd {
     }
   }
 
-  /* Equal shares of the row: fits from 320px and the label swaps cannot move a button. */
   .controls button {
-    flex: 1 1 0;
     min-width: 0;
     padding: 10px 4px;
     font-size: 0.875rem;
@@ -186,16 +187,6 @@ button:disabled kbd {
     .controls button {
       min-height: 44px;
     }
-  }
-
-  /* Unequal shares of the row: "Start speed" is about 76px wide and needs 96px or more to keep 4px from each border at 360px. */
-  .controls .pause,
-  .controls .mute {
-    flex-grow: 0.9;
-  }
-
-  .controls .start-speed {
-    flex-grow: 1.2;
   }
 
   /* Bigger than the 14px label, so "muted" reads without the words; the row height is fixed, so the button does not move. */
