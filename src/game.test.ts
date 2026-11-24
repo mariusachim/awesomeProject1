@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type Dir, type GameState, aheadCell, countdownCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, hitWall, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, aheadCell, countdownCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, crashTip, hitWall, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -1173,4 +1173,17 @@ test('countdownCell: null when nothing is free', () => {
 
   // when / then
   expect(countdownCell({ ...boxed, snake: [{ x: 14, y: 0 }, { x: 13, y: 0 }] })).toBeNull()
+})
+
+test('crashTip gives a tip for a wall or a self crash and none for a rock', () => {
+  // given
+  const reasons = ['you hit the wall', 'you bit yourself', 'you hit a rock']
+
+  // when
+  const tips = reasons.map(crashTip)
+
+  // then
+  expect(tips[0]).toBe('Turn before the edge, or switch Walls to wrap.')
+  expect(tips[1]).toBe('Leave room: keep the tail path clear before you turn.')
+  expect(tips[2]).toBeUndefined()
 })
