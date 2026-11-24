@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import App from './App.tsx'
+import { TOP_LEVEL } from './game.ts'
 
 const level = vi.hoisted(() => ({ fixed: false }))
 vi.mock('./game.ts', async (orig) => {
@@ -95,4 +96,12 @@ test('the speed meter starts mostly empty, is hidden from screen readers and gro
   expect(width()).toBeGreaterThan(before)
   expect(meter().getAttribute('aria-hidden')).toBe('true')
   expect(screen.getByText('Speed 2')).toBeTruthy()
+})
+
+test('the speed meter carries one tick per level step', () => {
+  // given
+  render(<App />)
+
+  // when / then
+  expect((meter() as HTMLElement).style.getPropertyValue('--levels')).toBe(String(TOP_LEVEL))
 })
