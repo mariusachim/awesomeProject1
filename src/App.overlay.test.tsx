@@ -156,7 +156,7 @@ test('game over shows the final score and a restart hint on the board', () => {
   crash()
 
   // then
-  expect(lines()).toEqual(['Final score: 0', 'Time\u00a00:01', 'Apples\u00a00', 'Longest\u00a01', 'Press Enter or R to restart', 'Tap Restart'])
+  expect(lines()).toEqual(['Final score: 0', 'Time\u00a00:01', 'Apples\u00a00', 'Longest\u00a01', 'Turn before the edge, or switch Walls to wrap.', 'Press Enter or R to restart', 'Tap Restart'])
 })
 
 test('Paused explains the special foods, and the legend is gone while running', () => {
