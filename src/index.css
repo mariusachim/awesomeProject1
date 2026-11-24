@@ -1140,6 +1140,14 @@ h1,
   height: 100%;
 }
 
+/* One 1px dark gap at the end of each level step; the fill ends on a gap. */
+.stat-meter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to right, transparent 0, transparent calc(100% / var(--levels) - 1px), #161616 calc(100% / var(--levels) - 1px), #161616 calc(100% / var(--levels)));
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .stat-meter > span {
     transition: width 200ms ease-out;

@@ -56,6 +56,7 @@ import {
   togglePause,
   turn,
   nearWall,
+  TOP_LEVEL,
 } from "./game.ts";
 
 const PAUSE_WHY = "Pause works after the game starts";
@@ -254,7 +255,7 @@ function Stat({
         {value}
       </span>
       {fill !== undefined && (
-        <span aria-hidden="true" className="stat-meter">
+        <span aria-hidden="true" className="stat-meter" style={{ "--levels": TOP_LEVEL } as CSSProperties}>
           <span style={{ width: `${fill * 100}%`, background: accent }} />
         </span>
       )}
