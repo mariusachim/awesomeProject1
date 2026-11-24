@@ -452,3 +452,17 @@ test('the crashed head fill is a clear red with at least 3:1 contrast with both 
     expect((head + 0.05) / (cell + 0.05)).toBeGreaterThanOrEqual(3)
   }
 })
+
+test('the start panel lists the special foods like the paused panel, and the legend goes with the first key', () => {
+  // given
+  render(<App />)
+
+  // when
+  const legend = screen.getByTestId('food-legend')
+
+  // then
+  expect(legend.textContent).toBe('grows the snakeslows the snakeshortens the snakeworth x3')
+  expect(legend.querySelectorAll('li')).toHaveLength(4)
+  key('ArrowRight')
+  expect(screen.queryByTestId('food-legend')).toBeNull()
+})
