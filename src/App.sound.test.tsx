@@ -159,7 +159,7 @@ test('Cmd+M does not mute', () => {
   expect(screen.getByRole('button', { name: 'Mute' })).toBeTruthy()
 })
 
-test('the muted button shows a sound-off mark and is named Unmute; the sound-on button shows neither', () => {
+test('the muted button shows a sound-off mark and is named Unmute; the sound-on button shows a speaker with waves', () => {
   // given
   render(<App />)
   const mute = screen.getByRole('button', { name: 'Mute' })
@@ -167,6 +167,7 @@ test('the muted button shows a sound-off mark and is named Unmute; the sound-on 
   // then
   expect(mute.getAttribute('aria-pressed')).toBeNull()
   expect(screen.queryByTestId('sound-off')).toBeNull()
+  expect(mute.querySelector('[data-testid="sound-on"]')).toBeTruthy()
 
   // when
   fireEvent.keyDown(window, { key: 'm' })
@@ -175,6 +176,7 @@ test('the muted button shows a sound-off mark and is named Unmute; the sound-on 
   const unmute = screen.getByRole('button', { name: 'Unmute' })
   expect(unmute.getAttribute('aria-pressed')).toBeNull()
   expect(unmute.querySelector('[data-testid="sound-off"]')).toBeTruthy()
+  expect(unmute.querySelector('[data-testid="sound-on"]')).toBeNull()
   expect(unmute.textContent).toContain('Unmute')
 
   // when

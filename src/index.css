@@ -98,18 +98,24 @@ button:disabled {
 .mute.muted {
   color: #c8c8c8;
   border-color: #e0a030;
-  /* Icon and label in one row: the label must not wrap below the icon. */
+}
+
+/* Icon and label in one row: the label must not wrap below the icon. */
+.mute {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   white-space: nowrap;
 }
 
-.sound-off {
+.sound-icon {
   width: 1em;
   height: 1em;
   margin-right: 6px;
   flex: none;
+}
+
+.muted .sound-icon {
   color: #e0a030;
 }
 
@@ -190,7 +196,7 @@ button:disabled kbd {
   }
 
   /* Bigger than the 14px label, so "muted" reads without the words; the row height is fixed, so the button does not move. */
-  .controls .sound-off {
+  .controls .sound-icon {
     width: 1.2em;
     height: 1.2em;
     margin-right: 4px;
