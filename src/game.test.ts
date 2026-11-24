@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type Dir, type GameState, aheadCell, countdownCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, hitWall, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { type Dir, type GameState, aheadCell, countdownCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, crashTip, hitWall, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -1173,4 +1173,14 @@ test('countdownCell: null when nothing is free', () => {
 
   // when / then
   expect(countdownCell({ ...boxed, snake: [{ x: 14, y: 0 }, { x: 13, y: 0 }] })).toBeNull()
+})
+
+test('crashTip gives a tip for a wall crash and none for a rock crash', () => {
+  // given
+  const base = { snake: [{ x: 0, y: 0 }], dir: 'up' as const, wrap: false, rocks: [] }
+
+  // when / then
+  expect(crashTip(base)).toContain('Turn before the edge')
+  expect(crashTip({ ...base, wrap: true, snake: [{ x: 5, y: 5 }, { x: 5, y: 4 }], dir: 'up' })).toContain('Leave room')
+  expect(crashTip({ ...base, snake: [{ x: 5, y: 5 }], rocks: [{ x: 5, y: 4 }] })).toBeUndefined()
 })
