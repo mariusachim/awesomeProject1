@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { expect, test } from 'vitest'
 import App from './App.tsx'
 
-test('the last snake cell is small and round, the other body cells are not', () => {
+test('the last snake cell is narrow with a round free end, the other body cells are not', () => {
   // given
   render(<App />)
 
@@ -12,8 +12,8 @@ test('the last snake cell is small and round, the other body cells are not', () 
 
   // then
   const tail = body[body.length - 1]
-  expect(tail.style.transform).toBe('scale(0.72)')
-  expect(tail.style.borderRadius).toBe('50%')
+  expect(tail.style.transform).toBe('scaleY(0.72)')
+  expect(tail.style.borderRadius).toBe('50% 0px 0px 50%')
   expect(body[0].style.transform).toBe('')
   expect(body[0].style.borderRadius).toBe('30%')
 })
