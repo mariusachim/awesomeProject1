@@ -178,6 +178,14 @@ button:disabled kbd {
     min-width: 0;
     padding: 10px 4px;
     font-size: 0.875rem;
+    min-height: 56px;
+  }
+
+  /* Short phones keep the 44px row so the page does not scroll more. */
+  @media (max-height: 740px) {
+    .controls button {
+      min-height: 44px;
+    }
   }
 
   /* Unequal shares of the row: "Start speed" is about 76px wide and needs 96px or more to keep 4px from each border at 360px. */
