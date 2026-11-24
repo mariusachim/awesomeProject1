@@ -364,6 +364,7 @@ button:disabled kbd {
 /* Game over: a tighter panel (at most 4 rows, about 100 px on a phone) that sits close to the edge. */
 .board-overlay:not(.board-overlay-under) {
   gap: 0.1rem;
+  padding-inline: 0.25rem; /* the panel keeps a gap to the red border on the sides, like at the bottom */
 }
 
 .board-overlay:not(.board-overlay-under).board-overlay-top {
@@ -390,6 +391,10 @@ button:disabled kbd {
 
 /* Desktop only: room around the game over lines. Phones keep the tight panel so the food stays visible. */
 @media (min-width: 601px) {
+  .board-overlay:not(.board-overlay-under) {
+    padding-inline: 0.75rem;
+  }
+
   .board-overlay:not(.board-overlay-under).board-overlay-top {
     padding-top: 0.75rem;
   }
