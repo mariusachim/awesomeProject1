@@ -1134,7 +1134,8 @@ h1,
 .stat-meter {
   position: absolute;
   left: 0;
-  bottom: 0;
+  /* -2px: the meter starts 3px under the digit baseline (it was 1px); the row height is unchanged. */
+  bottom: -2px;
   width: 100%;
   height: 5px;
   border-radius: 3px;
