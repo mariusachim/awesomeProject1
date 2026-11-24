@@ -148,6 +148,18 @@ const LEGEND: [CSSProperties, string, string][] = [
   [GOLDEN_LOOK, "worth x3", ""],
 ];
 
+const legend = (
+  <ul className="legend" data-testid="food-legend">
+    {LEGEND.map(([look, text, more]) => (
+      <li key={text}>
+        <span className="legend-swatch" style={look} aria-hidden="true" />
+        {text}
+        {more && <span className="legend-more">{more}</span>}
+      </li>
+    ))}
+  </ul>
+)
+
 // A sibling of the pickup, because its clip-path would cut the number.
 const count = (
   testId: string,
@@ -991,6 +1003,7 @@ export default function App() {
                     className="overlay-line overlay-hint"
                     data-text={`Start speed: ${start}`}
                   />
+                  {legend}
                 </>
               )}
               {over && (
@@ -1045,15 +1058,7 @@ export default function App() {
                     className="overlay-line overlay-hint hint-touch"
                     data-text="Tap Resume"
                   />
-                  <ul className="legend" data-testid="food-legend">
-                    {LEGEND.map(([look, text, more]) => (
-                      <li key={text}>
-                        <span className="legend-swatch" style={look} aria-hidden="true" />
-                        {text}
-                        {more && <span className="legend-more">{more}</span>}
-                      </li>
-                    ))}
-                  </ul>
+                  {legend}
                   {highScore > 0 && (
                     <span
                       className="overlay-line overlay-hint hint-keys"
