@@ -356,3 +356,7 @@ export function tailShape(prev: Cell, tail: Cell): { borderRadius: string; trans
     transform: dx ? 'scaleY(0.72)' : 'scaleX(0.72)',
   }
 }
+
+// The browser tab title follows the state, so a hidden tab says what happened.
+export const tabTitle = (status: GameState['status'], score: number): string =>
+  status === 'ready' ? 'Snake' : `${status === 'paused' ? 'Paused · ' : status === 'over' ? 'Game over · ' : ''}Snake · ${score}`

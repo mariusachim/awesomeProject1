@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { tailShape, type Dir, type GameState, aheadCell, countdownCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, crashTip, hitWall, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
+import { tabTitle, tailShape, type Dir, type GameState, aheadCell, countdownCell, nearWall, foodKind, GOLDEN_CHANCE, isMilestone,trailAfter, formatTime,SHRINK_MOVES, SIZE, placeShrink, placeRock, mealPoints, cellShade, keyToDir, newGame, crashReason, crashTip, hitWall, overlayEdge, panelCoversFood, panelCoversRow, snakeAbovePanel, panelShift, pauseIfRunning, placeBonus, placeFood, speedLevel, step, tickMs, boostMs, togglePause, turn } from './game.ts'
 
 const state = (over: Partial<GameState>): GameState => ({
   snake: [{ x: 5, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 5 }],
@@ -1194,4 +1194,12 @@ test.each([
 ])('tail %j after %j', (tail, prev, radius, transform) => {
   // when / then
   expect(tailShape(prev, tail)).toEqual({ borderRadius: radius, transform })
+})
+
+test('the tab title follows the state and the score', () => {
+  // when / then
+  expect(tabTitle('ready', 0)).toBe('Snake')
+  expect(tabTitle('running', 12)).toBe('Snake · 12')
+  expect(tabTitle('paused', 12)).toBe('Paused · Snake · 12')
+  expect(tabTitle('over', 12)).toBe('Game over · Snake · 12')
 })
