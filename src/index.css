@@ -849,13 +849,18 @@ h1,
     flex-grow: 1.45;
   }
 
+  /* "Unmute" with its icon needs about 76px: a 4px icon gap and an 84px basis leave 4px free each side. */
   .controls .mute {
-    flex-basis: 80px;
+    flex-basis: 84px;
+  }
+
+  .controls .sound-icon {
+    margin-right: 4px;
   }
 
   /* 8px each side: the nowrap "Start speed" name sizes the button, so it must not touch the border. */
   .controls .start-speed {
-    flex-basis: 118px;
+    flex-basis: 114px;
     flex-grow: 1.7;
     padding-inline: 8px;
   }
