@@ -1287,3 +1287,16 @@ test('the body cells carry snake-dead only at game over and the head and food do
   // then
   expect(screen.getAllByTestId('snake').some((c) => c.classList.contains('snake-dead'))).toBe(false)
 })
+
+test('the board is a named group on the start screen, while running and when paused', () => {
+  // given
+  renderReady(<App />)
+  const board = () => screen.getByRole('group', { name: 'Game board' })
+
+  // when / then
+  expect(board()).toBeTruthy()
+  startKey()
+  expect(board()).toBeTruthy()
+  fireEvent.keyDown(window, { key: 'p' })
+  expect(board()).toBeTruthy()
+})
