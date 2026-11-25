@@ -232,6 +232,17 @@ button:disabled kbd {
   .messages {
     order: 2;
   }
+
+  /* Tall phones: the gap above the hint matches the one above the row; short phones keep the small gap. */
+  .help {
+    margin-top: 20px;
+  }
+
+  @media (max-height: 740px) {
+    .help {
+      margin-top: 8px;
+    }
+  }
 }
 
 .messages {
