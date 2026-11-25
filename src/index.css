@@ -406,6 +406,14 @@ button:disabled kbd {
   font-size: 2rem;
 }
 
+/* Phone: the narrow panel keeps "Final score: N" on one line; still bigger than the 1.2rem lines. */
+@media (max-width: 600px) {
+  .board-overlay:not(.board-overlay-under) .overlay-score::after {
+    font-size: 1.4rem;
+    white-space: nowrap;
+  }
+}
+
 /* Desktop only: room around the game over lines. Phones keep the tight panel so the food stays visible. */
 @media (min-width: 601px) {
   .board-overlay:not(.board-overlay-under) {
