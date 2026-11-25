@@ -749,9 +749,9 @@ button:focus-visible {
   overflow: hidden;
 }
 
-/* 55% of #f0f0f0 on #161616 is about 5.6:1, above AA for the values. */
+/* At 70% the #b0b0b0 labels blend to about #828282 on #161616, 4.7:1, above AA. */
 .stats-paused {
-  opacity: 0.55;
+  opacity: 0.7;
 }
 
 @media (prefers-reduced-motion: no-preference) {
