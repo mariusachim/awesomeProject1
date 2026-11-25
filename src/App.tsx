@@ -799,6 +799,8 @@ export default function App() {
       <div
         className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}${speeding ? " board-speed" : ""}${nearWall(game) ? " board-wall" : ""}`}
         data-testid="board"
+        role="group"
+        aria-label="Game board"
         data-hit-wall={over ? hitWall(game) : undefined}
         data-wrap-side={wrapped?.side}
         style={{
