@@ -34,6 +34,7 @@ import {
   type GameState,
   TRAIL,
   trailAfter,
+  tabTitle,
   SIZE,
   cellShade,
   keyToDir,
@@ -508,6 +509,10 @@ export default function App() {
     const id = setTimeout(() => setGame(tickCount), COUNT_MS);
     return () => clearTimeout(id);
   }, [game.count]);
+
+  useEffect(() => {
+    document.title = tabTitle(game.status, game.score);
+  }, [game.status, game.score]);
 
   useEffect(() => saveMuted(muted), [muted]);
 
