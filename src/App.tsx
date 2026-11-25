@@ -127,7 +127,8 @@ const bodyLook = (
     ? tailShape(prev, self)
     : { borderRadius: "30%" }),
 });
-const FOOD_LOOK: CSSProperties = { background: "#e44", borderRadius: "50%" };
+// A soft upper-left highlight on the base red gives the apple depth; the shape stays a full circle.
+const FOOD_LOOK: CSSProperties = { background: "radial-gradient(circle at 30% 30%, #f99, #e44 60%)", borderRadius: "50%" };
 // The golden apple is round like the food but orange with a white ring; the bonus diamond is yellow.
 const GOLDEN_LOOK: CSSProperties = {
   background: "#f90",
