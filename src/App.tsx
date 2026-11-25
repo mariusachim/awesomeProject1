@@ -74,6 +74,7 @@ const headLook = (skin: Skin, crashed: boolean): CSSProperties => ({
   outline: `2px solid ${SKINS[skin].outline}`,
   outlineOffset: -2,
   boxSizing: "border-box",
+  borderRadius: "30%", // same as bodyLook
 });
 // Eye centres in percent of the head cell, two per direction: the eyes sit on the side of the last move.
 const EYES: Record<Dir, [number, number][]> = {

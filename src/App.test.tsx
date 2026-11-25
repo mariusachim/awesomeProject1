@@ -122,7 +122,7 @@ test('shows the title, the board, a snake, one food and a score of 0', () => {
   expect(screen.getAllByTestId('food').length).toBe(1)
 })
 
-test('the food is a circle, the body cells are rounded and the head is square', () => {
+test('the food is a circle, the body cells and the head are rounded', () => {
   // given
   renderReady(<App />)
 
@@ -132,7 +132,7 @@ test('the food is a circle, the body cells are rounded and the head is square', 
   // then
   expect(food.style.borderRadius).toBe('50%')
   expect(screen.getByTestId('head').style.borderRadius).not.toBe('50%')
-  expect(screen.getByTestId('head').style.borderRadius).toBe('')
+  expect(screen.getByTestId('head').style.borderRadius).toBe('30%')
   screen.getAllByTestId('snake').slice(0, -1).forEach((c) => expect(c.style.borderRadius).toBe('30%'))
 })
 
