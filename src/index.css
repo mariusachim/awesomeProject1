@@ -412,6 +412,11 @@ button:disabled kbd {
     font-size: 1.4rem;
     white-space: nowrap;
   }
+
+  .board-overlay:not(.board-overlay-under) .overlay-panel {
+    padding-block: 0.6rem;
+    line-height: 1.2;
+  }
 }
 
 /* Desktop only: room around the game over lines. Phones keep the tight panel so the food stays visible. */
