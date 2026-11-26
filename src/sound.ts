@@ -1,11 +1,12 @@
 export const KEY = 'snake.muted'
 
-export type Sound = 'eat' | 'over' | 'chime'
+export type Sound = 'eat' | 'over' | 'chime' | 'turn'
 
-const TONES: Record<Sound, { hz: number; seconds: number }> = {
+const TONES: Record<Sound, { hz: number; seconds: number; volume?: number }> = {
   eat: { hz: 880, seconds: 0.08 },
   chime: { hz: 1320, seconds: 0.4 },
   over: { hz: 160, seconds: 0.3 },
+  turn: { hz: 440, seconds: 0.025, volume: 0.03 },
 }
 
 // 880 Hz for +1, 1100 Hz for +2, 1320 Hz for +3 or more
@@ -41,8 +42,8 @@ export function vibrate(): void {
 let ctx: AudioContext | undefined
 
 export function play(sound: Sound, hzOverride?: number): void {
-  const { seconds } = TONES[sound]
-  tone(hzOverride ?? TONES[sound].hz, seconds)
+  const { hz, seconds, volume } = TONES[sound]
+  tone(hzOverride ?? hz, seconds, 0, volume)
 }
 
 // A new high score: a rising pair, 660 Hz then 990 Hz.
@@ -51,13 +52,13 @@ export function playRecord(): void {
   tone(990, 0.12, 0.12)
 }
 
-function tone(hz: number, seconds: number, delay = 0): void {
+function tone(hz: number, seconds: number, delay = 0, volume = 0.1): void {
   try {
     ctx ??= new AudioContext()
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.frequency.value = hz
-    gain.gain.value = 0.1
+    gain.gain.value = volume
     osc.connect(gain)
     gain.connect(ctx.destination)
     osc.start(ctx.currentTime + delay)

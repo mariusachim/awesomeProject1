@@ -54,7 +54,7 @@ test('a milestone apple plays the higher chime and flashes the board for half a 
   eatFood()
 
   // then
-  expect(freqs).toEqual([1320])
+  expect(freqs.filter((f) => f !== 440)).toEqual([1320]) // 440 is the turn tick
   expect(flashing()).toBe(true)
   act(() => vi.advanceTimersByTime(500))
   expect(flashing()).toBe(false)

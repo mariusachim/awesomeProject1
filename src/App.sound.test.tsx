@@ -55,8 +55,56 @@ test('eating plays one high beep', () => {
   eatFood()
 
   // then
-  expect(freqs.length).toBe(1)
-  expect(freqs[0]).toBeGreaterThan(500)
+  const beeps = freqs.filter((f) => f !== 440) // 440 is the turn tick
+  expect(beeps.length).toBe(1)
+  expect(beeps[0]).toBeGreaterThan(500)
+})
+
+test('a turn plays one soft tick; a reverse, the same key and a muted turn play none', () => {
+  // given
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+  tick()
+  freqs.length = 0
+
+  // when the key is the current or the opposite direction
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+  fireEvent.keyDown(window, { key: 'ArrowDown' })
+  tick()
+
+  // then
+  expect(freqs).toEqual([])
+
+  // when
+  fireEvent.keyDown(window, { key: 'ArrowLeft' })
+  tick()
+
+  // then
+  expect(freqs).toEqual([440])
+
+  // when muted
+  fireEvent.click(screen.getByRole('button', { name: 'Mute' }))
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+  tick()
+
+  // then
+  expect(freqs).toEqual([440])
+})
+
+test('a paused game plays no tick on a turn key', () => {
+  // given
+  render(<App />)
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+  tick()
+  fireEvent.keyDown(window, { key: ' ' })
+  freqs.length = 0
+
+  // when
+  fireEvent.keyDown(window, { key: 'ArrowLeft' })
+  tick()
+
+  // then
+  expect(freqs).toEqual([])
 })
 
 test('game over plays one low tone', () => {

@@ -17,7 +17,7 @@ function stubAudio() {
     createGain = () => gain
   }
   vi.stubGlobal('AudioContext', Ctx)
-  return osc
+  return Object.assign(osc, { gainNode: gain })
 }
 
 test.each([
@@ -83,4 +83,20 @@ test.each([
 ])('eat of %i points beeps at %i Hz', (points, hz) => {
   // when / then
   expect(eatHz(points)).toBe(hz)
+})
+
+test('the turn tick is short and quieter than the eat sound', async () => {
+  // given
+  vi.resetModules() // a fresh module has no cached audio context
+  const { play } = await import('./sound.ts')
+  const osc = stubAudio()
+
+  // when
+  play('eat')
+  const eatVolume = osc.gainNode.gain.value
+  play('turn')
+
+  // then
+  expect(osc.gainNode.gain.value).toBeLessThan(eatVolume)
+  expect(osc.stop.mock.calls.at(-1)![0]).toBeLessThanOrEqual(0.03)
 })
