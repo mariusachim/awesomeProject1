@@ -392,6 +392,13 @@ button:disabled kbd {
   padding-top: 1rem;
 }
 
+/* Phone: the tall start panel sits close to the top edge, so the snake row keeps a gap of at least 8 px below it. */
+@media (max-width: 600px) {
+  .board-overlay-under.board-overlay-top {
+    padding-top: 0.25rem;
+  }
+}
+
 /* Game over: a tighter panel (at most 4 rows, about 100 px on a phone) that sits close to the edge. */
 .board-overlay:not(.board-overlay-under) {
   gap: 0.1rem;
