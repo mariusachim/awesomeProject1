@@ -268,6 +268,20 @@ button:disabled kbd {
   box-shadow: 0 0 12px #f5c04a;
 }
 
+/* Shadow only, so nothing moves; the red game-over border colour is untouched. */
+.board-walls-pulse {
+  animation: walls-pulse 300ms ease-out;
+}
+
+@keyframes walls-pulse {
+  from {
+    box-shadow: 0 0 10px #8a8;
+  }
+  to {
+    box-shadow: 0 0 0 #8a8;
+  }
+}
+
 /* The line style is the Walls mode: solid kills, dashed wraps. Same width, so the layout holds. */
 .board-wrap {
   border-style: dashed;
