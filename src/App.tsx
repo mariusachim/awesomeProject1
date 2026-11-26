@@ -454,6 +454,20 @@ export default function App() {
     return () => clearTimeout(id);
   }, [wrapped]);
 
+  // Each Walls switch pulses the board border for 300 ms; the first render and a restored mode do not.
+  const [switched, setSwitched] = useState(false);
+  const wasWrap = useRef(game.wrap);
+  useEffect(() => {
+    if (wasWrap.current === game.wrap) return;
+    wasWrap.current = game.wrap;
+    if (!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) setSwitched(true);
+  }, [game.wrap]);
+  useEffect(() => {
+    if (!switched) return;
+    const id = setTimeout(() => setSwitched(false), 300);
+    return () => clearTimeout(id);
+  }, [switched]);
+
   const [chimed, setChimed] = useState(0);
   const [sped, setSped] = useState(0);
   const prev = useRef({ score: game.score, over, apples: game.apples });
@@ -802,7 +816,7 @@ export default function App() {
         )}
       </div>
       <div
-        className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}${speeding ? " board-speed" : ""}${nearWall(game) ? " board-wall" : ""}`}
+        className={`board${over ? " board-over" : ""}${game.wrap ? " board-wrap" : ""}${flashing ? " board-milestone" : ""}${speeding ? " board-speed" : ""}${switched ? " board-walls-pulse" : ""}${nearWall(game) ? " board-wall" : ""}`}
         data-testid="board"
         role="group"
         aria-label="Game board"
