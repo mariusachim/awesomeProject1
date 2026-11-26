@@ -1247,3 +1247,33 @@ h1,
     display: none;
   }
 }
+
+/* The golden apple glows softly; the static glow in its inline style stays under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .golden-glow {
+    animation: golden-glow 1200ms ease-in-out infinite alternate;
+  }
+
+  /* Keep the spawn pulse and the idle bob next to the glow. */
+  .pulse.golden-glow {
+    animation:
+      pulse 150ms ease-out,
+      golden-glow 1200ms ease-in-out infinite alternate;
+  }
+
+  .food-idle.golden-glow {
+    animation:
+      pulse 150ms ease-out,
+      idle 1.2s ease-in-out 150ms infinite,
+      golden-glow 1200ms ease-in-out infinite alternate;
+  }
+
+  @keyframes golden-glow {
+    from {
+      box-shadow: 0 0 0 2px #fff inset, 0 0 3px 1px #fc3;
+    }
+    to {
+      box-shadow: 0 0 0 2px #fff inset, 0 0 8px 3px #fc3;
+    }
+  }
+}

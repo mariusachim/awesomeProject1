@@ -958,6 +958,22 @@ test('a golden apple shows in gold with a label, unlike the normal food and the 
   expect(food.style.background).not.toBe('rgb(255, 204, 51)') // the bonus diamond
 })
 
+test('a golden apple is gold-yellow with a white ring and a glow, in every snake colour', () => {
+  // given
+  vi.spyOn(Math, 'random').mockReturnValueOnce(0).mockReturnValueOnce(0.95)
+  renderReady(<App />)
+
+  // when
+  const food = screen.getByTestId('food')
+
+  // then
+  expect(food.style.background).toContain('rgb(255, 216, 74)') // #ffd84a, lighter than the orange #d70 and #fa5
+  expect(food.style.borderRadius).toBe('50%')
+  expect(food.style.boxShadow).toContain('rgb(255, 255, 255)') // the white ring
+  expect(food.style.boxShadow).toContain('rgb(255, 204, 51)') // the glow
+  expect(food.className).toContain('golden-glow')
+})
+
 test('the bonus food shows its moves left, one lower after each move', () => {
   // given
   const rand = vi.spyOn(Math, 'random')

@@ -130,11 +130,11 @@ const bodyLook = (
 });
 // A soft upper-left highlight on the base red gives the apple depth; the shape stays a full circle.
 const FOOD_LOOK: CSSProperties = { background: "radial-gradient(circle at 30% 30%, #f99, #e44 60%)", borderRadius: "50%" };
-// The golden apple is round like the food but orange with a white ring; the bonus diamond is yellow.
+// The golden apple is round with a white ring and a glow; its gold-yellow is lighter than the orange skin.
 const GOLDEN_LOOK: CSSProperties = {
-  background: "#f90",
+  background: "linear-gradient(135deg, #ffd84a, #f0a800)",
   borderRadius: "50%",
-  boxShadow: "0 0 0 2px #fff inset",
+  boxShadow: "0 0 0 2px #fff inset, 0 0 6px 2px #fc3",
 };
 // The bonus food is a gold diamond, so it differs from the round red food by shape and colour.
 const BONUS_LOOK: CSSProperties = {
@@ -160,7 +160,7 @@ const legend = (
   <ul className="legend" data-testid="food-legend">
     {LEGEND.map(([look, text, more]) => (
       <li key={text}>
-        <span className="legend-swatch" style={look} aria-hidden="true" />
+        <span className={`legend-swatch${look === GOLDEN_LOOK ? " golden-glow" : ""}`} style={look} aria-hidden="true" />
         {text}
         {more && <span className="legend-more">{more}</span>}
       </li>
@@ -932,11 +932,13 @@ export default function App() {
           game.food.y,
           "food",
           game.golden ? GOLDEN_LOOK : FOOD_LOOK,
-          game.status === "running"
-            ? "pulse food-idle"
-            : over
-              ? "pulse food-over-panel"
-              : "pulse",
+          `${
+            game.status === "running"
+              ? "pulse food-idle"
+              : over
+                ? "pulse food-over-panel"
+                : "pulse"
+          }${game.golden ? " golden-glow" : ""}`,
           game.golden ? "Golden apple" : undefined,
         )}
         {game.bonus &&
