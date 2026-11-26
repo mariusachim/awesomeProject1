@@ -450,6 +450,16 @@ button:disabled kbd {
   .board-overlay:not(.board-overlay-under) .overlay-panel {
     padding-block: 0.4rem;
     line-height: 1.25;
+    width: max-content; /* grow to the longest line, up to the board width minus margins */
+  }
+
+  /* Time, Apples and Longest stay on one row; a single stat never breaks inside. */
+  .overlay-stats {
+    flex-wrap: nowrap;
+  }
+
+  .overlay-stats .overlay-line {
+    white-space: nowrap;
   }
 }
 
