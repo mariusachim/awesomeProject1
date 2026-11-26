@@ -300,8 +300,21 @@ button:disabled kbd {
 .board[data-hit-wall="down"] { box-shadow: inset 0 -4px 0 #e44; }
 
 @media (prefers-reduced-motion: no-preference) {
+  .board-over {
+    animation: board-shake 250ms ease-out;
+  }
+
   .board[data-hit-wall] {
-    animation: hit-wall-in 300ms ease-out;
+    animation: hit-wall-in 300ms ease-out, board-shake 250ms ease-out;
+  }
+
+  /* The translate property, not transform, so no other board effect is overridden; ends at rest. */
+  @keyframes board-shake {
+    15% { translate: -3px 2px; }
+    35% { translate: 3px -2px; }
+    55% { translate: -2px -1px; }
+    75% { translate: 1px 1px; }
+    to { translate: 0 0; }
   }
 
   @keyframes hit-wall-in {
