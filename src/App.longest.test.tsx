@@ -87,7 +87,7 @@ test('game over after an apple shows the Time, Apples and Longest line, and afte
   // when
   fireEvent.keyDown(window, { key: 'ArrowUp' })
   act(() => vi.advanceTimersByTime(200 * 7))
-  fireEvent.keyDown(window, { key: 'ArrowLeft' })
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
   act(() => vi.advanceTimersByTime(200 * 30))
 
   // then

@@ -28,18 +28,18 @@ test('no ring shows before a meal', () => {
 })
 
 test('a ring appears on the eaten cell, under the snake, and is keyed by the score', () => {
-  // given: head 7,7 and food 0,0 at random 0
+  // given: head 7,7 and food 8,0 at random 0
   render(<App />)
   fireEvent.keyDown(window, { key: 'ArrowUp' })
   run(1400)
-  fireEvent.keyDown(window, { key: 'ArrowLeft' })
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
 
   // when
-  run(1400)
+  run(200)
 
   // then
   const ring = screen.getByTestId('eat-ring')
-  expect(ring.getAttribute('data-pos')).toBe('0,0')
+  expect(ring.getAttribute('data-pos')).toBe('8,0')
   expect(ring.getAttribute('aria-hidden')).toBe('true')
   expect(screen.getAllByTestId('eat-ring')).toHaveLength(1)
   expect(ring.compareDocumentPosition(screen.getByTestId('head')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
@@ -48,7 +48,7 @@ test('a ring appears on the eaten cell, under the snake, and is keyed by the sco
 const eatShrinkAhead = () => {
   // given: the first food is one cell ahead; the shrink fruit lands on the cell after it
   vi.spyOn(Math, 'random').mockReset()
-  vi.spyOn(Math, 'random').mockReturnValueOnce(110.5 / 222).mockReturnValueOnce(0).mockReturnValueOnce(0).mockReturnValueOnce(0.99).mockReturnValueOnce(109.5 / 220).mockReturnValue(0.5)
+  vi.spyOn(Math, 'random').mockReturnValueOnce(49.5 / 105).mockReturnValueOnce(0).mockReturnValueOnce(0).mockReturnValueOnce(0.99).mockReturnValueOnce(109.5 / 220).mockReturnValue(0.5)
   render(<App />)
   fireEvent.keyDown(window, { key: 'ArrowRight' })
   run(200)

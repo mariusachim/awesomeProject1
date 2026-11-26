@@ -18,16 +18,16 @@ const key = (k: string) => fireEvent.keyDown(window, { key: k })
 const eat = () => {
   key('ArrowUp')
   tick(7)
-  key('ArrowLeft')
-  tick(7)
+  key('ArrowRight')
+  tick(1)
 }
-// The next food sits on the top row: down, right to its column, up.
+// The next food sits on the top row: down, left to its column, up.
 const eatAgain = () => {
   const x = Number(screen.getByTestId('food').getAttribute('data-pos')!.split(',')[0])
   key('ArrowDown')
   tick(1)
-  key('ArrowRight')
-  tick(x)
+  key('ArrowLeft')
+  tick(8 - x)
   key('ArrowUp')
   tick(1)
 }

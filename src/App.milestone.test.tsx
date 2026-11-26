@@ -41,8 +41,8 @@ const tick = (n = 1) => act(() => vi.advanceTimersByTime(200 * n))
 const eatFood = () => {
   fireEvent.keyDown(window, { key: 'ArrowUp' })
   tick(7)
-  fireEvent.keyDown(window, { key: 'ArrowLeft' })
-  tick(7)
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+  tick(1)
 }
 const flashing = () => screen.getByTestId('board').className.includes('board-milestone')
 
