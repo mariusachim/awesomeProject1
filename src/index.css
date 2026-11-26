@@ -1208,3 +1208,18 @@ h1,
     transition: width 200ms ease-out;
   }
 }
+
+/* Each key idea stays whole. A narrow window puts the ideas on two lines and drops the dot. */
+.hint-idea {
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .hint-idea {
+    display: block;
+  }
+
+  .hint-dot {
+    display: none;
+  }
+}
