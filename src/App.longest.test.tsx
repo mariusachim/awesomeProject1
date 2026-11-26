@@ -19,7 +19,7 @@ const finish = () => {
 }
 const lines = () =>
   Array.from(screen.getByTestId('board-overlay').querySelectorAll('[data-text]')).map((e) => e.getAttribute('data-text'))
-const shown = (text: string) => lines().some((l) => l === text.replace(': ', '\u00a0')) && screen.getAllByText(text).length === 1
+const shown = (text: string) => screen.getAllByText(text).length === 1
 
 test('a record is shown and saved when none exists', () => {
   // given
@@ -74,4 +74,22 @@ test('the game works and shows the record when storage is blocked', () => {
 
   // then
   expect(shown('Longest: 1')).toBe(true)
+})
+
+test('game over after an apple shows the Time, Apples and Longest line, and after none it does not', () => {
+  // given
+  render(<App />)
+  const stats = () => lines().filter((l) => /^(Time|Apples|Longest) /.test(l ?? ''))
+  finish()
+  expect(stats()).toEqual([])
+  fireEvent.keyDown(window, { key: 'Enter' })
+
+  // when
+  fireEvent.keyDown(window, { key: 'ArrowUp' })
+  act(() => vi.advanceTimersByTime(200 * 7))
+  fireEvent.keyDown(window, { key: 'ArrowLeft' })
+  act(() => vi.advanceTimersByTime(200 * 30))
+
+  // then
+  expect(stats().map((l) => l?.split(' ')[0])).toEqual(['Time', 'Apples', 'Longest'])
 })

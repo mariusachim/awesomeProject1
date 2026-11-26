@@ -1051,11 +1051,13 @@ export default function App() {
                       data-text={`Streak meals: ${game.streaks}`}
                     />
                   )}
-                  <span className="overlay-stats overlay-detail">
-                    <span className="overlay-line" data-text={`Time\u00a0${formatTime(game.ms)}`} />
-                    <span className="overlay-line" data-text={`Apples\u00a0${game.apples}`} />
-                    <span className="overlay-line" data-text={`Longest\u00a0${longest}`} />
-                  </span>
+                  {game.apples > 0 && (
+                    <span className="overlay-stats overlay-detail">
+                      <span className="overlay-line" data-text={`Time\u00a0${formatTime(game.ms)}`} />
+                      <span className="overlay-line" data-text={`Apples\u00a0${game.apples}`} />
+                      <span className="overlay-line" data-text={`Longest\u00a0${longest}`} />
+                    </span>
+                  )}
                   {newBest && (
                     <span
                       className="overlay-line overlay-record"
