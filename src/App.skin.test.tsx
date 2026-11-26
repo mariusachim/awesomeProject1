@@ -82,12 +82,23 @@ test('C does not start or change the game', () => {
   expect(screen.getByTestId('board-overlay').textContent).toBe(before)
 })
 
+const HELP = 'Arrows or WASD move, C changes the snake colour'
+
 test('the help text mentions the C key', () => {
   // when
   render(<App />)
 
   // then
-  expect(screen.getByText('C changes the snake colour')).toBeTruthy()
+  expect(screen.getByText(HELP)).toBeTruthy()
+})
+
+test('the footer names the move keys before the C key, once for a screen reader', () => {
+  // when
+  const { container } = render(<App />)
+
+  // then
+  expect(container.querySelector('.help')?.textContent).toBe(HELP + 'Arrows or WASD move · C changes the snake colour')
+  expect(container.querySelector('.help [aria-hidden="true"]')?.classList.contains('hint-keys')).toBe(true)
 })
 
 test('the C hint shows the key as a badge', () => {
@@ -95,12 +106,12 @@ test('the C hint shows the key as a badge', () => {
   const { container } = render(<App />)
 
   // then
-  const badge = container.querySelector('.help kbd')
+  const badge = [...container.querySelectorAll('.help kbd')].pop()
   expect(badge?.textContent).toBe('C')
   expect(badge?.closest('[aria-hidden="true"]')).toBeTruthy()
 })
 
-const DEFAULT = 'C changes the snake colour'
+const DEFAULT = 'Arrows or WASD move · C changes the snake colour'
 const visible = (c: HTMLElement) => c.querySelector('.help [aria-hidden="true"]')?.textContent
 
 test('C names the new colour in the hint and the status region, then the hint returns', () => {
@@ -119,7 +130,7 @@ test('C names the new colour in the hint and the status region, then the hint re
   act(() => void vi.advanceTimersByTime(1500))
 
   // then
-  expect(visible(container)).toBe('C' + DEFAULT.slice(1))
+  expect(visible(container)).toBe(DEFAULT)
   vi.useRealTimers()
 })
 
@@ -142,7 +153,7 @@ test('quick presses show the latest name until 1.5 s after the last press', () =
   act(() => void vi.advanceTimersByTime(1))
 
   // then
-  expect(visible(container)).toBe('C' + DEFAULT.slice(1))
+  expect(visible(container)).toBe(DEFAULT)
   vi.useRealTimers()
 })
 
