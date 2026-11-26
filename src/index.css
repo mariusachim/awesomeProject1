@@ -786,7 +786,7 @@ button:disabled kbd {
 }
 
 button:focus-visible {
-  outline: 3px solid #6cb2ff;
+  outline: 3px solid #7ee08a;
   outline-offset: 2px;
 }
 
