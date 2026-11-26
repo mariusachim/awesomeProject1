@@ -1173,7 +1173,8 @@ h1,
   left: 0;
   /* -2px: the meter starts 3px under the digit baseline (it was 1px); the row height is unchanged. */
   bottom: -2px;
-  width: 100%;
+  /* Phone: the column plus 12px of the 16px gap, so the meter stops 4px short of the Length column (#603). */
+  width: calc(100% + 12px);
   height: 5px;
   border-radius: 3px;
   overflow: hidden;
@@ -1194,7 +1195,7 @@ h1,
   background: repeating-linear-gradient(to right, transparent 0, transparent calc(100% / var(--levels) - 1px), #161616 calc(100% / var(--levels) - 1px), #161616 calc(100% / var(--levels)));
 }
 
-/* Desktop: 6rem (96px) over 13 levels is 7.4px a step; the phone keeps the column width (#550). */
+/* Desktop: 6rem (96px) over 13 levels is 7.4px a step; the phone widens it by the column gap (#603). */
 @media (min-width: 601px) {
   .stat-meter {
     width: 6rem;
