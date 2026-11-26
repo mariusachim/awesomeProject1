@@ -241,16 +241,16 @@ test('game over speaks the result once and adds nothing visible below the board'
 })
 
 test('the game over overlay shows the streak meals, and screen readers hear them', () => {
-  // given: eat the food at 0,0, then the next one at 4,0 six moves later
+  // given: eat the food at 8,0, then the next one at 0,0 ten moves later
   render(<App />)
   key('ArrowUp')
   act(() => vi.advanceTimersByTime(200 * 7))
-  key('ArrowLeft')
-  act(() => vi.advanceTimersByTime(200 * 7))
+  key('ArrowRight')
+  act(() => vi.advanceTimersByTime(200 * 1))
   key('ArrowDown')
   act(() => vi.advanceTimersByTime(200))
-  key('ArrowRight')
-  act(() => vi.advanceTimersByTime(200 * 4))
+  key('ArrowLeft')
+  act(() => vi.advanceTimersByTime(200 * 8))
   key('ArrowUp')
 
   // when
@@ -285,11 +285,11 @@ test('no streak meals line when the game ended without one', () => {
 test('a new high score shows on the board too', () => {
   // given
   render(<App />)
-  // the food sits at 0,0 and the snake starts at 7,7 heading right
+  // the food sits at 8,0 and the snake starts at 7,7 heading right
   key('ArrowUp')
   act(() => vi.advanceTimersByTime(200 * 7))
-  key('ArrowLeft')
-  act(() => vi.advanceTimersByTime(200 * 7))
+  key('ArrowRight')
+  act(() => vi.advanceTimersByTime(200 * 1))
   act(() => vi.advanceTimersByTime(200 * 30))
 
   // when

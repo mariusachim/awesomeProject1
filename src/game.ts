@@ -183,10 +183,16 @@ export function placeRock(s: Pick<GameState, 'snake' | 'food' | 'bonus' | 'rocks
   return free[Math.floor(rand() * free.length)] ?? null
 }
 
+// The first apple sits ahead of the start heading (right), so the first run has a goal in front.
+const firstFood = (snake: Cell[], rand: Rand): Cell => {
+  const ahead = freeCells(snake).filter((c) => c.x > snake[0].x)
+  return ahead[Math.floor(rand() * ahead.length)]
+}
+
 export function newGame(rand: Rand, wrap = false, status: GameState['status'] = 'running'): GameState {
   const mid = Math.floor(SIZE / 2)
   const snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }]
-  return { snake, dir: 'right', queue: [], food: placeFood(snake, rand), golden: isGolden(rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, apples: 0, streaks: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, ms: 0, hold: false, count: 0 }
+  return { snake, dir: 'right', queue: [], food: firstFood(snake, rand), golden: isGolden(rand), score: 0, status, wrap, bonus: null, eaten: 0, meals: 0, apples: 0, streaks: 0, rocks: [], shrink: null, sinceFood: null, gain: 0, ms: 0, hold: false, count: 0 }
 }
 
 // With solid walls, a running head on the edge and heading out dies on its next move.

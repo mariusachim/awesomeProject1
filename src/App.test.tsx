@@ -457,8 +457,8 @@ test('Enter does nothing while the game runs', () => {
 const eatFood = () => {
   fireEvent.keyDown(window, { key: 'ArrowUp' })
   tick(7)
-  fireEvent.keyDown(window, { key: 'ArrowLeft' })
-  tick(7)
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+  tick(1)
 }
 const gameOver = () => tick(30)
 
@@ -515,7 +515,7 @@ test('a lower score does not change the high score', () => {
   expect(localStorage.getItem('snake.highScore')).toBe('5')
 })
 
-// Speed: after eatFood the head sits at 0,0 and the score is 1.
+// Speed: after eatFood the head sits at 8,0 and the score is 1.
 const advance = (ms: number) => act(() => vi.advanceTimersByTime(ms))
 
 test('after eating the snake moves every 190 ms', () => {
@@ -529,13 +529,13 @@ test('after eating the snake moves every 190 ms', () => {
   advance(189)
 
   // then
-  expect(head()).toBe('0,0')
+  expect(head()).toBe('8,0')
 
   // when
   advance(1)
 
   // then
-  expect(head()).toBe('0,1')
+  expect(head()).toBe('8,1')
 })
 
 test('pausing and resuming keeps the speed of the score', () => {
@@ -553,7 +553,7 @@ test('pausing and resuming keeps the speed of the score', () => {
   advance(190)
 
   // then
-  expect(head()).toBe('0,1')
+  expect(head()).toBe('8,1')
 })
 
 test('a restart after eating goes back to 200 ms', () => {
@@ -660,7 +660,7 @@ test('restart keeps the chosen mode', () => {
   // given: in wrap mode the snake eats two foods in a row, then bites itself
   const rand = vi.spyOn(Math, 'random')
   render(<App />)
-  rand.mockReturnValueOnce(110.5 / 222)
+  rand.mockReturnValueOnce(49.5 / 105)
   fireEvent.click(modeButton('solid'))
   startKey()
   rand.mockReturnValueOnce(110.5 / 221)
@@ -924,7 +924,7 @@ test('a second game that only ties the new record shows no message', () => {
 test('the 5th food brings a bonus food with a screen reader label, a diamond shape and a gold colour', () => {
   // given: each food sits right in front of the snake, on row 7, and the bonus food falls on 0,0
   const rand = vi.spyOn(Math, 'random')
-  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0) // the 0 is the golden roll of a new game
+  rand.mockReturnValueOnce(49.5 / 105).mockReturnValueOnce(0) // the 0 is the golden roll of a new game
   // each meal but the 5th also rolls for a shrink fruit, which stays low here, then for a golden apple
   for (const free of [221, 220, 219, 218]) rand.mockReturnValueOnce(111.5 / free).mockReturnValueOnce(0.5).mockReturnValueOnce(0)
   rand.mockReturnValueOnce(111.5 / 217)
@@ -977,7 +977,7 @@ test('a golden apple is gold-yellow with a white ring and a glow, in every snake
 test('the bonus food shows its moves left, one lower after each move', () => {
   // given
   const rand = vi.spyOn(Math, 'random')
-  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0) // the 0 is the golden roll of a new game
+  rand.mockReturnValueOnce(49.5 / 105).mockReturnValueOnce(0) // the 0 is the golden roll of a new game
   // each meal but the 5th also rolls for a shrink fruit, which stays low here, then for a golden apple
   for (const free of [221, 220, 219, 218]) rand.mockReturnValueOnce(111.5 / free).mockReturnValueOnce(0.5).mockReturnValueOnce(0)
   rand.mockReturnValueOnce(111.5 / 217)
@@ -1111,7 +1111,7 @@ test('the length value bumps when the snake grows, not at length 1', () => {
 test('the score pop shows +1 for the first meal and +2 for a quick second one', () => {
   // given: each food sits right in front of the snake
   const rand = vi.spyOn(Math, 'random')
-  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0) // the 0 is the golden roll of a new game
+  rand.mockReturnValueOnce(49.5 / 105).mockReturnValueOnce(0) // the 0 is the golden roll of a new game
   rand.mockReturnValueOnce(111.5 / 221)
   renderReady(<App />)
   startKey()
@@ -1133,7 +1133,7 @@ test('the score pop shows +1 for the first meal and +2 for a quick second one', 
 test('the score pop of a +3 golden apple is big', () => {
   // given: the first food is golden, the second is normal
   const rand = vi.spyOn(Math, 'random')
-  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0.95)
+  rand.mockReturnValueOnce(49.5 / 105).mockReturnValueOnce(0.95)
   renderReady(<App />)
   startKey()
   const pop = () => screen.queryAllByText(/^\+\d$/).find((e) => e.classList.contains("pop"))
@@ -1149,7 +1149,7 @@ test('the score pop of a +3 golden apple is big', () => {
 test('the score pop of a +1 apple is not big', () => {
   // given
   const rand = vi.spyOn(Math, 'random')
-  rand.mockReturnValueOnce(111.5 / 222).mockReturnValueOnce(0)
+  rand.mockReturnValueOnce(49.5 / 105).mockReturnValueOnce(0)
   renderReady(<App />)
   startKey()
   const pop = () => screen.queryAllByText(/^\+\d$/).find((e) => e.classList.contains("pop"))

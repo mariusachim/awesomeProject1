@@ -16,12 +16,11 @@ const tick = (n = 1) => {
   for (let i = 0; i < n; i++) act(() => vi.advanceTimersByTime(200))
 }
 const cls = () => screen.getByTestId('head').classList
-// head 7,7 and food 0,0: up 7 cells, then left 7 cells; the meal is the last left tick.
+// head 7,7 and food 8,0: up 7 cells, then right; the meal is the right tick.
 const approach = () => {
   fireEvent.keyDown(window, { key: 'ArrowUp' })
   tick(7)
-  fireEvent.keyDown(window, { key: 'ArrowLeft' })
-  tick(6)
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
 }
 
 test('the head gulps on the tick it eats, and the turn nudge does not play with it', () => {

@@ -11,7 +11,7 @@ afterEach(() => {
 
 test('a shrink fruit shows after a meal and differs from the food by shape', () => {
   // given: the first food lands one cell ahead of the head; the roll after the meal is high
-  vi.spyOn(Math, 'random').mockReturnValueOnce(110.5 / 222).mockReturnValue(0.99)
+  vi.spyOn(Math, 'random').mockReturnValueOnce(49.5 / 105).mockReturnValue(0.99)
   render(<App />)
   expect(screen.queryByTestId('shrink')).toBeNull()
 
@@ -28,7 +28,7 @@ test('a shrink fruit shows after a meal and differs from the food by shape', () 
 
 test('the shrink fruit shows its moves left, counts down and is hidden from screen readers', () => {
   // given
-  vi.spyOn(Math, 'random').mockReturnValueOnce(110.5 / 222).mockReturnValue(0.99)
+  vi.spyOn(Math, 'random').mockReturnValueOnce(49.5 / 105).mockReturnValue(0.99)
   render(<App />)
   fireEvent.keyDown(window, { key: 'ArrowRight' })
   act(() => vi.advanceTimersByTime(200))

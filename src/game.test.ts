@@ -1203,3 +1203,12 @@ test('the tab title follows the state and the score', () => {
   expect(tabTitle('paused', 12)).toBe('Paused · Snake · 12')
   expect(tabTitle('over', 12)).toBe('Game over · Snake · 12')
 })
+
+test('the first apple is ahead of the head for any random pick', () => {
+  // given
+  const picks = [0, 0.5, 0.999]
+  // when
+  const games = picks.map((r) => newGame(() => r))
+  // then
+  for (const g of games) expect(g.food.x).toBeGreaterThan(g.snake[0].x)
+})
