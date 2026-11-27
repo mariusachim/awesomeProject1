@@ -457,7 +457,7 @@ export default function App() {
     return () => clearTimeout(id);
   }, [wrapped]);
 
-  // Each Walls switch pulses the board border for 300 ms; the first render and a restored mode do not.
+  // Each Walls switch and each restart (the hold beat) pulses the board border for 300 ms; the first render and a restored mode do not.
   const [switched, setSwitched] = useState(false);
   const wasWrap = useRef(game.wrap);
   useEffect(() => {
@@ -465,6 +465,9 @@ export default function App() {
     wasWrap.current = game.wrap;
     if (!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) setSwitched(true);
   }, [game.wrap]);
+  useEffect(() => {
+    if (game.hold && !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) setSwitched(true);
+  }, [game.hold]);
   useEffect(() => {
     if (!switched) return;
     const id = setTimeout(() => setSwitched(false), 300);
