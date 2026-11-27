@@ -1102,6 +1102,11 @@ h1,
     white-space: nowrap;
   }
 
+  /* The nowrap legend overflows a shrink-to-fit panel: grow the panel to it, capped by max-width. */
+  .board-overlay-light .overlay-panel {
+    width: max-content;
+  }
+
   .legend-swatch {
     margin-right: 0.2rem;
   }
