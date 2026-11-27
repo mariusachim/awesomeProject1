@@ -543,10 +543,11 @@ export default function App() {
   const naming = skinPressed > skinShown;
   const swatch = (
     <span
-      className="skin-swatch"
+      key={skinPressed}
+      className={skinPressed > 0 ? "skin-swatch pulse" : "skin-swatch"}
       data-testid="skin-swatch"
       aria-hidden="true"
-      style={{ background: SKINS[skin].head }}
+      style={{ background: SKINS[skin].head, color: SKINS[skin].head }}
     />
   );
   useEffect(() => {
