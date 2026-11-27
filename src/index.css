@@ -1175,6 +1175,21 @@ h1,
   .skin-swatch {
     transition: background-color 150ms ease-out;
   }
+  /* Keyed by the C counter in App, so each press remounts the swatch and restarts this. */
+  .skin-swatch.pulse {
+    animation: swatch-pulse 300ms ease-out;
+  }
+}
+
+@keyframes swatch-pulse {
+  40% {
+    transform: scale(1.4);
+    box-shadow: 0 0 8px 2px currentColor;
+  }
+  to {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 transparent;
+  }
 }
 
 /* Wrap mode: the edge the head entered glows in the snake colour (inset, so nothing moves); App clears it after 250 ms. */

@@ -181,3 +181,21 @@ test('the footer swatch shows the head colour, hidden from screen readers', () =
   expect(swatch().style.background).toBe(head('blue'))
   expect(swatch().getAttribute('aria-hidden')).toBe('true')
 })
+
+test('the footer swatch pulses on each C press and restarts on the next', () => {
+  // given
+  render(<App />)
+  const before = screen.getByTestId('skin-swatch')
+
+  // when
+  press()
+  const first = screen.getByTestId('skin-swatch')
+  press()
+  const second = screen.getByTestId('skin-swatch')
+
+  // then
+  expect(before.classList.contains('pulse')).toBe(false)
+  expect(first.classList.contains('pulse')).toBe(true)
+  expect(second.classList.contains('pulse')).toBe(true)
+  expect(second).not.toBe(first)
+})
