@@ -149,3 +149,41 @@ test('game over shows no gap line on a first run', () => {
   // then
   expect(document.querySelector(GAP)).toBeNull()
 })
+
+const flash = () => screen.getByText(/^High score: \d+$/).closest('p')!.getAttribute('data-flash')
+
+test('the high score stat is flagged to flash once the score passes a saved record, not before', () => {
+  // given
+  localStorage.setItem('snake.highScore', '1')
+  render(<App />)
+
+  // when
+  eat()
+
+  // then
+  expect(flash()).toBeNull()
+
+  // when
+  eatAgain()
+
+  // then
+  expect(flash()).toBe('true')
+
+  // when
+  tick(30)
+  fireEvent.click(screen.getByRole('button', { name: 'Restart' }))
+
+  // then
+  expect(flash()).toBeNull()
+})
+
+test('the high score stat is not flagged when there was no saved record', () => {
+  // given
+  render(<App />)
+
+  // when
+  eat()
+
+  // then
+  expect(flash()).toBeNull()
+})

@@ -530,6 +530,23 @@ button:disabled kbd {
   font-weight: bold;
 }
 
+/* The attribute stays for the rest of the run, so the fade plays once; the value inherits the colour, so a new digit does not replay it. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-flash] {
+    animation: record-flash 600ms ease-out;
+  }
+
+  [data-flash] .stat-label {
+    animation: record-flash 600ms ease-out;
+  }
+
+  @keyframes record-flash {
+    from {
+      color: #f5c04a;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .overlay-record {
     animation: record-pop 300ms ease-out;

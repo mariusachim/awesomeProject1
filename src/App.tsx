@@ -232,10 +232,12 @@ function Stat({
   pulse = big && value !== 0,
   gain = 0,
   beats,
+  flash,
   fill,
   accent,
 }: {
   accent?: string; // the meter colour: the head colour of the skin
+  flash?: boolean; // the score just passed the record: data-flash plays one gold fade in CSS
   fill?: number; // 0..1: a thin meter under the value, hidden from screen readers
   beats?: boolean; // the score passes the saved high score: dark gold, and data-record for who misses colour
   gain?: number; // points of the last move: shown as a "+N" pop beside the value
@@ -250,6 +252,7 @@ function Stat({
     <p
       className={big ? "stat stat-big" : "stat"}
       data-record={beats || undefined}
+      data-flash={flash || undefined}
     >
       <span aria-hidden="true" className="stat-label">
         {label}
@@ -731,6 +734,7 @@ export default function App() {
           value={highScore}
           spoken={`High score: ${highScore}`}
           big
+          flash={record > 0 && game.score > record}
         />
         <Stat
           label="Last game"
