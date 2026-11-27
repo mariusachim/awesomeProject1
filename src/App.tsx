@@ -1109,7 +1109,7 @@ export default function App() {
         )}
       </div>
       <p className="help">
-        <span className="sr-only">Arrows or WASD move, C changes the snake colour</span>
+        <span className="sr-only">Arrows or WASD move, C changes the snake colour, swipe on the board to turn</span>
         {naming ? (
           <span aria-hidden="true" style={{ color: SKINS[skin].head }}>
             {swatch}
@@ -1127,6 +1127,9 @@ export default function App() {
             </span>
           </span>
         )}
+        <span aria-hidden="true" className="hint-touch">
+          Swipe on the board to turn
+        </span>
       </p>
       {naming && (
         <p role="status" className="sr-only">

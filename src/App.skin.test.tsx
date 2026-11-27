@@ -82,7 +82,7 @@ test('C does not start or change the game', () => {
   expect(screen.getByTestId('board-overlay').textContent).toBe(before)
 })
 
-const HELP = 'Arrows or WASD move, C changes the snake colour'
+const HELP = 'Arrows or WASD move, C changes the snake colour, swipe on the board to turn'
 
 test('the help text mentions the C key', () => {
   // when
@@ -97,8 +97,18 @@ test('the footer names the move keys before the C key, once for a screen reader'
   const { container } = render(<App />)
 
   // then
-  expect(container.querySelector('.help')?.textContent).toBe(HELP + 'Arrows or WASD move · C changes the snake colour')
+  expect(container.querySelector('.help')?.textContent).toBe(HELP + 'Arrows or WASD move · C changes the snake colourSwipe on the board to turn')
   expect(container.querySelector('.help [aria-hidden="true"]')?.classList.contains('hint-keys')).toBe(true)
+})
+
+test('the footer carries the swipe hint, hidden from a screen reader', () => {
+  // when
+  const { container } = render(<App />)
+
+  // then
+  const hint = container.querySelector('.help .hint-touch')
+  expect(hint?.textContent).toBe('Swipe on the board to turn')
+  expect(hint?.getAttribute('aria-hidden')).toBe('true')
 })
 
 test('the C hint shows the key as a badge', () => {
