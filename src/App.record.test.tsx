@@ -187,3 +187,37 @@ test('the high score stat is not flagged when there was no saved record', () => 
   // then
   expect(flash()).toBeNull()
 })
+
+const highStat = () => screen.getByText(/^High score: \d+$/).closest('p')!
+
+test('the high score stat stays marked at game over with a new record, and not after a restart', () => {
+  // given
+  localStorage.setItem('snake.highScore', '0')
+  render(<App />)
+  eat()
+  expect(highStat().getAttribute('data-record')).toBeNull()
+
+  // when
+  key('ArrowUp')
+  tick(10)
+
+  // then
+  expect(highStat().getAttribute('data-record')).toBe('true')
+  key('r')
+  key('ArrowUp')
+  expect(highStat().getAttribute('data-record')).toBeNull()
+})
+
+test('the high score stat is not marked at game over when the run is no record', () => {
+  // given
+  localStorage.setItem('snake.highScore', '5')
+  render(<App />)
+
+  // when
+  eat()
+  key('ArrowUp')
+  tick(10)
+
+  // then
+  expect(highStat().getAttribute('data-record')).toBeNull()
+})
