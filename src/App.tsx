@@ -299,11 +299,17 @@ export default function App() {
   const [cleared, setCleared] = useState(0);
   // The score of the last finished game; kept for the session only.
   const [last, setLast] = useState<number | null>(null);
+  const [ended, setEnded] = useState<number | null>(null);
   const highScore = Math.max(best, game.score > cleared ? game.score : 0);
   const over = game.status === "over";
   const paused = game.status === "paused";
   const spot = game.count > 0 ? countdownCell(game) : null;
-  if (over && last !== game.score) setLast(game.score);
+  // A finished run moves into Last game when the next run starts, so game over does not show the score twice.
+  if (over && ended !== game.score) setEnded(game.score);
+  else if (!over && ended !== null) {
+    setLast(ended);
+    setEnded(null);
+  }
   // The spec counts the length from 1, but the snake starts with 3 cells.
   const length = game.snake.length - 2;
   // The record counts the snake of a finished game; a missing or bad saved value loads as 0.
