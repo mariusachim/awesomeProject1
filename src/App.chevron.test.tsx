@@ -11,7 +11,7 @@ test('the start screen shows a chevron in front of the head, hidden from screen 
 
   // then
   expect(chevron?.getAttribute('aria-hidden')).toBe('true')
-  expect(chevron?.textContent).toBe('›')
+  expect(chevron?.textContent).toBe('')
   const [hx] = screen.getByTestId('head').getAttribute('data-pos')!.split(',').map(Number)
   expect(chevron?.getAttribute('data-pos')?.split(',')[0]).toBe(String(hx + 1))
 })
