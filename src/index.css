@@ -130,9 +130,10 @@ kbd {
   border-radius: 3px;
 }
 
-/* P does nothing before the first key; hidden, not removed, so the width stays. */
+/* P does nothing before the first key; the cap shows dimmed so the key is learned before the run (border 3:1 on #1e1e1e). */
 button:disabled kbd {
-  visibility: hidden;
+  color: #b0b0b0;
+  border-color: #6a6a6a;
 }
 
 .controls {
