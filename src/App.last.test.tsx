@@ -38,6 +38,15 @@ test('the score of a finished game shows as Last after a restart', () => {
   expect(screen.getByText('Last game: 0')).toBeTruthy()
 })
 
+test('at game over Last game still shows the earlier run, not the one that just ended', () => {
+  // given
+  render(<App />)
+  crash()
+
+  // when / then
+  expect(screen.getByText('Last game: none')).toBeTruthy()
+})
+
 test('a reload forgets the last score', () => {
   // given
   const first = render(<App />)
@@ -52,14 +61,16 @@ test('a reload forgets the last score', () => {
   expect(screen.getByText('Last game: none')).toBeTruthy()
 })
 
-test('the Last game value bumps when a run ends, not before', () => {
+test('the Last game value bumps when the next run starts, not before', () => {
   // given
   const { container } = render(<App />)
   const value = () => container.querySelectorAll('.stat-value')[4]
   expect(value().classList.contains('bump')).toBe(false)
+  crash()
+  expect(value().classList.contains('bump')).toBe(false)
 
   // when
-  crash()
+  fireEvent.keyDown(window, { key: 'Enter' })
 
   // then
   expect(value().textContent).toBe('0')
