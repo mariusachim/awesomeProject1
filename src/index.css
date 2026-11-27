@@ -532,12 +532,21 @@ button:disabled kbd {
 
 /* The attribute stays for the rest of the run, so the fade plays once; the value inherits the colour, so a new digit does not replay it. */
 @media (prefers-reduced-motion: no-preference) {
-  [data-flash] {
+  [data-flash],
+  [data-flash] .stat-label {
     animation: record-flash 600ms ease-out;
   }
 
-  [data-flash] .stat-label {
-    animation: record-flash 600ms ease-out;
+  /* The blue of the shrink triangle (SHRINK_LOOK in App.tsx); the Stat is keyed by the count, so each fruit replays it. */
+  [data-shrunk],
+  [data-shrunk] .stat-label {
+    animation: shrink-flash 600ms ease-out;
+  }
+
+  @keyframes shrink-flash {
+    from {
+      color: #39f;
+    }
   }
 
   @keyframes record-flash {

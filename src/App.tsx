@@ -235,7 +235,9 @@ function Stat({
   flash,
   fill,
   accent,
+  shrunk,
 }: {
+  shrunk?: number; // shrink fruits eaten this run: data-shrunk plays one blue fade in CSS, and the count keys it
   accent?: string; // the meter colour: the head colour of the skin
   flash?: boolean; // the score just passed the record: data-flash plays one gold fade in CSS
   fill?: number; // 0..1: a thin meter under the value, hidden from screen readers
@@ -253,6 +255,8 @@ function Stat({
       className={big ? "stat stat-big" : "stat"}
       data-record={beats || undefined}
       data-flash={flash || undefined}
+      data-shrunk={shrunk || undefined}
+      key={shrunk}
     >
       <span aria-hidden="true" className="stat-label">
         {label}
@@ -417,6 +421,9 @@ export default function App() {
     setRing(meal ? { ...seen.food, score: game.score } : null);
   }
   // A special food that left the board under the head was eaten (an expired one is gone elsewhere); it rings in its own colour.
+  // Counts the shrink fruits of this run; it keys the Length stat so the blue fade replays on each one, and a restart (score 0) clears it.
+  const [shrunk, setShrunk] = useState(0);
+  if (shrunk && game.score === 0) setShrunk(0);
   const [special, setSpecial] = useState({ bonus: game.bonus?.cell, shrink: game.shrink?.cell });
   if (game.bonus?.cell !== special.bonus || game.shrink?.cell !== special.shrink) {
     const head = game.snake[0];
@@ -425,6 +432,7 @@ export default function App() {
     );
     setSpecial({ bonus: game.bonus?.cell, shrink: game.shrink?.cell });
     if (eaten) setRing({ ...eaten[1]!, score: game.score, kind: eaten[0] });
+    if (eaten?.[0] === "shrink") setShrunk((n) => n + 1);
   }
 
   // The turn the head just made: its count keys the head so the nudge replays; its cell ends the nudge on the next move.
@@ -732,6 +740,7 @@ export default function App() {
           value={length}
           spoken={`Length ${length}`}
           pulse={length !== 1}
+          shrunk={shrunk}
         />
         <Stat
           label="High score"
