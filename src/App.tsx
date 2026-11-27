@@ -735,6 +735,7 @@ export default function App() {
           spoken={`High score: ${highScore}`}
           big
           flash={record > 0 && game.score > record}
+          beats={newBest}
         />
         <Stat
           label="Last game"
