@@ -4,8 +4,8 @@ export const SIZE = 15
 export const cellShade = (x: number, y: number): string => ((x + y) % 2 === 0 ? '#1c1c1c' : '#2c2c2c')
 
 type Edge = 'top' | 'bottom'
-// Panel height in rows on a small phone (24 px cells): ready covers 6 (four text lines), paused 8 (title, resume line, four legend rows; 7.5 rows, the part row counts); game over is tighter and covers 4.
-const PANEL_ROWS = { over: 4, paused: 8, ready: 6 }
+// Panel height in rows on a small phone (24 px cells): ready covers 6 (four text lines), paused 8 (title, resume line, four legend rows; 7.5 rows, the part row counts); game over covers 6 (title, reason, stats, two tip lines on a phone).
+const PANEL_ROWS = { over: 6, paused: 8, ready: 6 }
 const panelRows = (status: string) => (status === 'over' ? PANEL_ROWS.over : status === 'ready' ? PANEL_ROWS.ready : PANEL_ROWS.paused)
 const covers = (edge: Edge, rows: number, y: number) => (edge === 'top' ? y < rows : y >= SIZE - rows)
 // The two rows at the panel's far end hold the paused title; a body cell there would cut the text.

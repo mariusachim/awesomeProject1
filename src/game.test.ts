@@ -695,10 +695,10 @@ test('game over keeps the old rule', () => {
   expect(edge({ status: 'over', snake: [{ x: 7, y: 13 }], food: { x: 3, y: SIZE - 1 } })).toBe('top')
 })
 
-test('game over panel covers 4 rows: food in the 4th row from the bottom sends it to the top', () => {
+test('game over panel covers 6 rows: food in the 6th row from the bottom sends it to the top', () => {
   // given / when / then
-  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 11 } })).toBe('top')
-  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 10 } })).toBe('bottom')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 9 } })).toBe('top')
+  expect(edge({ status: 'over', snake: [{ x: 7, y: 7 }], food: { x: 3, y: 8 } })).toBe('bottom')
 })
 
 test('game over with the food far from the head keeps the head and body uncovered', () => {
