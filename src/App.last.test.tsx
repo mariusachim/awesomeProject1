@@ -17,13 +17,13 @@ const crash = () => {
   act(() => vi.advanceTimersByTime(200 * 30))
 }
 
-test('before a game ends Last game shows none', () => {
+test('before a game ends Last game shows a dash', () => {
   // given / when
   render(<App />)
 
   // then
   expect(screen.getByText('Last game')).toBeTruthy()
-  expect(screen.getByText('none', { selector: '.stat-value' })).toBeTruthy()
+  expect(screen.getByText('–', { selector: '.stat-value' })).toBeTruthy()
 })
 
 test('the score of a finished game shows as Last after a restart', () => {
@@ -57,7 +57,7 @@ test('a reload forgets the last score', () => {
   render(<App />)
 
   // then
-  expect(screen.getByText('none', { selector: '.stat-value' })).toBeTruthy()
+  expect(screen.getByText('–', { selector: '.stat-value' })).toBeTruthy()
   expect(screen.getByText('Last game: none')).toBeTruthy()
 })
 
