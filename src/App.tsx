@@ -924,13 +924,13 @@ export default function App() {
             const a = aheadCell(game);
             return (
               a &&
-              cell(a.cell.x, a.cell.y, "chevron", { color: SKINS[skin].head, rotate: `${CHEVRON_TURN[a.dir]}deg` }, "chevron", undefined, "›")
+              cell(a.cell.x, a.cell.y, "chevron", { color: SKINS[skin].head, rotate: `${CHEVRON_TURN[a.dir]}deg` }, "chevron")
             );
           })()}
         {ready &&
           // The ready head faces right with a free cell ahead; the food may sit there, so skip it then.
           !(game.food.x === game.snake[0].x + 1 && game.food.y === game.snake[0].y) &&
-          cell(game.snake[0].x + 1, game.snake[0].y, "chevron", { color: SKINS[skin].head }, "chevron", undefined, "›")}
+          cell(game.snake[0].x + 1, game.snake[0].y, "chevron", { color: SKINS[skin].head }, "chevron")}
         {cell(
           game.food.x,
           game.food.y,
