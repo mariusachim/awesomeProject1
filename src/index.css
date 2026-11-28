@@ -1310,9 +1310,13 @@ h1,
   }
 }
 
-/* Each key idea stays whole. A narrow window puts the ideas on two lines and drops the dot. */
+/* Each key idea stays whole. A narrow window puts the ideas on two lines. */
 .hint-idea {
   white-space: nowrap;
+}
+
+.hint-idea + .hint-idea {
+  margin-left: 12px;
 }
 
 @media (max-width: 420px) {
@@ -1320,8 +1324,8 @@ h1,
     display: block;
   }
 
-  .hint-dot {
-    display: none;
+  .hint-idea + .hint-idea {
+    margin-left: 0;
   }
 }
 

@@ -97,7 +97,7 @@ test('the footer names the move keys before the C key, once for a screen reader'
   const { container } = render(<App />)
 
   // then
-  expect(container.querySelector('.help')?.textContent).toBe(HELP + 'Arrows or WASD move · C changes the snake colourSwipe on the board to turn')
+  expect(container.querySelector('.help')?.textContent).toBe(HELP + 'Arrows or WASD moveC changes the snake colourSwipe on the board to turn')
   expect(container.querySelector('.help [aria-hidden="true"]')?.classList.contains('hint-keys')).toBe(true)
 })
 
@@ -121,7 +121,7 @@ test('the C hint shows the key as a badge', () => {
   expect(badge?.closest('[aria-hidden="true"]')).toBeTruthy()
 })
 
-const DEFAULT = 'Arrows or WASD move · C changes the snake colour'
+const DEFAULT = 'Arrows or WASD moveC changes the snake colour'
 const visible = (c: HTMLElement) => c.querySelector('.help [aria-hidden="true"]')?.textContent
 
 test('C names the new colour in the hint and the status region, then the hint returns', () => {
