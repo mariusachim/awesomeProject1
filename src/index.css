@@ -1321,8 +1321,17 @@ h1,
   margin-left: 12px;
 }
 
+/* The buttons lose their key badges at 420 px, so the footer names P, B and M there. */
+.hint-idea.hint-narrow-keys {
+  display: none;
+}
+
 @media (max-width: 420px) {
   .hint-idea {
+    display: block;
+  }
+
+  .hint-idea.hint-narrow-keys {
     display: block;
   }
 

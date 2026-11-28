@@ -42,3 +42,14 @@ test('after game over the Restart button shows the R key, named Restart', () => 
   expect(restart.querySelector('kbd')?.textContent).toBe('R')
   expect(restart.getAttribute('aria-keyshortcuts')).toBe('R')
 })
+
+test('the footer names the P, B and M keys for a narrow window, hidden from screen readers', () => {
+  // when
+  const { container } = render(<App />)
+
+  // then
+  const line = container.querySelector('.help .hint-narrow-keys')
+  expect(line?.textContent).toBe('P pauses · B walls · M mute')
+  expect([...line!.querySelectorAll('kbd')].map((k) => k.textContent)).toEqual(['P', 'B', 'M'])
+  expect(line?.closest('[aria-hidden="true"]')).not.toBeNull()
+})
