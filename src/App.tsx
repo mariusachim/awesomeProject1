@@ -1138,11 +1138,11 @@ export default function App() {
         ) : (
           <span aria-hidden="true" className="hint-keys">
             <span className="hint-idea">
-              {swatch}
               <kbd>Arrows</kbd> or <kbd>WASD</kbd> move
             </span>
             <span className="hint-dot"> · </span>
             <span className="hint-idea">
+              {swatch}
               <kbd>C</kbd> changes the snake colour
             </span>
           </span>

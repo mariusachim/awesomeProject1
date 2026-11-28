@@ -199,3 +199,15 @@ test('the footer swatch pulses on each C press and restarts on the next', () => 
   expect(second.classList.contains('pulse')).toBe(true)
   expect(second).not.toBe(first)
 })
+
+test('the footer swatch sits directly before the C key, not before Arrows', () => {
+  // given
+  const { container } = render(<App />)
+
+  // when
+  const swatch = screen.getByTestId('skin-swatch')
+
+  // then
+  expect(swatch.nextElementSibling?.textContent).toBe('C')
+  expect(container.querySelector('.hint-idea:first-child [data-testid="skin-swatch"]')).toBeNull()
+})
