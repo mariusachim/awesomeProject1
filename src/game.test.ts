@@ -1175,14 +1175,14 @@ test('countdownCell: null when nothing is free', () => {
   expect(countdownCell({ ...boxed, snake: [{ x: 14, y: 0 }, { x: 13, y: 0 }] })).toBeNull()
 })
 
-test('crashTip gives a tip for a wall crash and none for a rock crash', () => {
+test('crashTip gives a tip for a wall, self and rock crash', () => {
   // given
   const base = { snake: [{ x: 0, y: 0 }], dir: 'up' as const, wrap: false, rocks: [] }
 
   // when / then
   expect(crashTip(base)).toContain('Turn before the edge')
   expect(crashTip({ ...base, wrap: true, snake: [{ x: 5, y: 5 }, { x: 5, y: 4 }], dir: 'up' })).toContain('Leave room')
-  expect(crashTip({ ...base, snake: [{ x: 5, y: 5 }], rocks: [{ x: 5, y: 4 }] })).toBeUndefined()
+  expect(crashTip({ ...base, snake: [{ x: 5, y: 5 }], rocks: [{ x: 5, y: 4 }] })).toContain('Watch for new rocks')
 })
 
 test.each([
