@@ -490,6 +490,7 @@ button:disabled kbd {
   flex-direction: column;
   gap: 0.2rem;
   max-width: 100%;
+  box-sizing: border-box; /* the padding counts in the max-width, so the panel stays inside the overlay */
 }
 
 .board-overlay-light .overlay-panel {
