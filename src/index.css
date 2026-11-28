@@ -891,6 +891,8 @@ button:focus-visible {
 .stat-value {
   font-size: 1.5rem;
   font-weight: bold;
+  /* One baseline across the row: the big Score and the small values would otherwise sit 2px apart. */
+  align-self: last baseline;
   /* Proportional digits: a tabular "1" sits in a wide cell, 8px right of the label edge. min-width keeps the column fixed. */
 }
 
