@@ -1188,6 +1188,9 @@ h1,
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  h1 {
+    transition: color 150ms ease-out;
+  }
   .skin-swatch {
     transition: background-color 150ms ease-out;
   }

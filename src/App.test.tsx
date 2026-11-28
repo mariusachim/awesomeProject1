@@ -1316,3 +1316,27 @@ test('the board is a named group on the start screen, while running and when pau
   fireEvent.keyDown(window, { key: 'p' })
   expect(board()).toBeTruthy()
 })
+
+test('the title takes the head colour of the saved skin', () => {
+  // given
+  localStorage.setItem('snake.skin', 'blue')
+
+  // when
+  renderReady(<App />)
+
+  // then
+  expect(screen.getByRole('heading', { level: 1 }).style.color).toBe('rgb(102, 170, 255)')
+})
+
+test('pressing C changes the title colour with the skin', () => {
+  // given
+  renderReady(<App />)
+  const title = screen.getByRole('heading', { level: 1 })
+  expect(title.style.color).toBe('rgb(119, 238, 119)')
+
+  // when
+  fireEvent.keyDown(window, { key: 'c' })
+
+  // then
+  expect(title.style.color).toBe('rgb(102, 170, 255)')
+})

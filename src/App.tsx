@@ -723,7 +723,7 @@ export default function App() {
 
   return (
     <main>
-      <h1>Snake</h1>
+      <h1 style={{ color: SKINS[skin].head }}>Snake</h1>
       <div className={paused ? "stats stats-paused" : "stats"} role="group" aria-label="Game stats">
         <Stat
           label="Score"
