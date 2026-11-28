@@ -1144,6 +1144,9 @@ export default function App() {
               {swatch}
               <kbd>C</kbd> changes the snake colour
             </span>
+            <span className="hint-idea hint-narrow-keys">
+              <kbd>P</kbd> pauses · <kbd>B</kbd> walls · <kbd>M</kbd> mute
+            </span>
           </span>
         )}
         <span aria-hidden="true" className="hint-touch">
