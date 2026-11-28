@@ -1338,6 +1338,14 @@ h1,
   .hint-idea + .hint-idea {
     margin-left: 0;
   }
+
+  /* The block is centred as a whole; the lines inside start at one edge. Not on touch, where it stays hidden. */
+  @media (pointer: fine) {
+    .help .hint-keys {
+      display: inline-block;
+      text-align: left;
+    }
+  }
 }
 
 /* The golden apple glows softly; the static glow in its inline style stays under reduced motion. */
